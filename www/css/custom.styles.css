@@ -1,0 +1,261 @@
+/* Make squarer corners for elements */
+.ui-btn-corner-tl,
+.ui-btn-corner-tr,
+.ui-btn-corner-bl,
+.ui-btn-corner-br,
+.ui-btn-corner-top,
+.ui-btn-corner-bottom,
+.ui-btn-corner-right,
+.ui-btn-corner-left,
+.ui-btn-corner-all,
+.ui-corner-tl,
+.ui-corner-tr,
+.ui-corner-bl,
+.ui-corner-br,
+.ui-corner-top,
+.ui-corner-bottom,
+.ui-corner-right,
+.ui-corner-left,
+.ui-corner-all {
+    -moz-border-radius: .4em;
+    -webkit-border-radius: .4em;
+    border-radius: .4em;
+}
+
+/* Remove the separator bars between form fields and adjust field padding
+*/
+div[data-role="fieldcontain"] {
+    border: none;
+    padding: .5em .6em .3em .3em;
+}
+
+/* F
+---------------------------------------------------------------------------
+--------------------------------*/
+.ui-bar-f {
+    border: 1px solid #c22;
+    background: #a00;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 -1px 1px #000;
+    background-image: -moz-linear-gradient(top, #f66, #a00);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f66), color-stop(1, #a00));
+    -msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f66', EndColorStr='#a00')";
+}
+
+.ui-bar-f,
+.ui-bar-f input,
+.ui-bar-f select,
+.ui-bar-f textarea,
+.ui-bar-f button {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.ui-bar-f .ui-link-inherit {
+    color: #fff;
+}
+
+.ui-bar-f .ui-link {
+    color: #7cc4e7;
+    font-weight: bold;
+}
+
+.ui-body-f {
+    border: 1px solid #c22;
+    color: #a00;
+    text-shadow: 0 1px 0 #fff;
+    background: #f0f0f0;
+    background-image: -moz-linear-gradient(top, #eee, #ddd);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eee), color-stop(1, #ddd));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#eee', EndColorStr='#ddd')";
+}
+
+.ui-body-f,
+.ui-body-f input,
+.ui-body-f select,
+.ui-body-f textarea,
+.ui-body-f button {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.ui-body-f .ui-link-inherit {
+    color: #333;
+}
+
+.ui-body-f .ui-link {
+    color: #2489ce;
+    font-weight: bold;
+}
+
+.ui-btn-up-f {
+    border: 1px solid #b11;
+    background: #a00;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    text-shadow: 0 -1px 1px #000;
+    text-decoration: none;
+    background-image: -moz-linear-gradient(top, #e55, #a00);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f66), color-stop(1, #a00));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f66', EndColorStr='#a00')";
+}
+
+.ui-btn-up-f a.ui-link-inherit {
+    color: #fff;
+}
+
+.ui-btn-hover-f {
+    border: 1px solid #a00;
+    background: #b11;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 -1px 1px #000;
+    text-decoration: none;
+    background-image: -moz-linear-gradient(top, #f66, #b11);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f66), color-stop(1, #b11));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f66', EndColorStr='#b11')";
+}
+
+.ui-btn-hover-f a.ui-link-inherit {
+    color: #fff;
+}
+
+.ui-btn-down-f {
+    border: 1px solid #800;
+    background: #e55;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 -1px 1px #000;
+    background-image: -moz-linear-gradient(top, #800, #e55);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #800), color-stop(1, #e55));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#800', EndColorStr='#e55')";
+}
+
+.ui-btn-down-f a.ui-link-inherit {
+    color: #fff;
+}
+
+.ui-btn-up-f,
+.ui-btn-hover-f,
+.ui-btn-down-f {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+/* disable shadows for better android performance */
+.ui-body-a,
+.ui-bar-a,
+.ui-btn-up-a,
+.ui-btn-hover-a,
+.ui-btn-down-a,
+.ui-body-b,
+.ui-bar-b,
+.ui-btn-up-b,
+.ui-btn-hover-b,
+.ui-btn-down-b,
+.ui-body-c,
+.ui-bar-c,
+.ui-btn-up-c,
+.ui-btn-hover-c,
+.ui-btn-down-c,
+.ui-body-d,
+.ui-bar-d,
+.ui-btn-up-d,
+.ui-btn-hover-d,
+.ui-btn-down-d,
+.ui-body-e,
+.ui-bar-e,
+.ui-btn-up-e,
+.ui-btn-hover-e,
+.ui-btn-down-e,
+.ui-shadow-inset,
+.ui-icon-shadow,
+.ui-focus,
+.ui-overlay-shadow,
+.ui-shadow,
+.ui-btn-active,
+* {
+    text-shadow: none !important;
+    box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+
+.order h3 {
+    font-size: small;
+    font-style: italic;
+    color: yellow;
+}
+
+.order p {
+    font-size: small;
+}
+
+/*Text input field fix*/
+input {
+    -webkit-user-select: auto !important;
+}
+
+/*Accelerate li items*/
+.ui-listview li {
+    -webkit-transform: translatez(0);
+    -moz-transform: translatez(0);
+    -ms-transform: translatez(0);
+    -o-transform: translatez(0);
+    transform: translatez(0);
+}
+
+.moreBtn {
+    font-weight: lighter;
+}
+
+.countBubble {
+    position: absolute;
+    float: right;
+    width: 22px;
+    height: 22px;
+    right: 10px;
+    top: 20px;
+    background-color: #9b969b;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 22px;
+    border-radius: 30px;
+}
+
+table {
+    font: 11px helvetica;
+}
+
+.table-stroke thead th {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.table-stroke tbody th,
+.table-stroke tbody td {
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+/* Add alternating row stripes */
+.table-stripe tbody tr:nth-child(odd) td,
+.table-stripe tbody tr:nth-child(odd) th {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Add stroke to the header and last item */
+.table-stripe thead th,
+.table-stripe tbody tr:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.ui-block-a.side {
+    width: 30% !important;
+}
+
+.ui-block-b.main {
+    width: 70% !important;
+}
