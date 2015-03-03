@@ -904,9 +904,16 @@ AGENTI.utils = {
         phoneNumbers[0] = new ContactField('work', AGENTI.client.noTelefono, true);
         contact.phoneNumbers = phoneNumbers;
 
+        // store contact emails in ContactField[]
         var emails = [];
         emails[0] = new ContactField('work', AGENTI.client.email, true);
         contact.emails = emails;
+        /*
+        var address = new ContactAddress();
+        address.formatted = AGENTI.client.indirizzo + " " + AGENTI.client.indirizzo2;
+        address.type = 'work';
+        address.pref = true;
+        contact.address = address;*/
 
         // save the contact
         contact.save(onSuccess,onError);
