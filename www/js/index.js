@@ -882,23 +882,34 @@ AGENTI.utils = {
     createContact: function () {
 
         function onSuccess(contact) {
-            navigator.notification.alert("Save Success");
+            navigator.notification.alert("Contatto aggiunto nella rubrica del telefono");
         };
 
         function onError(contactError) {
-            navigator.notification.alert("Error = " + contactError.code);
+            navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
         };
 
         // create a new contact
         var contact = navigator.contacts.create();
+        contact.displayName =  AGENTI.client.ragSociale;
+        contact.nickname =  AGENTI.client.ragSociale;
+
+        // populate some fields
+        var name = new ContactName();
+        name.givenName = AGENTI.client.ragSociale;
+        contact.name = name;
 
         // store contact phone numbers in ContactField[]
         var phoneNumbers = [];
-        phoneNumbers[0] = new ContactField('work', AGENTI.client.noTelefono, false);
+        phoneNumbers[0] = new ContactField('work', AGENTI.client.noTelefono, true);
+        contact.phoneNumbers = phoneNumbers;
 
-        contact.name = AGENTI.client.ragSociale;
+        var emails = [];
+        emails[0] = new ContactField('work', AGENTI.client.email, true);
+        contact.emails = emails;
+
         // save the contact
-        contact.save();
+        contact.save(onSuccess,onError);
     }
 
 };
