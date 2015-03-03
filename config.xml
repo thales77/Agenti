@@ -5,7 +5,7 @@
         Applicazione per la consultazione di informazioni commerciali on-the-go
     </description>
     <author href="http://www.siderprofessional.com" email="xboikos@gmail.com">
-        Charalampos Boikos
+        Charalampos Boikos5
     </author>
     <content src="index.html" />
     <preference name="permissions" value="none" />
