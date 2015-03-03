@@ -879,15 +879,8 @@ AGENTI.utils = {
     return addressesArray;
     },
 
-    createContact: function () {
-
-        function onSuccess(contact) {
-            navigator.notification.alert("Contatto aggiunto nella rubrica del telefono");
-        };
-
-        function onError(contactError) {
-            navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
-        };
+    createContact: function (e) {
+        e.preventDefault();
 
         // create a new contact
         var contact = navigator.contacts.create();
@@ -917,6 +910,16 @@ AGENTI.utils = {
 
         // save the contact
         contact.save(onSuccess,onError);
+
+        function onSuccess(contact) {
+            navigator.notification.alert("Contatto aggiunto nella rubrica del telefono");
+        };
+
+        function onError(contactError) {
+            navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
+        };
+
+        return false;
     }
 
 };
@@ -1003,7 +1006,7 @@ AGENTI.init = function () {
         //render client details
         AGENTI.client.renderClientDetails();
         $('#addContact').on('tap', function () {
-            AGENTI.utils.createContact();
+            AGENTI.utils.createContact(event);
         });
     });
 
