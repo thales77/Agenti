@@ -877,7 +877,30 @@ AGENTI.utils = {
             });
         }
     return addressesArray;
+    },
+
+    createContact: function () {
+
+        function onSuccess(contact) {
+            navigator.notification.alert("Save Success");
+        };
+
+        function onError(contactError) {
+            navigator.notification.alert("Error = " + contactError.code);
+        };
+
+        // create a new contact
+        var contact = navigator.contacts.create();
+
+        // store contact phone numbers in ContactField[]
+        var phoneNumbers = [];
+        phoneNumbers[0] = new ContactField('work', AGENTI.client.noTelefono, false);
+
+        contact.name = AGENTI.client.ragSociale;
+        // save the contact
+        contact.save();
     }
+
 };
 
 
@@ -961,6 +984,9 @@ AGENTI.init = function () {
         $('#listino .moreBtn').closest('.ui-btn').hide();
         //render client details
         AGENTI.client.renderClientDetails();
+        $('#addContact').on('tap', function () {
+            AGENTI.utils.createContact();
+        });
     });
 
     //Storico acquisti page

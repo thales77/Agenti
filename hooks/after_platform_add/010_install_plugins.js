@@ -9,6 +9,7 @@ var pluginlist = [
     "org.apache.cordova.device",
     "com.phonegap.plugins.barcodescanner",
     "org.apache.cordova.vibration",
+    "org.apache.cordova.contacts",
     "https://github.com/Telerik-Verified-Plugins/AppVersion"
 ];
 
