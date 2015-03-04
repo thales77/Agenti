@@ -879,8 +879,7 @@ AGENTI.utils = {
     return addressesArray;
     },
 
-    createContact: function (e) {
-        e.preventDefault();
+    createContact: function () {
 
         // create a new contact
         var contact = navigator.contacts.create();
@@ -919,7 +918,7 @@ AGENTI.utils = {
             navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
         };
 
-        return false;
+
     }
 
 };
@@ -1006,7 +1005,7 @@ AGENTI.init = function () {
         //render client details
         AGENTI.client.renderClientDetails();
         $('#addContact').on('tap', function () {
-            AGENTI.utils.createContact(event);
+            AGENTI.utils.createContact();
         });
     });
 
