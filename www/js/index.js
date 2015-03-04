@@ -1166,7 +1166,7 @@ AGENTI.init = function () {
     //Navbar tap events
     var navBarDiv = $("div:jqmData(role='navbar')");
 
-    navBarDiv.on('touchstart', '.homeNavBtn', function (e) {
+    navBarDiv.on('tap', '.homeNavBtn', function (e) {
         if (AGENTI.deviceType === 'Android') {
             //this doesn't work well in ios
             navigator.notification.vibrate(10);
@@ -1175,7 +1175,7 @@ AGENTI.init = function () {
         e.preventDefault();
     });
 
-    navBarDiv.on('touchstart', '.clientiNavBtn', function (e) {
+    navBarDiv.on('tap', '.clientiNavBtn', function (e) {
         if (AGENTI.deviceType === 'Android') {
             //this doesn't work well in ios
             navigator.notification.vibrate(10);
@@ -1184,7 +1184,7 @@ AGENTI.init = function () {
         e.preventDefault();
     });
 
-    navBarDiv.on('touchstart', '.ordiniNavBtn', function (e) {
+    navBarDiv.on('tap', '.ordiniNavBtn', function (e) {
         if (AGENTI.deviceType === 'Android') {
             //this doesn't work well in ios
             navigator.notification.vibrate(10);
