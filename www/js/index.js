@@ -140,7 +140,7 @@ AGENTI.client = {
         clientList.append(html);
         clientList.listview("refresh");
     },
-    //function for passing data to client detail page through localstorage
+    //function for passing data to client detail page
     selectClient: function () {
         /*Variable declaration *********************/
         var client = AGENTI.client;
@@ -991,6 +991,13 @@ AGENTI.init = function () {
     $('#clientList').on('tap', 'li', AGENTI.client.selectClient);
 
     //Client detail page
+    $('#clientDetail').on('pageinit', function () {
+        $('#addContact').on('tap', function () {
+            AGENTI.utils.createContact();
+        });
+    });
+
+
     $('#clientDetail').on('pageshow', function () {
         //reset heavy lists in child pages
         $("#listaArticoli").empty();
@@ -1004,9 +1011,6 @@ AGENTI.init = function () {
         $('#listino .moreBtn').closest('.ui-btn').hide();
         //render client details
         AGENTI.client.renderClientDetails();
-        $('#addContact').on('tap', function () {
-            AGENTI.utils.createContact();
-        });
     });
 
     //Storico acquisti page
