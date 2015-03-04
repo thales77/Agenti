@@ -1156,8 +1156,8 @@ AGENTI.init = function () {
 
     $('#orderListContainer').on('tap', 'div.month ul.orderList li', function () {
         $('#orderItemTable tbody').empty();
-        AGENTI.order.getOrderDetail($(this).attr('data-orderId'));
         $.mobile.changePage("#ordiniDetail");
+        AGENTI.order.getOrderDetail($(this).attr('data-orderId'));
     });
 //-----------------------------------------------------------------------------------
 
