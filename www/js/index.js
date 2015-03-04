@@ -799,7 +799,7 @@ AGENTI.user = {
         });
         $("#loginBtn").removeAttr("disabled");
     },
-    //deletes the locally stored uservame and password
+    //deletes the locally stored username and password
     logout: function () {
         AGENTI.db.clear();
         if (AGENTI.deviceType === 'Android') {
