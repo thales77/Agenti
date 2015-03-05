@@ -141,7 +141,7 @@ AGENTI.client = {
         clientList.listview("refresh");
     },
     //function for passing data to client detail page
-    selectClient: function () {
+    selectClient: function (e) {
         /*Variable declaration *********************/
         var client = AGENTI.client;
         /*End of variable declaration***************/
@@ -169,7 +169,8 @@ AGENTI.client = {
         client.SaldoSpa = $(this).attr('data-SaldoSpa');
         client.stato = $(this).attr('data-stato');
         client.pagamento = $(this).attr('data-pagamento');
-        $.mobile.changePage("#clientDetail");
+        $.mobile.changePage("#clientDetail", { transition: "flip"});
+        e.preventDefault();
     },
     //function to render the Client detail information in the client detail page
     renderClientDetails: function () {
@@ -894,6 +895,7 @@ AGENTI.utils = {
         // store contact phone numbers in ContactField[]
         var phoneNumbers = [];
         phoneNumbers[0] = new ContactField('work', AGENTI.client.noTelefono, true);
+        phoneNumbers[1] = new ContactField('mobile', AGENTI.client.noCell, false);
         contact.phoneNumbers = phoneNumbers;
 
         // store contact emails in ContactField[]
@@ -988,7 +990,7 @@ AGENTI.init = function () {
         return false;
     });
 
-    $('#clientList').on('tap', 'li', AGENTI.client.selectClient);
+    $('#clientList').on('tap', 'li',  AGENTI.client.selectClient);
 
     //Client detail page
     $('#clientDetail').on('pageinit', function () {
@@ -1009,6 +1011,8 @@ AGENTI.init = function () {
         $('#majorSalesHistory .moreBtn').closest('.ui-btn').hide();
         //hide the more results button in listino page
         $('#listino .moreBtn').closest('.ui-btn').hide();
+        //set the page title to the client's name
+        $('#clientDetail .pageTitle').text(AGENTI.client.ragSociale);
         //render client details
         AGENTI.client.renderClientDetails();
     });
@@ -1020,7 +1024,7 @@ AGENTI.init = function () {
         //Set the max number of records we want per ajax request (default is 20)
         AGENTI.pagination.setRecordsPerPage(30);
         //Change page title
-        $('#clientSalesHistory').find('h4').html('Storico acquisti ' + AGENTI.client.ragSociale);
+        $('#clientSalesHistory').find('h4').html(AGENTI.client.ragSociale);
         AGENTI.client.getSalesHistory();
     });
 
@@ -1047,7 +1051,7 @@ AGENTI.init = function () {
         //Set the max number of records we want per ajax request (default is 20)
         AGENTI.pagination.setRecordsPerPage(30);
         //Change page title
-        $('#majorSalesHistory').find('h4').html('Acquisti maggiori ' + AGENTI.client.ragSociale);
+        $('#majorSalesHistory').find('h4').html(AGENTI.client.ragSociale);
         //change the year in the help text of this page
         $('#lastYear').html(Date.today().getFullYear() - 1);
         AGENTI.client.getMajorSalesHistory();
@@ -1206,12 +1210,8 @@ AGENTI.init = function () {
 
 //-----------------------------------------------------------------------------------
     //Right panel bindings
-    //initialise panel(because the panel is external to the jquery pages and will need to be initialised manually)
-    $(function () {
-        $("[data-role=panel]").panel().enhanceWithin();
-    });
     //vibrate on panel open
-    var panel = $('#right-panel');
+    var panel = $('.left-panel');
     panel.on('panelopen', function () {
         if (AGENTI.deviceType === 'Android') {
             //this doesn't work well in ios

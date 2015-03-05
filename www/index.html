@@ -71,14 +71,24 @@
 
 
 <div data-role="page" id="home">
-    <!--main welcome page -->
+    <!-- /left panel -->
+    <div data-role="panel" class="left-panel" id="left-panel-home" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
 
+    <!--main welcome page -->
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
         <!-- data-position="fixed"-->
-        <a href="#home" data-icon="home" data-iconpos="notext">Home</a>
 
-        <h1>CRM Agenti</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h1>Home agenti</h1>
+        <a href="#left-panel-home" data-icon="bars" data-iconpos="notext">Menu</a>
 
         <div data-role="navbar">
             <ul>
@@ -130,12 +140,22 @@
 
 <!--start of client search page-->
 <div data-role="page" id="clienti">
+    <!--left panel-->
+    <div data-role="panel" class="left-panel" id="left-panel-clienti" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
-        <a href="#home" data-icon="home" data-iconpos="notext">Home</a>
 
-        <h1>Clienti</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h1>Ricerca clienti</h1>
+        <a href="#left-panel-clienti" data-icon="bars" data-iconpos="notext">Menu</a>
 
         <div data-role="navbar">
             <ul>
@@ -200,13 +220,22 @@
 
 <!--start of Ordini search page-->
 <div data-role="page" id="ordini">
-
+    <!--left panel-->
+    <div data-role="panel" class="left-panel" id="left-panel-ordini" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
-        <a href="#home" data-icon="home" data-iconpos="notext">Home</a>
 
-        <h1>Ordini</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h1>Ricerca ordini effettuati</h1>
+        <a href="#left-panel-ordini" data-icon="bars" data-iconpos="notext">Menu</a>
 
         <div data-role="navbar">
             <ul>
@@ -227,10 +256,10 @@
     <div data-role="content">
         <div data-role="fieldset">
             <label for="DateFrom">Data inizio:</label>
-            <input type="date" data-theme="b" data-role="datebox" name="DateFrom" id="DateFrom"
+            <input type="date" data-theme="a" data-role="datebox" name="DateFrom" id="DateFrom"
                    data-options='{"mode": "datebox", "beforeToday": true, "useFocus": true, "enablePopup": true }'/>
             <label for="DateTo">Data fine:</label>
-            <input type="date" data-theme="b" data-role="datebox" name="DateTo" id="DateTo"
+            <input type="date" data-theme="a" data-role="datebox" name="DateTo" id="DateTo"
                    data-options='{"mode": "datebox", "beforeToday": true, "useFocus": true, "enablePopup": true }'/>
             <button id="orderSearchButton">Cerca</button>
         </div>
@@ -248,7 +277,6 @@
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
         <h5>Dettaglio ordine</h5>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
@@ -286,7 +314,6 @@
         <a href="#" data-icon="carat-l" data-rel="back">Indietro</a>
 
         <h1>Log</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
 
     </div>
 
@@ -312,15 +339,14 @@
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clienti" data-icon="carat-l">Indietro</a>
-        <h5>Dettaglio cliente</h5>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h5 class="pageTitle">Dettaglio cliente</h5>
 
     </div>
 
     <div data-role="content">
 
         <div data-role="collapsible" data-collapsed="true">
-            <h3>Scheda anagrafica cliente</h3>
+            <h3>Scheda anagrafica/Fatturato</h3>
             <ul id="clientDetailList" data-role="listview" data-theme="d" data-inset="true">
                 <!-- Client detail list -->
 
@@ -328,10 +354,12 @@
             <button  data-icon="user" id="addContact">Aggiungi nella rubrica</button>
         </div>
 
+        <a href="#clientSalesHistory" data-role="button" data-icon="calendar">Storico acquisti</a>
+        <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
         <a href="#listino" data-role='button' data-icon="search" data-prefetch>Listino</a>
-        <a href="#clientSalesHistory" data-role="button" data-icon="info">Storico acquisti</a>
-        <a href="#majorSalesHistory" data-role="button" data-icon="info">Spese piu' importanti</a>
-        <a href="#" data-role="button" data-icon="info" class="ui-disabled">Materiale non acquistato</a>
+        <a href="#" data-role="button" data-icon="mail">Invio offerta</a>
+
+
 
         <div data-role="popup" id="clientBlocked" class="ui-content" data-overlay-theme="a">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"
@@ -355,13 +383,12 @@
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-icon="carat-l" data-rel="back">Indietro</a>
         <h4>Maggiori acquisti <!-- Meti rag. Sociale Cliente--></h4>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
 
         <div data-role="collapsible" data-collapsed="false">
-            <h3>Spiegazione schermata</h3>
+            <h3>Spese piu' importanti</h3>
 
             <p>
                 Mostra i articoli su cui il cliente ha speso di pi&ugrave; dal inizio del <span id="lastYear"></span>
@@ -390,14 +417,13 @@
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
-        <h4>Ultimi acquisti <!--Meti Rag. socialer qui --></h4>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h4>Storico acquisti <!--Meti Rag. socialer qui --></h4>
     </div>
 
     <div data-role="content">
 
         <div data-role="collapsible" data-collapsed="false">
-            <h3>Spiegazione schermata</h3>
+            <h3>Storico acquisti</h3>
 
             <p style="font-size:small;">
                 Presenta tutti i acquisti dell' cliente nel ultimo anno in ordine cronologico
@@ -423,7 +449,6 @@
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
         <h4>Listino <!-- Meti rag. sociale qui --></h4>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
@@ -439,11 +464,11 @@
 
                     <!--<option value="">Campo di ricerca...</option>-->
 
-                    <option value="descrizione" selected>Descrizione</option>
+                    <option value="descrizione" selected>Descrizione articolo</option>
 
-                    <option value="codiceSider">Cod. Sider.</option>
+                    <option value="codiceSider">Cod. articolo Sider.</option>
 
-                    <option value="codiceForn">Cod. Art. Forn.</option>
+                    <option value="codiceForn">Cod. articolo Forn.</option>
 
                     <option value="fornitore">Fornitore</option>
 
@@ -485,7 +510,6 @@
         <a href="#" data-rel="back" data-icon="carat-l">Indietro</a>
         <!--clientDetail-->
         <h5>Item detail</h5>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
@@ -555,19 +579,6 @@
 
 </div>
 <!-- End of item detail page-->
-
-<!-- /right panel -->
-<div data-role="panel" id="right-panel" data-display="reveal" data-position="right"
-     data-theme="a">
-    <ul data-role="listview" data-theme="a" data-icon="false">
-        <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
-        <!--<li data-role="list-divider">Impostazioni</li>-->
-        <li class="admin"><a href="#admin">Consulta log</a></li>
-        <li><a href="#importazione" data-rel="dialog">Aggiorna dati locali</a></li>
-        <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
-        <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
-    </ul>
-</div>
 
 <!--Start of data import dialog page-->
 <div data-role="page" id="importazione">
