@@ -146,10 +146,7 @@ AGENTI.client = {
         var client = AGENTI.client;
         /*End of variable declaration***************/
 
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
 
         client.codice = $(this).attr('data-codice');
         client.ragSociale = $(this).attr('data-ragSociale');
@@ -484,10 +481,7 @@ AGENTI.item = {
 
         /*End of variable declaration************/
 
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
 
         //get data from the server
         AGENTI.getData(queryData,
@@ -706,11 +700,9 @@ AGENTI.order = {
             }
             prevMonth = curMonth;
 
-            html += '<li data-orderId="' + this.orderId + '"><a href="#"><p style="font-size:small;">Data: ' + curDate.toString("d-M-yyyy") + '</p>\n\
-                         <p style="font-style:italic">Commessa No: ' + this.numDoc + '</p>\n\
+            html += '<li data-orderId="' + this.orderId + '"><a href="#"><p style="font-size:small;">' + curDate.toString("d-M-yyyy") + ' Commessa No: ' + this.numDoc + '</p>\n\
                          <p style="color:yellow;font-weight:bold;font-style:italic">' + this.codCliente + ' - ' + this.desCli + '</p>\n\
-                         <p style="font-size:small;">Totale: €<span style="font-weight:bold;font-style:italic">' + this.totImp + '</span> + IVA</p>\n\
-                         <p style="font-size:small;">Stato:  ' + statoOrdine + '</p></a></li>';
+                         <p style="font-size:small;">Totale: €<span style="font-weight:bold;font-style:italic">' + this.totImp + '</span> + IVA - ' + statoOrdine + '</p></a></li>';
         });
         html += '</ul></div>';
 
@@ -728,6 +720,7 @@ AGENTI.order = {
             queryData = {action: 'getOrderDetail', orderId: id, user: username};
         /*End of variable declaration************/
         AGENTI.order.id = id;
+
 
         //get data from the server       
         AGENTI.getData(queryData, that.renderOrderDetail);
@@ -921,6 +914,14 @@ AGENTI.utils = {
         };
 
 
+    },
+
+    vibrate: function (){
+        //shake it baby
+        if (AGENTI.deviceType === 'Android') {
+            //this doesn't work well in ios
+            navigator.notification.vibrate(10);
+        }
     }
 
 };
@@ -1159,6 +1160,7 @@ AGENTI.init = function () {
     });
 
     $('#orderListContainer').on('tap', 'div.month ul.orderList li', function () {
+        AGENTI.utils.vibrate();
         $('#orderItemTable tbody').empty();
         $.mobile.changePage("#ordiniDetail");
         AGENTI.order.getOrderDetail($(this).attr('data-orderId'));
@@ -1171,28 +1173,19 @@ AGENTI.init = function () {
     var navBarDiv = $("div:jqmData(role='navbar')");
 
     navBarDiv.on('tap', '.homeNavBtn', function (e) {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
         $.mobile.changePage("#home");
         e.preventDefault();
     });
 
     navBarDiv.on('tap', '.clientiNavBtn', function (e) {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
         $.mobile.changePage("#clienti");
         e.preventDefault();
     });
 
     navBarDiv.on('tap', '.ordiniNavBtn', function (e) {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
         $.mobile.changePage("#ordini");
         e.preventDefault();
     });
@@ -1213,18 +1206,12 @@ AGENTI.init = function () {
     //vibrate on panel open
     var panel = $('.left-panel');
     panel.on('panelopen', function () {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
     });
 
     //vibrate on panel close
     panel.on('panelclose', function () {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
     });
 
     $('#logoutDialog').on('tap', '#appExitbtn', AGENTI.user.logout);
