@@ -639,29 +639,41 @@ AGENTI.offerta = {
 
     checkIsInserted: function (e) {
 
-        e.preventDefault();
+
 
         var offertaDetail = AGENTI.offerta.detail;
 
         if (offertaDetail.length !== 0) {
-            $("#offertaInsertedPopup").popup("open");
+
+            AGENTI.utils.vibrate();
+            navigator.notification.confirm(
+                "C'è un' offerta inserita per questo cliente, come vuoi procedere?", // message
+                AGENTI.offerta.deleteCurrent,            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Elimina offerta', 'Annulla']         // buttonLabels
+            );
         } else {
             $.mobile.changePage('#clienti');
         }
 
+        e.preventDefault();
+
 
     },
 
-    deleteCurrent: function (e) {
-        e.preventDefault();
+    deleteCurrent: function (buttonIndex) {
 
-        AGENTI.offerta.detail.length = 0; //empty offerta detail array
-        AGENTI.offerta.header = null; //empty offerta header obj
-        $('#offertaTable tbody').empty(); // empty table in offerta detail page
-        $( "#offertaInsertedPopup" ).popup( "close" ); // close the popup
-        $( "#offertaCancelled" ).popup( "open" );
 
-        //$.mobile.changePage( "#clienti"); //fucking thing keeps bouncing back
+        if (buttonIndex === 1) {
+            AGENTI.offerta.detail.length = 0; //empty offerta detail array
+            AGENTI.offerta.header = null; //empty offerta header obj
+            $('#offertaTable tbody').empty(); // empty table in offerta detail page
+
+
+            navigator.notification.alert('Offerta cancellata');
+            $.mobile.changePage( "#clienti", { transition: "flip"});
+        }
+
     }
 
 
@@ -1058,8 +1070,6 @@ AGENTI.init = function () {
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
 
-        $('#cancellOfferta').on('tap', AGENTI.offerta.deleteCurrent);
-
     });
 
 
@@ -1070,6 +1080,7 @@ AGENTI.init = function () {
         $("#listaArticoli").empty();
         $("#history").empty();
         $("#mainSalesList").empty();
+        $('#offertaTable tbody').empty(); // empty table in offerta detail page
         //hide the more results button in sales history page
         $('#clientSalesHistory .moreBtn').closest('.ui-btn').hide();
         //hide the more results button in major sales history page
@@ -1081,6 +1092,22 @@ AGENTI.init = function () {
         //render client details
         AGENTI.client.renderClientDetails();
     });
+
+    //code to check for android back button in client detail page while an offerta has been created
+    document.addEventListener("backbutton", function(e){
+        if($.mobile.activePage.is('#clientDetail')){
+            /*
+             Event preventDefault/stopPropagation not required as adding backbutton
+             listener itself override the default behaviour. Refer below PhoneGap link.
+             */
+            //e.preventDefault();
+            AGENTI.offerta.checkIsInserted();
+            //navigator.app.exitApp();
+        }
+        else {
+            navigator.app.backHistory();
+        }
+    }, false);
 
     //Storico acquisti page
     $('#clientSalesHistory').on('pageshow', function () {
