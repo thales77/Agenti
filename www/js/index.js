@@ -638,7 +638,7 @@ AGENTI.offerta = {
     },
 
     checkIsInserted: function (e) {
-        e.preventDefault();
+
         var offertaDetail = AGENTI.offerta.detail;
 
         if (offertaDetail.length !== 0) {
@@ -646,6 +646,8 @@ AGENTI.offerta = {
         } else {
             $.mobile.changePage("#clienti");
         }
+
+        e.preventDefault();
     }
 
 
@@ -1039,10 +1041,8 @@ AGENTI.init = function () {
             AGENTI.utils.createContact();
         });
 
-        $('#clientDetail #bckbtn').on('tap', function (e) {
-            e.preventDefault()
-            AGENTI.offerta.checkIsInserted();
-        });
+        $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
+
 
         $('#cancellOfferta').on('tap', function (e) {
             e.preventDefault();
