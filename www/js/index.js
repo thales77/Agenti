@@ -601,15 +601,26 @@ AGENTI.item = {
 
         //fill itemsSalesHistory ul
         $('#itemsSalesHistory').html(html).listview("refresh").slideToggle('fast');
-    },
-    //Add an item to the current client's order
-    addItemToOrder: function () {
-        var item = AGENTI.item;
-        $('#qtty').val("1");
-        $('#prz').val(item.Prezzo);
     }
 };
 
+AGENTI.offerta = {
+    addItemToOfferta: function (itemId, itemDesc, qty, prezzo) {
+        var offerta = AGENTI.offerta,
+            offertaDetail = [];
+
+            offertaDetail.push({
+                itemId : itemId,
+                itemDesc : itemDesc,
+                qty : qty,
+                prezzo : prezzo
+
+        });
+        $( ".popupOfferta" ).popup( "close" );
+    }
+
+
+};
 
 AGENTI.log = {
     getLog: function () {
@@ -1133,8 +1144,19 @@ AGENTI.init = function () {
     });
 
     $('#popupOrder').on('popupafteropen', function() {
-        AGENTI.item.addItemToOrder();
+        var item = AGENTI.item;
+        $('#qtty').val("1");
+        $('#prz').val(item.Prezzo);
     });
+
+    $('#insertItemToOffertaBtn').on('tap', function() {
+        var item = AGENTI.item,
+            qty = $('#qtty').val("1"),
+            prezzo = $('#prz').val(item.Prezzo);
+
+        AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo);
+    });
+
 //-----------------------------------------------------------------------------------
 
 
