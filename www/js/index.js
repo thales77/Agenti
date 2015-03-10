@@ -639,15 +639,29 @@ AGENTI.offerta = {
 
     checkIsInserted: function (e) {
 
+        e.preventDefault();
+
         var offertaDetail = AGENTI.offerta.detail;
 
         if (offertaDetail.length !== 0) {
-            $( "#offertaInsertedPopup" ).popup( "open" );
+            $("#offertaInsertedPopup").popup("open");
         } else {
-            $.mobile.changePage("#clienti");
+            $.mobile.changePage('#clienti');
         }
 
+
+    },
+
+    deleteCurrent: function (e) {
         e.preventDefault();
+
+        AGENTI.offerta.detail.length = 0; //empty offerta detail array
+        AGENTI.offerta.header = null; //empty offerta header obj
+        $('#offertaTable tbody').empty(); // empty table in offerta detail page
+        $( "#offertaInsertedPopup" ).popup( "close" ); // close the popup
+        $( "#offertaCancelled" ).popup( "open" );
+
+        //$.mobile.changePage( "#clienti"); //fucking thing keeps bouncing back
     }
 
 
@@ -1037,23 +1051,18 @@ AGENTI.init = function () {
 
     //Client detail page
     $('#clientDetail').on('pageinit', function () {
+
         $('#addContact').on('tap', function () {
             AGENTI.utils.createContact();
         });
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
 
+        $('#cancellOfferta').on('tap', AGENTI.offerta.deleteCurrent);
 
-        $('#cancellOfferta').on('tap', function (e) {
-            e.preventDefault();
-            $( "#offertaInsertedPopup" ).popup( "close" ); // close the popup
-            $.mobile.changePage( "#clienti");
-            AGENTI.offerta.detail.length = 0; //empty offerta detail array
-            AGENTI.offerta.header = null; //empty offerta header obj
-            $('#offertaTable tbody').empty(); // empty table in offerta detail page
-
-        });
     });
+
+
 
 
     $('#clientDetail').on('pageshow', function () {

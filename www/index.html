@@ -408,18 +408,25 @@
                 Il cliente risulta <span id='stato'></span>, contattare l'amministrazione.
             </p>
         </div>
-        <div data-role="popup" id="offertaInsertedPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
-            <div data-role="header" data-theme="a">
-                <h1>Attenzione</h1>
-            </div>
-            <div role="main" class="ui-content">
-                <p>C'è un' offerta inserita per questo cliente, come vuoi procedere?</p>
 
-                        <button type="button" id="cancellOfferta" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">Elimina</button>
-                        <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
+    </div>
 
-            </div>
+    <div data-role="popup" id="offertaInsertedPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
+        <div data-role="header" data-theme="a">
+            <h1>Attenzione</h1>
         </div>
+        <div role="main" class="ui-content">
+            <p>C'è un' offerta inserita per questo cliente, come vuoi procedere?</p>
+
+            <button type="button" id="cancellOfferta" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">Elimina</button>
+            <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
+
+        </div>
+    </div>
+
+    <div data-role="popup" id="offertaCancelled">
+
+            <p>Offerta cancellata</p>
 
     </div>
 
@@ -598,31 +605,31 @@
             <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
                 <!-- Fill this <ul> with data on click-->
             </ul>
-        </div>
-        <div data-role="fieldcontain">
+
             <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="plus"
-               data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a ordine cliente</a>
+               data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
 
-            <div data-role="popup" id="popupOfferta" data-theme="a" class="ui-corner-all" data-dismissible="false">
-                <div data-role="header" data-theme="a">
-                    <h1>Aggiungi articolo a ordine</h1>
+        </div>
+    </div>
+
+    <div data-role="popup" id="popupOfferta" data-theme="a" class="ui-corner-all" data-dismissible="false">
+        <div data-role="header" data-theme="a">
+            <h1>Aggiungi articolo a ordine</h1>
+        </div>
+        <div role="main" class="ui-content">
+            <form>
+                <div style="padding:10px 20px;">
+                    <h3 class="ui-title">Inserire quantità e prezzo</h3>
+                    <label for="qtty">Quantità</label>
+                    <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
+                    <label for="prz">Prezzo &#8364;</label>
+                    <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+
+                    <button type="button" id="insertItemToOffertaBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
+                    <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
                 </div>
-                <div role="main" class="ui-content">
-                    <form>
-                        <div style="padding:10px 20px;">
-                            <h3 class="ui-title">Inserire quantità e prezzo</h3>
-                            <label for="qtty">Quantità</label>
-                            <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
-                            <label for="prz">Prezzo &#8364;</label>
-                            <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+            </form>
 
-                            <button type="button" id="insertItemToOffertaBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
-                            <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
         </div>
     </div>
 
