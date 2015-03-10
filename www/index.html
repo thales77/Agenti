@@ -275,7 +275,7 @@
 <div data-role="page" id="ordiniDetail">
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
+        <a href="#ordini" data-rel="back" data-icon="carat-l">Indietro</a>
         <h5>Dettaglio ordine</h5>
     </div>
 
@@ -307,6 +307,43 @@
 
 </div>
 
+<!--start of Offerta detail page-->
+<div data-role="page" id="offertaDetail">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#clientDetail" data-icon="carat-l" data-rel="back">Indietro</a>
+        <h5>Dettaglio offerta</h5>
+    </div>
+
+    <div data-role="content">
+        <div id="offertaHeader"></div>
+
+        <table data-role="table" id="offertaTable" data-mode="reflow" data-theme="a"
+               class="table-stroke table-stripe ui-responsive">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Codice</th>
+                <th>Desc</th>
+                <th>Prezzo</th>
+                <th>Qta</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--  <ul id="offertaItemList" data-role="listview" data-theme="a" data-inset="true">
+
+             </ul> -->
+
+
+            </tbody>
+        </table>
+        <!-- todo - add functionality here -->
+        <br>
+        <button data-icon="mail">Invia offerta</button>
+        <button data-icon="delete">Cancella offerta</button>
+    </div>
+
+</div>
 
 <div data-role="page" id="admin">
 
@@ -338,7 +375,7 @@
 <div data-role="page" id="clientDetail">
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <a href="#clienti" data-icon="carat-l">Indietro</a>
+        <a href="#" id="bckbtn" data-icon="carat-l">Indietro</a>
         <h5 class="pageTitle">Dettaglio cliente</h5>
 
     </div>
@@ -357,7 +394,7 @@
         <a href="#clientSalesHistory" data-role="button" data-icon="calendar">Storico acquisti</a>
         <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
         <a href="#listino" data-role='button' data-icon="search" data-prefetch>Listino</a>
-        <a href="#" data-role="button" data-icon="mail">Invio offerta</a>
+        <a href="#offertaDetail" data-role="button" data-icon="mail">Invio offerta</a>
 
 
 
@@ -370,6 +407,18 @@
             <p>
                 Il cliente risulta <span id='stato'></span>, contattare l'amministrazione.
             </p>
+        </div>
+        <div data-role="popup" id="offertaInsertedPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
+            <div data-role="header" data-theme="a">
+                <h1>Attenzione</h1>
+            </div>
+            <div role="main" class="ui-content">
+                <p>C'è un' offerta inserita per questo cliente, come vuoi procedere?</p>
+
+                        <button type="button" id="cancellOfferta" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">Elimina</button>
+                        <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
+
+            </div>
         </div>
 
     </div>

@@ -605,9 +605,11 @@ AGENTI.item = {
 };
 
 AGENTI.offerta = {
+    header: {},
+    detail: [],
+
     addItemToOfferta: function (itemId, itemDesc, qty, prezzo) {
-        var offerta = AGENTI.offerta,
-            offertaDetail = [];
+        var offertaDetail = AGENTI.offerta.detail;
 
             offertaDetail.push({
                 itemId : itemId,
@@ -616,7 +618,34 @@ AGENTI.offerta = {
                 prezzo : prezzo
 
         });
-        $( ".popupOfferta" ).popup( "close" );
+        $( "#popupOfferta" ).popup( "close" );
+    },
+
+    renderOffertaDetail: function () {
+        /*Variable declaration*******************/
+        var i = 0,
+            offerta = AGENTI.offerta;
+        /*End of variable declaration************/
+
+        $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale);
+        $.each(offerta.detail, function () {
+            i += 1;
+            $('#offertaTable tbody').append('<tr><th></th><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td>\n\
+            <td>' + this.qty + '</td><td>' + this.prezzo + '</td></tr>');
+        });
+
+        $('#offertaTable').table("refresh");
+    },
+
+    checkIsInserted: function (e) {
+        e.preventDefault();
+        var offertaDetail = AGENTI.offerta.detail;
+
+        if (offertaDetail.length !== 0) {
+            $( "#offertaInsertedPopup" ).popup( "open" );
+        } else {
+            $.mobile.changePage("#clienti");
+        }
     }
 
 
@@ -1009,6 +1038,21 @@ AGENTI.init = function () {
         $('#addContact').on('tap', function () {
             AGENTI.utils.createContact();
         });
+
+        $('#clientDetail #bckbtn').on('tap', function (e) {
+            e.preventDefault()
+            AGENTI.offerta.checkIsInserted();
+        });
+
+        $('#cancellOfferta').on('tap', function (e) {
+            e.preventDefault();
+            $( "#offertaInsertedPopup" ).popup( "close" ); // close the popup
+            $.mobile.changePage( "#clienti");
+            AGENTI.offerta.detail.length = 0; //empty offerta detail array
+            AGENTI.offerta.header = null; //empty offerta header obj
+            $('#offertaTable tbody').empty(); // empty table in offerta detail page
+
+        });
     });
 
 
@@ -1143,7 +1187,7 @@ AGENTI.init = function () {
         AGENTI.item.getItemSalesHistory();
     });
 
-    $('#popupOrder').on('popupafteropen', function() {
+    $('#popupOfferta').on('popupafteropen', function() {
         var item = AGENTI.item;
         $('#qtty').val("1");
         $('#prz').val(item.Prezzo);
@@ -1151,11 +1195,15 @@ AGENTI.init = function () {
 
     $('#insertItemToOffertaBtn').on('tap', function() {
         var item = AGENTI.item,
-            qty = $('#qtty').val("1"),
-            prezzo = $('#prz').val(item.Prezzo);
+            qty = $('#qtty').val(),
+            prezzo = $('#prz').val();
 
         AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo);
     });
+
+    $('#offertaDetail').on('pageshow', AGENTI.offerta.renderOffertaDetail);
+
+
 
 //-----------------------------------------------------------------------------------
 
