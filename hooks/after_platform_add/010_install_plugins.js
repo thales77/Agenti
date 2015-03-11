@@ -10,7 +10,9 @@ var pluginlist = [
     "com.phonegap.plugins.barcodescanner",
     "org.apache.cordova.vibration",
     "org.apache.cordova.contacts",
-    "https://github.com/Telerik-Verified-Plugins/AppVersion"
+    "https://github.com/Telerik-Verified-Plugins/AppVersion",
+    "https://github.com/katzer/cordova-plugin-email-composer.git",
+    "https://github.com/moderna/cordova-plugin-html2pdf.git"
 ];
 
 // no need to configure below

@@ -619,6 +619,7 @@ AGENTI.offerta = {
 
         });
         $( "#popupOfferta" ).popup( "close" );
+        //navigator.notification.alert("articolo aggiunto all' offerta");
     },
 
     renderOffertaDetail: function () {
@@ -655,9 +656,9 @@ AGENTI.offerta = {
         } else {
             $.mobile.changePage('#clienti');
         }
-
-        e.preventDefault();
-
+        if(e) {
+            e.preventDefault();
+        }
 
     },
 
@@ -683,28 +684,27 @@ AGENTI.offerta = {
                 // alert('Service is not available') unless isAvailable;
             }
         );*/
+
         var body = "",
             offerta = AGENTI.offerta,
-            emailProperties =  { to: AGENTI.client.email,
-                cc: 'g.marra@siderprofessional.com',
-                subject: 'Offerta per ' + AGENTI.Client.ragSociale,
-                body:    body,
-                isHtml:  true
-            };
+            emailProperties = {};
 
-        body = '<h1>Offerta a '+ AGENTI.client.codice + ' ' + AGENTI.client.ragSociale + 'del ' + Date.today() + '</h1>';
-        body = body + '<table><thead></thead><tbody>';
+        body =  body + Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
 
         $.each(offerta.detail, function () {
-            i += 1;
-            body = body + '<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td>\n\
-            <td>' + this.qty + '</td><td>' + this.prezzo + '</td></tr>';
+            body = body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
         });
 
-        body = body + '</table></tbody>';
+
+        emailProperties =  { to: AGENTI.client.email,
+            cc: 'g.marra@siderprofessional.com',
+            subject: 'Offerta Sidercampania Professional srl ',
+            body:    body,
+            isHtml:  true
+        };
 
         cordova.plugins.email.open(emailProperties,function () {
-            navigator.notification.alert('email view dismissed');
+            navigator.notification.alert('invio annullato');
         }, this);
 
     }
