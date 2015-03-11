@@ -685,7 +685,12 @@ AGENTI.offerta = {
         );*/
         var body = "",
             offerta = AGENTI.offerta,
-            emailProperties = {};
+            emailProperties =  { to: AGENTI.client.email,
+                cc: 'g.marra@siderprofessional.com',
+                subject: 'Offerta per ' + AGENTI.Client.ragSociale,
+                body:    body,
+                isHtml:  true
+            };
 
         body = '<h1>Offerta a '+ AGENTI.client.codice + ' ' + AGENTI.client.ragSociale + 'del ' + Date.today() + '</h1>';
         body = body + '<table><thead></thead><tbody>';
@@ -697,13 +702,10 @@ AGENTI.offerta = {
         });
 
         body = body + '</table></tbody>';
-        emailProperties =  { to: AGENTI.client.email,
-            cc: 'g.marra@siderprofessional.com',
-            subject: 'Offerta per ' + AGENTI.Client.ragSociale,
-            body:    body,
-            isHtml:  true
-        };
-        cordova.plugins.email.open(emailProperties);
+
+        cordova.plugins.email.open(emailProperties,function () {
+            navigator.notification.alert('email view dismissed');
+        }, this);
 
     }
 
