@@ -674,6 +674,37 @@ AGENTI.offerta = {
             $.mobile.changePage( "#clienti", { transition: "flip"});
         }
 
+    },
+
+    inviaOfferta: function () {
+
+       /* cordova.plugins.email.isAvailable(
+            function (isAvailable) {
+                // alert('Service is not available') unless isAvailable;
+            }
+        );*/
+        var body = "",
+            offerta = AGENTI.offerta,
+            emailProperties = {};
+
+        body = '<h1>Offerta a '+ AGENTI.client.codice + ' ' + AGENTI.client.ragSociale + 'del ' + Date.today() + '</h1>';
+        body = body + '<table><thead></thead><tbody>';
+
+        $.each(offerta.detail, function () {
+            i += 1;
+            body = body + '<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td>\n\
+            <td>' + this.qty + '</td><td>' + this.prezzo + '</td></tr>';
+        });
+
+        body = body + '</table></tbody>';
+        emailProperties =  { to: AGENTI.client.email,
+            cc: 'g.marra@siderprofessional.com',
+            subject: 'Offerta per ' + AGENTI.Client.ragSociale,
+            body:    body,
+            isHtml:  true
+        };
+        cordova.plugins.email.open(emailProperties);
+
     }
 
 
@@ -1236,8 +1267,11 @@ AGENTI.init = function () {
 
         AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo);
     });
-
+//-----------------------------------------------------------------------------------
+    //Offerta detail page bindings
     $('#offertaDetail').on('pageshow', AGENTI.offerta.renderOffertaDetail);
+
+    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 
 
 
