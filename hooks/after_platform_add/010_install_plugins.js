@@ -11,6 +11,7 @@ var pluginlist = [
     "org.apache.cordova.vibration",
     "org.apache.cordova.contacts",
     "org.apache.cordova.file",
+    "org.apache.cordova.console",
     "uk.co.whiteoctober.cordova.appversion",
     "de.appplant.cordova.plugin.email-composer"
 ];
