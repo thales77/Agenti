@@ -692,7 +692,7 @@ AGENTI.offerta = {
                 isHtml:  true};
 
 
-        emailProperties.body =   emailProperties.body + Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
+        emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
 
         $.each(offerta.detail, function () {
             emailProperties.body =  emailProperties.body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';

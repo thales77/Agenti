@@ -12,8 +12,7 @@ var pluginlist = [
     "org.apache.cordova.contacts",
     "org.apache.cordova.file",
     "uk.co.whiteoctober.cordova.appversion",
-    "de.appplant.cordova.plugin.email-composer",
-    "https://github.com/moderna/cordova-plugin-html2pdf.git"
+    "de.appplant.cordova.plugin.email-composer"
 ];
 
 // no need to configure below
