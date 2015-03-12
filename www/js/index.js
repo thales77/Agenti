@@ -678,8 +678,16 @@ AGENTI.offerta = {
     },
 
     inviaOfferta: function () {
+        var offerta = AGENTI.offerta,
+            emailProperties = { to: AGENTI.client.email,
+                cc: 'g.marra@siderprofessional.com',
+                subject: 'Offerta Sidercampania Professional srl ',
+                isHtml:  true};
+
 
         //FIRST GENERATE THE PDF DOCUMENT
+        offerta.pdfFileName = 'offerta.pdf';
+
         console.log("generating pdf...");
         var doc = new jsPDF();
 
@@ -691,68 +699,62 @@ AGENTI.offerta = {
         doc.text(20, 50, 'YES, Inside of PhoneGap!');
 
         var pdfOutput = doc.output();
-        console.log( pdfOutput );
+        //console.log( pdfOutput );
 
-        //NEXT SAVE IT TO THE DEVICE'S LOCAL FILE SYSTEM
-        console.log("file system...");
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
+        function pdfSave (name, data, success, fail) {
 
-                console.log(fileSystem.name);
-                console.log(fileSystem.root.name);
+            var gotFileSystem = function (fileSystem) {
                 console.log(fileSystem.root.fullPath);
+                offerta.pdfFilePath = fileSystem.root.nativeURL;
 
-                fileSystem.root.getFile("test.pdf", {create: true}, function(entry) {
-                    var fileEntry = entry;
-                    console.log(entry);
+                fileSystem.root.getFile(name, { create: true, exclusive: false }, gotFileEntry, fail);
+            };
 
-                    entry.createWriter(function(writer) {
-                        writer.onwrite = function(evt) {
-                            console.log("write success");
-                        };
+            var gotFileEntry = function (fileEntry) {
+                fileEntry.createWriter(gotFileWriter, fail);
+            };
 
-                        console.log("writing to file");
-                        writer.write( pdfOutput );
-                    }, function(error) {
-                        console.log(error);
-                    });
+            var gotFileWriter = function (writer) {
+                writer.onwrite = success;
+                writer.onerror = fail;
+                writer.write(data);
+            };
 
-                }, function(error){
-                    console.log(error);
-                });
-            },
-            function(event){
-                console.log( evt.target.error.code );
+            window.requestFileSystem(window.LocalFileSystem.PERSISTENT, data.length || 0, gotFileSystem, fail);
+        }
+
+        pdfSave(offerta.pdfFileName, pdfOutput, function () {
+            // success!
+
+            /* cordova.plugins.email.isAvailable(
+             function (isAvailable) {
+             // alert('Service is not available') unless isAvailable;
+             }
+             );*/
+
+
+
+            emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
+
+            $.each(offerta.detail, function () {
+                emailProperties.body =  emailProperties.body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
             });
 
+            emailProperties.attachments = offerta.pdfFilePath + offerta.pdfFileName;
+
+            cordova.plugins.email.open(emailProperties,function () {
+                navigator.notification.alert('invio annullato');
+            }, this);
 
 
 
 
 
-        /* cordova.plugins.email.isAvailable(
-         function (isAvailable) {
-         // alert('Service is not available') unless isAvailable;
-         }
-         );*/
-
-        var offerta = AGENTI.offerta,
-            emailProperties = { to: AGENTI.client.email,
-                cc: 'g.marra@siderprofessional.com',
-                subject: 'Offerta Sidercampania Professional srl ',
-                attachments: 'file:///storage/sdcard/test.pdf',
-                isHtml:  true};
-
-
-        emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
-
-        $.each(offerta.detail, function () {
-            emailProperties.body =  emailProperties.body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
+        }, function (error) {
+            // handle error
+            console.log(error);
+            navigator.notification.alert(error);
         });
-
-
-        cordova.plugins.email.open(emailProperties,function () {
-            navigator.notification.alert('invio annullato');
-        }, this);
 
     }
 
