@@ -10,9 +10,10 @@ var pluginlist = [
     "com.phonegap.plugins.barcodescanner",
     "org.apache.cordova.vibration",
     "org.apache.cordova.contacts",
+    "org.apache.cordova.file",
     "uk.co.whiteoctober.cordova.appversion",
     "de.appplant.cordova.plugin.email-composer",
-    "at.modalog.cordova.plugin.html2pdf"
+    "https://github.com/moderna/cordova-plugin-html2pdf.git"
 ];
 
 // no need to configure below
