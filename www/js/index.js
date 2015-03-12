@@ -679,29 +679,25 @@ AGENTI.offerta = {
 
     inviaOfferta: function () {
 
-       /* cordova.plugins.email.isAvailable(
-            function (isAvailable) {
-                // alert('Service is not available') unless isAvailable;
-            }
-        );*/
+        /* cordova.plugins.email.isAvailable(
+         function (isAvailable) {
+         // alert('Service is not available') unless isAvailable;
+         }
+         );*/
 
-        var body = "",
-            offerta = AGENTI.offerta,
-            emailProperties = {};
+        var offerta = AGENTI.offerta,
+            emailProperties = { to: AGENTI.client.email,
+                cc: 'g.marra@siderprofessional.com',
+                subject: 'Offerta Sidercampania Professional srl ',
+                isHtml:  true};
 
-        body =  body + Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
+
+        emailProperties.body =   emailProperties.body + Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
 
         $.each(offerta.detail, function () {
-            body = body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
+            emailProperties.body =  emailProperties.body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
         });
 
-
-        emailProperties =  { to: AGENTI.client.email,
-            cc: 'g.marra@siderprofessional.com',
-            subject: 'Offerta Sidercampania Professional srl ',
-            body:    body,
-            isHtml:  true
-        };
 
         cordova.plugins.email.open(emailProperties,function () {
             navigator.notification.alert('invio annullato');
