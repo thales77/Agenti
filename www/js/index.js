@@ -679,8 +679,11 @@ AGENTI.offerta = {
 
     inviaOfferta: function () {
         var offerta = AGENTI.offerta,
-            emailProperties = { to: AGENTI.client.email,
+        /*      emailProperties = { to: AGENTI.client.email,
                 cc: 'g.marra@siderprofessional.com',
+                subject: 'Offerta Sidercampania Professional srl ',
+                isHtml:  true} Disabled for testing*/
+            emailProperties = { to: 'xboikos@gmail.com',
                 subject: 'Offerta Sidercampania Professional srl ',
                 isHtml:  true};
 
@@ -691,9 +694,16 @@ AGENTI.offerta = {
         console.log("generating pdf...");
         var doc = new jsPDF('p', 'mm', 'a4');
 
-        $.each(offerta.detail, function () {
-            emailProperties.pdfContent =  emailProperties.pdfContent  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
-         });
+            emailProperties.pdfContent = '<h2>Sidercampania Professional srl</h2><p>Dettaglio articoli</p>';
+            emailProperties.pdfContent = emailProperties.pdfContent  + '<div class="offertaTable"><table><colgroup><col width="50%"><col width="10%"></colgroup><thead><tr><th>Codice</th><th>Desc</th><th>Prezzo</th><th>Qta</th></tr></thead><tbody>';
+
+           $.each(offerta.detail, function () {
+              emailProperties.pdfContent =  emailProperties.pdfContent  +
+              '<tr><td>' + this.itemId + '</td><td>' + this.itemDesc + '</td><td>' +
+              this.qty + '</td><td>' + this.prezzo + '</td></tr>';
+            });
+
+        emailProperties.pdfContent =  emailProperties.pdfContent  +  '</tbody></table></div>';
 
         console.log(emailProperties.pdfContent);
 
