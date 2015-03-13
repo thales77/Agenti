@@ -689,14 +689,42 @@ AGENTI.offerta = {
         offerta.pdfFileName = 'offerta.pdf';
 
         console.log("generating pdf...");
-        var doc = new jsPDF();
+        var doc = new jsPDF('p', 'mm', 'a4');
 
-        doc.text(20, 20, 'HELLO!');
+        $.each(offerta.detail, function () {
+            emailProperties.pdfContent =  emailProperties.pdfContent  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
+         });
+
+        console.log(emailProperties.pdfContent);
+
+        var specialElementHandlers = {
+            '#bypassme': function(element, renderer) {
+                return true;
+            }
+        };
+
+        doc.fromHTML(
+            emailProperties.pdfContent, // HTML string or DOM elem ref.
+            5,    // x coord
+            5,    // y coord
+            {
+                'width': 290, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            });
+
+
+
+
+        /*doc.text(20, 20, 'HELLO!');
 
         doc.setFont("courier");
         doc.setFontType("normal");
         doc.text(20, 30, 'This is a PDF document generated using JSPDF.');
-        doc.text(20, 50, 'YES, Inside of PhoneGap!');
+        doc.text(20, 50, 'YES, Inside of PhoneGap!');*/
+
+        /*for(var i = 1; i <= 12; i ++) {
+            doc.text(20, 30 + (i * 10), i + ' x ' + multiplier + ' = ___');
+        }*/
 
         var pdfOutput = doc.output();
         //console.log( pdfOutput );
@@ -734,11 +762,13 @@ AGENTI.offerta = {
 
 
 
-            emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>';
+            emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>'+
+                                    '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
+                                    'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
+                                    '<p>Distini saluti,<br>' + AGENTI.db.getItem('full_name') + '<br>Sidercampania Professional srl<br>' +
+                                    'tel. 0817580177<br>Fax 0815405590</p>';
 
-            $.each(offerta.detail, function () {
-                emailProperties.body =  emailProperties.body  + this.itemId + ' - ' + this.itemDesc + ' - qta ' + this.qty + ' -  &#8364;' + this.prezzo + '<br>';
-            });
+
 
             emailProperties.attachments = offerta.pdfFilePath + offerta.pdfFileName;
 
@@ -757,7 +787,6 @@ AGENTI.offerta = {
         });
 
     }
-
 
 };
 
@@ -914,6 +943,7 @@ AGENTI.user = {
                 if (result.status === 'ok') {
                     AGENTI.db.setItem("username", $("#loginForm #username").val());
                     AGENTI.db.setItem("password", $("#loginForm #password").val());
+                    AGENTI.db.setItem("full_name", result.full_name);
                     AGENTI.db.setItem("usertype", result.usertype);
                     AGENTI.db.setItem("idAgente", result.idAgente);
                     //Go to main screen
