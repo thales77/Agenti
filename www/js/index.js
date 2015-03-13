@@ -694,8 +694,11 @@ AGENTI.offerta = {
         console.log("generating pdf...");
         var doc = new jsPDF('p', 'mm', 'a4');
 
-            emailProperties.pdfContent = '<h2>Sidercampania Professional srl</h2><p>Dettaglio articoli</p>';
-            emailProperties.pdfContent = emailProperties.pdfContent  + '<div class="offertaTable"><table><colgroup><col width="50%"><col width="10%"></colgroup><thead><tr><th>Codice</th><th>Desc</th><th>Prezzo</th><th>Qta</th></tr></thead><tbody>';
+
+        emailProperties.pdfContent = '<h2>Sidercampania Professional srl</h2><h3>Offerta commerciale</h3>' +
+                                    '<h3>Spett.le: ' + AGENTI.client.ragSociale + '</h3>' + '<p>' + AGENTI.client.indirizzo + ' ' + AGENTI.client.indirizzo2 + '</p>';
+
+        emailProperties.pdfContent = emailProperties.pdfContent  + '<div class="offertaTable"><table><colgroup><col width="10%"><col width="70%"><col width="10%"><col width="10%"></colgroup><thead><tr><th>Codice</th><th>Desc</th><th>Qta</th><th>Prezzo</th></tr></thead><tbody>';
 
            $.each(offerta.detail, function () {
               emailProperties.pdfContent =  emailProperties.pdfContent  +
@@ -703,7 +706,9 @@ AGENTI.offerta = {
               this.qty + '</td><td>' + this.prezzo + '</td></tr>';
             });
 
-        emailProperties.pdfContent =  emailProperties.pdfContent  +  '</tbody></table></div>';
+        emailProperties.pdfContent =  emailProperties.pdfContent  +  '</tbody></table></div>' +
+        '<p>La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ai nostri fornitori ed il loro ciclo di produzione e trasporto.</p>' +
+        '<p>Nominativo Addetto: ' +  AGENTI.db.getItem('full_name') + '</p>';
 
         console.log(emailProperties.pdfContent);
 
@@ -718,7 +723,7 @@ AGENTI.offerta = {
             5,    // x coord
             5,    // y coord
             {
-                'width': 290, // max width of content on PDF
+                'width': 200, // max width of content on PDF
                 'elementHandlers': specialElementHandlers
             });
 
@@ -742,7 +747,7 @@ AGENTI.offerta = {
         function pdfSave (name, data, success, fail) {
 
             var gotFileSystem = function (fileSystem) {
-                console.log(fileSystem.root.fullPath);
+
                 offerta.pdfFilePath = fileSystem.root.nativeURL;
 
                 fileSystem.root.getFile(name, { create: true, exclusive: false }, gotFileEntry, fail);
@@ -783,7 +788,7 @@ AGENTI.offerta = {
             emailProperties.attachments = offerta.pdfFilePath + offerta.pdfFileName;
 
             cordova.plugins.email.open(emailProperties,function () {
-                navigator.notification.alert('invio annullato');
+                //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
             }, this);
 
 
