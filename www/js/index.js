@@ -698,7 +698,7 @@ AGENTI.offerta = {
         emailProperties.pdfContent = '<h2>Sidercampania Professional srl</h2><h3>Offerta commerciale</h3>' +
                                     '<h3>Spett.le: ' + AGENTI.client.ragSociale + '</h3>' + '<p>' + AGENTI.client.indirizzo + ' ' + AGENTI.client.indirizzo2 + '</p>';
 
-        emailProperties.pdfContent = emailProperties.pdfContent  + '<div class="offertaTable"><table><colgroup><col width="10%"><col width="70%"><col width="10%"><col width="10%"></colgroup><thead><tr><th>Codice</th><th>Desc</th><th>Qta</th><th>Prezzo</th></tr></thead><tbody>';
+        emailProperties.pdfContent = emailProperties.pdfContent  + '<div class="offertaTable"><table><colgroup><col width="20%"><col width="20%"><col width="20%"><col width="20%"></colgroup><thead><tr><th>Codice</th><th>Desc</th><th>Qta</th><th>Prezzo</th></tr></thead><tbody>';
 
            $.each(offerta.detail, function () {
               emailProperties.pdfContent =  emailProperties.pdfContent  +
@@ -729,20 +729,8 @@ AGENTI.offerta = {
 
 
 
-
-        /*doc.text(20, 20, 'HELLO!');
-
-        doc.setFont("courier");
-        doc.setFontType("normal");
-        doc.text(20, 30, 'This is a PDF document generated using JSPDF.');
-        doc.text(20, 50, 'YES, Inside of PhoneGap!');*/
-
-        /*for(var i = 1; i <= 12; i ++) {
-            doc.text(20, 30 + (i * 10), i + ' x ' + multiplier + ' = ___');
-        }*/
-
         var pdfOutput = doc.output();
-        //console.log( pdfOutput );
+        console.log( pdfOutput );
 
         function pdfSave (name, data, success, fail) {
 
@@ -767,16 +755,7 @@ AGENTI.offerta = {
         }
 
         pdfSave(offerta.pdfFileName, pdfOutput, function () {
-            // success!
-
-            /* cordova.plugins.email.isAvailable(
-             function (isAvailable) {
-             // alert('Service is not available') unless isAvailable;
-             }
-             );*/
-
-
-
+            // success! - generate email body
             emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>'+
                                     '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
                                     'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
