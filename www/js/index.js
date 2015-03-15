@@ -685,49 +685,76 @@ AGENTI.offerta = {
                 isHtml:  true} Disabled for testing*/
             emailProperties = { to: 'xboikos@gmail.com',
                 subject: 'Offerta Sidercampania Professional srl ',
-                isHtml:  true};
+                isHtml:  true},
+            tableData = [],
+            columns = [],
+            options = {},
+            height = 180;
 
 
         //FIRST GENERATE THE PDF DOCUMENT
         offerta.pdfFileName = 'offerta.pdf';
 
         console.log("generating pdf...");
-        var doc = new jsPDF('p', 'mm', 'a4');
+        var doc = new jsPDF('p', 'pt', 'a4');
 
+        doc.setFontSize(20);
+        doc.setFontType("bold");
+        doc.text(20, 50, 'Sidercampania Professional srl');
 
-        emailProperties.pdfContent = '<h2>Sidercampania Professional srl</h2><h3>Offerta commerciale</h3>' +
-                                    '<h3>Spett.le: ' + AGENTI.client.ragSociale + '</h3>' + '<p>' + AGENTI.client.indirizzo + ' ' + AGENTI.client.indirizzo2 + '</p>';
+        doc.setFontSize(12);
+        doc.setFontType("normal");
+        doc.text(20, 65, 'Offerta commerciale');
 
-        emailProperties.pdfContent = emailProperties.pdfContent  + '<div class="offertaTable"><table><colgroup><col width="20%"><col width="20%"><col width="20%"><col width="20%"></colgroup><thead><tr><th>Codice</th><th>Desc</th><th>Qta</th><th>Prezzo</th></tr></thead><tbody>';
+        doc.setFontSize(12);
+        doc.text(20, 80, 'Spett.le ' + AGENTI.client.ragSociale);
+        doc.text(20, 95, AGENTI.client.indirizzo);
+        doc.text(20, 110, AGENTI.client.indirizzo2);
 
-           $.each(offerta.detail, function () {
-              emailProperties.pdfContent =  emailProperties.pdfContent  +
-              '<tr><td>' + this.itemId + '</td><td>' + this.itemDesc + '</td><td>' +
-              this.qty + '</td><td>' + this.prezzo + '</td></tr>';
-            });
-
-        emailProperties.pdfContent =  emailProperties.pdfContent  +  '</tbody></table></div>' +
-        '<p>La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ai nostri fornitori ed il loro ciclo di produzione e trasporto.</p>' +
-        '<p>Nominativo Addetto: ' +  AGENTI.db.getItem('full_name') + '</p>';
-
-        console.log(emailProperties.pdfContent);
-
-        var specialElementHandlers = {
-            '#bypassme': function(element, renderer) {
-                return true;
-            }
+        options = {
+            padding: 3, // Vertical cell padding
+            fontSize: 12,
+            lineHeight: 20,
+            renderCell: function (x, y, w, h, txt, fillColor, options) {
+                doc.setFillColor.apply(this, fillColor);
+                doc.rect(x, y, w, h, 'F');
+                doc.text(txt, x + options.padding, y + doc.internal.getLineHeight());
+            },
+            margins: { horizontal: 20, top: 130, bottom: 40 }, // How much space around the table
+            extendWidth: true // If true, the table will span 100% of page width minus horizontal margins.
         };
 
-        doc.fromHTML(
-            emailProperties.pdfContent, // HTML string or DOM elem ref.
-            5,    // x coord
-            5,    // y coord
-            {
-                'width': 200, // max width of content on PDF
-                'elementHandlers': specialElementHandlers
+        columns = [
+            {title: "Codice", key: "codice"},
+            {title: "Descrizione", key: "descrizione"},
+            {title: "Qta", key: "qta"},
+            {title: "Prezzo", key: "prezzo"},
+            {title: "Totale", key: "totale"}
+        ];
+
+        $.each(offerta.detail, function () {
+            var totale = (parseFloat(this.qty).toFixed(2)) * (parseFloat(this.prezzo).toFixed(4));
+            tableData.push({
+                "codice": this.itemId,
+                "descrizione": this.itemDesc,
+                "qta": this.qty,
+                "prezzo": this.prezzo,
+                "totale": totale.toString()
             });
+            height = height + 20;
+        });
 
+        doc.autoTable(columns, tableData, options);
+        //height = doc.drawTable(tableData, {xstart:15,ystart:20,tablestart:50,marginleft:50, xOffset:5, yOffset:5});
 
+        doc.setFontType("bolditalic");
+        doc.setFontSize(10);
+        doc.text(20, height + 20, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
+        doc.text(20, height + 35, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
+        doc.text(20, height + 60, 'Validita\' offerta 15gg');
+
+        doc.setFontType("normal");
+        doc.text(20, height + 75, 'Nominativo addetto: ' +  AGENTI.db.getItem('full_name'));
 
         var pdfOutput = doc.output();
         console.log( pdfOutput );
