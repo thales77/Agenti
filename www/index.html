@@ -327,6 +327,7 @@
                 <th>Desc</th>
                 <th>Qta</th>
                 <th>Prezzo</th>
+                <th>Totale</th>
             </tr>
             </thead>
             <tbody>
@@ -339,6 +340,8 @@
         </table>
         <!-- todo - add functionality here -->
         <br>
+        <span style="font-style: italic; text-align: right" id="totaleOfferta"></span>
+        <br><br>
         <button data-icon="mail" id="inviaOfferta">Invia offerta</button>
         <button data-icon="delete">Cancella offerta</button>
     </div>
@@ -602,9 +605,9 @@
                 <div style="padding:10px 20px;">
                     <!--<h3 class="ui-title">Inserire quantità e prezzo</h3>-->
                     <label for="qtty">Quantità</label>
-                    <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
+                    <input type="number" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
                     <label for="prz">Prezzo &#8364;</label>
-                    <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+                    <input type="number" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
 
                     <button type="button" id="insertItemToOffertaBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
                     <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>

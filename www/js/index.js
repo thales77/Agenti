@@ -615,7 +615,8 @@ AGENTI.offerta = {
                 itemId : itemId,
                 itemDesc : itemDesc,
                 qty : qty,
-                prezzo : prezzo
+                prezzo : prezzo,
+                totaleRiga : qty * prezzo
 
         });
         $( "#popupOfferta" ).popup( "close" );
@@ -624,17 +625,21 @@ AGENTI.offerta = {
 
     renderOffertaDetail: function () {
         /*Variable declaration*******************/
-        var i = 0,
-            offerta = AGENTI.offerta;
+            var offerta = AGENTI.offerta;
         /*End of variable declaration************/
+
+        offerta.header.totaleOfferta = 0;
 
         $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale);
         $.each(offerta.detail, function () {
-            i += 1;
-            $('#offertaTable tbody').append('<tr><th></th><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td>\n\
-            <td>' + this.qty + '</td><td>' + this.prezzo + '</td></tr>');
+
+            offerta.header.totaleOfferta = offerta.header.totaleOfferta  + this.totaleRiga; //summing the grand total of the offerta
+
+            $('#offertaTable tbody').append('<tr><th></th><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
+            this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td></tr>');
         });
 
+        $('#totaleOfferta').html('Totale: &#8364;' + offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
         $('#offertaTable').table("refresh");
     },
 
@@ -689,7 +694,6 @@ AGENTI.offerta = {
             tableData = [],
             columns = [],
             options = {},
-            totaleRiga = 0,
             height = 180;
 
 
@@ -733,20 +737,15 @@ AGENTI.offerta = {
             {title: "Totale", key: "totale"}
         ];
 
-        offerta.header.totaleOfferta = 0;
 
         $.each(offerta.detail, function () {
-
-            //ugly as fuck replaces strings with floats to perform in order to sum, also sunstitutes comas with dots.
-            totaleRiga = (parseFloat(this.qty.replace(/,/g , "."))) * (parseFloat(this.prezzo.replace(/,/g , ".")));
-            offerta.header.totaleOfferta = offerta.header.totaleOfferta  + totaleRiga; //summing the grand total of the offerta
 
             tableData.push({
                 "codice": this.itemId,
                 "descrizione": this.itemDesc,
-                "qta": this.qty,
-                "prezzo": this.prezzo,
-                "totale": totaleRiga.toFixed(2).replace(/\./g , ",") //change into string again and replace dots with comas
+                "qta": this.qty.replace(/\./g , ","),
+                "prezzo": this.prezzo.replace(/\./g , ","),
+                "totale": this.totaleRiga.toFixed(2).replace(/\./g , ",") //change into string again and replace dots with comas
             });
             height = height + 20;
         });
@@ -1369,8 +1368,8 @@ AGENTI.init = function () {
 
     $('#popupOfferta').on('popupafteropen', function() {
         var item = AGENTI.item;
-        $('#qtty').val("1");
-        $('#prz').val(item.Prezzo);
+        $('#qtty').val("1").focus().select();
+        $('#prz').val(parseFloat(item.Prezzo.replace(',', '.')));
     });
 
     $('#insertItemToOffertaBtn').on('tap', function() {
