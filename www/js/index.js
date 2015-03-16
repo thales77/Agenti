@@ -689,6 +689,7 @@ AGENTI.offerta = {
             tableData = [],
             columns = [],
             options = {},
+            totaleRiga = 0,
             height = 180;
 
 
@@ -706,15 +707,15 @@ AGENTI.offerta = {
         doc.setFontType("normal");
         doc.text(20, 65, 'Offerta commerciale');
 
-        doc.setFontSize(12);
-        doc.text(20, 80, 'Spett.le ' + AGENTI.client.ragSociale);
+        doc.setFontSize(10);
+        doc.text(20, 80, 'Spett.le: ' + AGENTI.client.ragSociale);
         doc.text(20, 95, AGENTI.client.indirizzo);
         doc.text(20, 110, AGENTI.client.indirizzo2);
 
         options = {
             padding: 3, // Vertical cell padding
-            fontSize: 12,
-            lineHeight: 20,
+            fontSize: 10,
+            lineHeight: 15,
             renderCell: function (x, y, w, h, txt, fillColor, options) {
                 doc.setFillColor.apply(this, fillColor);
                 doc.rect(x, y, w, h, 'F');
@@ -732,14 +733,20 @@ AGENTI.offerta = {
             {title: "Totale", key: "totale"}
         ];
 
+        offerta.header.totaleOfferta = 0;
+
         $.each(offerta.detail, function () {
-            var totale = (parseFloat(this.qty).toFixed(2)) * (parseFloat(this.prezzo).toFixed(4));
+
+            //ugly as fuck replaces strings with floats to perform in order to sum, also sunstitutes comas with dots.
+            totaleRiga = (parseFloat(this.qty.replace(/,/g , "."))) * (parseFloat(this.prezzo.replace(/,/g , ".")));
+            offerta.header.totaleOfferta = offerta.header.totaleOfferta  + totaleRiga; //summing the grand total of the offerta
+
             tableData.push({
                 "codice": this.itemId,
                 "descrizione": this.itemDesc,
                 "qta": this.qty,
                 "prezzo": this.prezzo,
-                "totale": totale.toString()
+                "totale": totaleRiga.toFixed(2).replace(/\./g , ",") //change into string again and replace dots with comas
             });
             height = height + 20;
         });
@@ -748,13 +755,17 @@ AGENTI.offerta = {
         //height = doc.drawTable(tableData, {xstart:15,ystart:20,tablestart:50,marginleft:50, xOffset:5, yOffset:5});
 
         doc.setFontType("bolditalic");
+        doc.setFontSize(12);
+        doc.text(400, height, 'Totale offerta: ' +  offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ",") + ' +IVA');
+
+        doc.setFontType("bolditalic");
         doc.setFontSize(10);
-        doc.text(20, height + 20, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
-        doc.text(20, height + 35, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
-        doc.text(20, height + 60, 'Validita\' offerta 15gg');
+        doc.text(20, height + 30, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
+        doc.text(20, height + 45, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
+        doc.text(20, height + 70, 'Validita\' offerta 15gg');
 
         doc.setFontType("normal");
-        doc.text(20, height + 75, 'Nominativo addetto: ' +  AGENTI.db.getItem('full_name'));
+        doc.text(20, height + 85, 'Nominativo addetto: ' +  AGENTI.db.getItem('full_name'));
 
         var pdfOutput = doc.output();
         console.log( pdfOutput );
