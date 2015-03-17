@@ -605,20 +605,25 @@ AGENTI.item = {
 };
 
 AGENTI.offerta = {
-    header: {},
+    header: {totaleOfferta : 0},
     detail: [],
 
     addItemToOfferta: function (itemId, itemDesc, qty, prezzo) {
-        var offertaDetail = AGENTI.offerta.detail;
+        var offerta = AGENTI.offerta,
+            totaleRiga = parseFloat(qty.replace(',', '.')) * parseFloat(prezzo.replace(',', '.'));
 
-            offertaDetail.push({
+
+            offerta.detail.push({
                 itemId : itemId,
                 itemDesc : itemDesc,
                 qty : qty,
                 prezzo : prezzo,
-                totaleRiga : qty * prezzo
+                totaleRiga : totaleRiga
 
         });
+
+        offerta.header.totaleOfferta = offerta.header.totaleOfferta  +  totaleRiga; //summing the grand total of the offerta
+
         $( "#popupOfferta" ).popup( "close" );
         //navigator.notification.alert("articolo aggiunto all' offerta");
     },
@@ -628,33 +633,27 @@ AGENTI.offerta = {
             var offerta = AGENTI.offerta;
         /*End of variable declaration************/
 
-        offerta.header.totaleOfferta = 0;
-
         $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale);
         $.each(offerta.detail, function () {
-
-            offerta.header.totaleOfferta = offerta.header.totaleOfferta  + this.totaleRiga; //summing the grand total of the offerta
 
             $('#offertaTable tbody').append('<tr><th></th><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
             this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td></tr>');
         });
 
-        $('#totaleOfferta').html('Totale: &#8364;' + offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
+        $('#totaleOfferta').html('Totale offerta: &#8364;' + offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
         $('#offertaTable').table("refresh");
     },
 
     checkIsInserted: function (e) {
 
+        var offerta = AGENTI.offerta;
 
-
-        var offertaDetail = AGENTI.offerta.detail;
-
-        if (offertaDetail.length !== 0) {
+        if (offerta.detail.length !== 0) {
 
             AGENTI.utils.vibrate();
             navigator.notification.confirm(
                 "C'è un' offerta inserita per questo cliente, come vuoi procedere?", // message
-                AGENTI.offerta.deleteCurrent,            // callback to invoke with index of button pressed
+                offerta.deleteCurrent,            // callback to invoke with index of button pressed
                 'Attenzione',           // title
                 ['Elimina offerta', 'Annulla']         // buttonLabels
             );
@@ -672,24 +671,21 @@ AGENTI.offerta = {
 
         if (buttonIndex === 1) {
             AGENTI.offerta.detail.length = 0; //empty offerta detail array
-            AGENTI.offerta.header = null; //empty offerta header obj
+            AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
 
-
             navigator.notification.alert('Offerta cancellata');
-            $.mobile.changePage( "#clienti", { transition: "flip"});
+            $.mobile.changePage("#clienti", {transition: "flip"});
+
         }
 
     },
 
     inviaOfferta: function () {
         var offerta = AGENTI.offerta,
-        /*      emailProperties = { to: AGENTI.client.email,
-                cc: 'g.marra@siderprofessional.com',
-                subject: 'Offerta Sidercampania Professional srl ',
-                isHtml:  true} Disabled for testing*/
-            emailProperties = { to: 'xboikos@gmail.com',
-                subject: 'Offerta Sidercampania Professional srl ',
+              emailProperties = { to: AGENTI.client.email,
+                cc: 'vendite@siderprofessional.com',
+                subject: 'Offerta Sidercampania Professional srl',
                 isHtml:  true},
             tableData = [],
             columns = [],
@@ -1213,9 +1209,28 @@ AGENTI.init = function () {
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
 
+        //handle for delete offerta button in offertaDetails
+        $('#offertaDeleteBtn').on('tap', function() { //this is a duplicate of offerta.deleteCurrent but cannot be arsed to fix
+
+            navigator.notification.confirm(
+                "Vuoi cancellare l'offerta per questo cliente?",
+                // callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+                        AGENTI.offerta.detail.length = 0; //empty offerta detail array
+                        AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
+                        $('#offertaTable tbody').empty(); // empty table in offerta detail page
+                        navigator.notification.alert('Offerta cancellata');
+                        $.mobile.changePage("#clientDetail");
+                    }
+                },            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Elimina offerta', 'Annulla']         // buttonLabels
+            );
+
+        });
+
     });
-
-
 
 
     $('#clientDetail').on('pageshow', function () {
@@ -1232,6 +1247,14 @@ AGENTI.init = function () {
         $('#listino .moreBtn').closest('.ui-btn').hide();
         //set the page title to the client's name
         $('#clientDetail .pageTitle').text(AGENTI.client.ragSociale);
+
+        //if no order is inserted disable invio offerta button
+        if (AGENTI.offerta.detail.length > 0) {
+            $('#offertaDetailBtn').removeClass('ui-disabled');
+        } else {
+            $('#offertaDetailBtn').addClass('ui-disabled');
+        }
+
         //render client details
         AGENTI.client.renderClientDetails();
     });
@@ -1369,6 +1392,9 @@ AGENTI.init = function () {
     $('#popupOfferta').on('popupafteropen', function() {
         var item = AGENTI.item;
         $('#qtty').val("1").focus().select();
+        $('#popupOfferta').popup("reposition", {
+            y: 0 /* move it to top */
+        });
         $('#prz').val(parseFloat(item.Prezzo.replace(',', '.')));
     });
 
