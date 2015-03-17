@@ -71,14 +71,24 @@
 
 
 <div data-role="page" id="home">
-    <!--main welcome page -->
+    <!-- /left panel -->
+    <div data-role="panel" class="left-panel" id="left-panel-home" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
 
+    <!--main welcome page -->
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
         <!-- data-position="fixed"-->
-        <a href="#home" data-icon="home" data-iconpos="notext">Home</a>
 
-        <h1>CRM Agenti</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h1>Home agenti</h1>
+        <a href="#left-panel-home" data-icon="bars" data-iconpos="notext">Menu</a>
 
         <div data-role="navbar">
             <ul>
@@ -105,6 +115,9 @@
 
             <ul>
                 <li>
+                    Realizzata gestione invio offerte via email
+                </li>
+                <li>
                     E Possibile aggiungere un cliente nella rubrica del telefono
                 </li>
             </ul>
@@ -130,12 +143,22 @@
 
 <!--start of client search page-->
 <div data-role="page" id="clienti">
+    <!--left panel-->
+    <div data-role="panel" class="left-panel" id="left-panel-clienti" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
-        <a href="#home" data-icon="home" data-iconpos="notext">Home</a>
 
-        <h1>Clienti</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h1>Ricerca clienti</h1>
+        <a href="#left-panel-clienti" data-icon="bars" data-iconpos="notext">Menu</a>
 
         <div data-role="navbar">
             <ul>
@@ -200,13 +223,22 @@
 
 <!--start of Ordini search page-->
 <div data-role="page" id="ordini">
-
+    <!--left panel-->
+    <div data-role="panel" class="left-panel" id="left-panel-ordini" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
-        <a href="#home" data-icon="home" data-iconpos="notext">Home</a>
 
-        <h1>Ordini</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h1>Ricerca ordini effettuati</h1>
+        <a href="#left-panel-ordini" data-icon="bars" data-iconpos="notext">Menu</a>
 
         <div data-role="navbar">
             <ul>
@@ -227,10 +259,10 @@
     <div data-role="content">
         <div data-role="fieldset">
             <label for="DateFrom">Data inizio:</label>
-            <input type="date" data-theme="b" data-role="datebox" name="DateFrom" id="DateFrom"
+            <input type="date" data-theme="a" data-role="datebox" name="DateFrom" id="DateFrom"
                    data-options='{"mode": "datebox", "beforeToday": true, "useFocus": true, "enablePopup": true }'/>
             <label for="DateTo">Data fine:</label>
-            <input type="date" data-theme="b" data-role="datebox" name="DateTo" id="DateTo"
+            <input type="date" data-theme="a" data-role="datebox" name="DateTo" id="DateTo"
                    data-options='{"mode": "datebox", "beforeToday": true, "useFocus": true, "enablePopup": true }'/>
             <button id="orderSearchButton">Cerca</button>
         </div>
@@ -246,9 +278,8 @@
 <div data-role="page" id="ordiniDetail">
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
+        <a href="#ordini" data-rel="back" data-icon="carat-l">Indietro</a>
         <h5>Dettaglio ordine</h5>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
@@ -279,6 +310,46 @@
 
 </div>
 
+<!--start of Offerta detail page-->
+<div data-role="page" id="offertaDetail">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#clientDetail" data-icon="carat-l" data-rel="back">Indietro</a>
+        <h5>Dettaglio offerta</h5>
+    </div>
+
+    <div data-role="content">
+        <div id="offertaHeader"></div>
+
+        <table data-role="table" id="offertaTable" data-mode="reflow" data-theme="a"
+               class="table-stroke table-stripe ui-responsive">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Codice</th>
+                <th>Desc</th>
+                <th>Qta</th>
+                <th>Prezzo</th>
+                <th>Totale</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--  <ul id="offertaItemList" data-role="listview" data-theme="a" data-inset="true">
+
+             </ul> -->
+
+
+            </tbody>
+        </table>
+        <!-- todo - add functionality here -->
+        <br>
+        <span style="font-style: italic; text-align: right" id="totaleOfferta"></span>
+        <br><br>
+        <button data-icon="mail" id="inviaOfferta">Invia offerta</button>
+        <button data-icon="delete" id="offertaDeleteBtn">Cancella offerta</button>
+    </div>
+
+</div>
 
 <div data-role="page" id="admin">
 
@@ -286,7 +357,6 @@
         <a href="#" data-icon="carat-l" data-rel="back">Indietro</a>
 
         <h1>Log</h1>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
 
     </div>
 
@@ -311,27 +381,28 @@
 <div data-role="page" id="clientDetail">
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <a href="#clienti" data-icon="carat-l">Indietro</a>
-        <h5>Dettaglio cliente</h5>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <a href="#" id="bckbtn" data-icon="carat-l">Indietro</a>
+        <h5 class="pageTitle">Dettaglio cliente</h5>
 
     </div>
 
     <div data-role="content">
 
         <div data-role="collapsible" data-collapsed="true">
-            <h3>Scheda anagrafica cliente</h3>
+            <h3>Scheda anagrafica/Fatturato</h3>
             <ul id="clientDetailList" data-role="listview" data-theme="d" data-inset="true">
                 <!-- Client detail list -->
 
             </ul>
-            <button data-theme="b" data-icon="calendar" id="addContact">Aggiungi nella rubrica</button>
+            <button  data-icon="user" id="addContact">Aggiungi nella rubrica</button>
         </div>
 
-        <a href="#listino" data-role='button' data-icon="search" data-prefetch>Listino</a>
-        <a href="#clientSalesHistory" data-role="button" data-icon="info">Storico acquisti</a>
-        <a href="#majorSalesHistory" data-role="button" data-icon="info">Spese piu' importanti</a>
-        <a href="#" data-role="button" data-icon="info" class="ui-disabled">Materiale non acquistato</a>
+        <a href="#clientSalesHistory" data-role="button" data-icon="calendar">Storico acquisti</a>
+        <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
+        <a href="#listino" data-role="button" data-icon="search" data-prefetch>Listino</a>
+        <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="mail" class="ui-disabled">Invio offerta</a>
+
+
 
         <div data-role="popup" id="clientBlocked" class="ui-content" data-overlay-theme="a">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"
@@ -344,8 +415,8 @@
             </p>
         </div>
 
-    </div>
 
+    </div>
 </div>
 <!--End of Client detail page-->
 
@@ -355,13 +426,12 @@
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-icon="carat-l" data-rel="back">Indietro</a>
         <h4>Maggiori acquisti <!-- Meti rag. Sociale Cliente--></h4>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
 
         <div data-role="collapsible" data-collapsed="false">
-            <h3>Spiegazione schermata</h3>
+            <h3>Spese piu' importanti</h3>
 
             <p>
                 Mostra i articoli su cui il cliente ha speso di pi&ugrave; dal inizio del <span id="lastYear"></span>
@@ -390,14 +460,13 @@
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
-        <h4>Ultimi acquisti <!--Meti Rag. socialer qui --></h4>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
+        <h4>Storico acquisti <!--Meti Rag. socialer qui --></h4>
     </div>
 
     <div data-role="content">
 
         <div data-role="collapsible" data-collapsed="false">
-            <h3>Spiegazione schermata</h3>
+            <h3>Storico acquisti</h3>
 
             <p style="font-size:small;">
                 Presenta tutti i acquisti dell' cliente nel ultimo anno in ordine cronologico
@@ -423,7 +492,6 @@
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
         <h4>Listino <!-- Meti rag. sociale qui --></h4>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
@@ -439,11 +507,11 @@
 
                     <!--<option value="">Campo di ricerca...</option>-->
 
-                    <option value="descrizione" selected>Descrizione</option>
+                    <option value="descrizione" selected>Descrizione articolo</option>
 
-                    <option value="codiceSider">Cod. Sider.</option>
+                    <option value="codiceSider">Cod. articolo Sider.</option>
 
-                    <option value="codiceForn">Cod. Art. Forn.</option>
+                    <option value="codiceForn">Cod. articolo Forn.</option>
 
                     <option value="fornitore">Fornitore</option>
 
@@ -463,7 +531,7 @@
             </div>
         </form>
         <br>
-        <ul id="listaArticoli" data-role="listview" data-inset="true" data-theme="b" data-filter="true"
+        <ul id="listaArticoli" data-role="listview" data-inset="true" data-theme="b" data-filter="false"
             data-filter-theme="a" data-count-theme="b">
 
             <!-- Item main list-->
@@ -485,7 +553,6 @@
         <a href="#" data-rel="back" data-icon="carat-l">Indietro</a>
         <!--clientDetail-->
         <h5>Item detail</h5>
-        <a href="#right-panel" data-icon="bars" data-iconpos="notext">Menu</a>
     </div>
 
     <div data-role="content">
@@ -525,49 +592,36 @@
             <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
                 <!-- Fill this <ul> with data on click-->
             </ul>
+
+            <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="plus"
+               data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
+
         </div>
-        <div data-role="fieldcontain">
-            <a href="#popupOrder" id="addItemOrderButton" data-theme="a" data-role="button" data-icon="plus"
-               data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a ordine cliente</a>
+    </div>
 
-            <div data-role="popup" id="popupOrder" data-theme="a" class="ui-corner-all" data-dismissible="false">
-                <div data-role="header" data-theme="a">
-                    <h1>Aggiungi articolo a ordine</h1>
+    <div data-role="popup" id="popupOfferta" data-theme="a" class="ui-corner-all" data-dismissible="false">
+        <div data-role="header" data-theme="a">
+            <h1>Aggiungi articolo a ordine</h1>
+        </div>
+        <div role="main" class="ui-content">
+            <form>
+                <div style="padding:10px 20px;">
+                    <!--<h3 class="ui-title">Inserire quantità e prezzo</h3>-->
+                    <label for="qtty">Quantità</label>
+                    <input type="number" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
+                    <label for="prz">Prezzo &#8364;</label>
+                    <input type="number" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+
+                    <button type="button" id="insertItemToOffertaBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
+                    <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
                 </div>
-                <div role="main" class="ui-content">
-                    <form>
-                        <div style="padding:10px 20px;">
-                            <h3 class="ui-title">Inserire quantità e prezzo</h3>
-                            <label for="qtty">Quantità</label>
-                            <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
-                            <label for="prz">Prezzo &#8364;</label>
-                            <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+            </form>
 
-                            <button type="button" id="insertItemToOrderBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
-                            <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
         </div>
     </div>
 
 </div>
 <!-- End of item detail page-->
-
-<!-- /right panel -->
-<div data-role="panel" id="right-panel" data-display="reveal" data-position="right"
-     data-theme="a">
-    <ul data-role="listview" data-theme="a" data-icon="false">
-        <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
-        <!--<li data-role="list-divider">Impostazioni</li>-->
-        <li class="admin"><a href="#admin">Consulta log</a></li>
-        <li><a href="#importazione" data-rel="dialog">Aggiorna dati locali</a></li>
-        <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
-        <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
-    </ul>
-</div>
 
 <!--Start of data import dialog page-->
 <div data-role="page" id="importazione">
@@ -629,6 +683,10 @@
 
 <!-- Date manipulation library -->
 <script src="js/lib/date.js"></script>
+
+<!--pdf generation library-->
+<script type="text/javascript" src="js/lib/jspdf.debug.js"></script>
+<script type="text/javascript" src="js/lib/jspdf.plugin.autotable.js"></script>
 
 <!--Database import script-->
 <!--<script src="js/database.js"></script>-->

@@ -10,14 +10,17 @@ var pluginlist = [
     "com.phonegap.plugins.barcodescanner",
     "org.apache.cordova.vibration",
     "org.apache.cordova.contacts",
-    "https://github.com/Telerik-Verified-Plugins/AppVersion"
+    "org.apache.cordova.file",
+    "org.apache.cordova.console",
+    "uk.co.whiteoctober.cordova.appversion",
+    "de.appplant.cordova.plugin.email-composer"
 ];
 
 // no need to configure below
 
 var fs = require('fs');
 var path = require('path');
-var sys = require('sys')
+var sys = require('sys');
 var exec = require('child_process').exec;
 
 function puts(error, stdout, stderr) {

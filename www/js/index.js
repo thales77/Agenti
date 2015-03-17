@@ -141,15 +141,12 @@ AGENTI.client = {
         clientList.listview("refresh");
     },
     //function for passing data to client detail page
-    selectClient: function () {
+    selectClient: function (e) {
         /*Variable declaration *********************/
         var client = AGENTI.client;
         /*End of variable declaration***************/
 
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
 
         client.codice = $(this).attr('data-codice');
         client.ragSociale = $(this).attr('data-ragSociale');
@@ -169,7 +166,8 @@ AGENTI.client = {
         client.SaldoSpa = $(this).attr('data-SaldoSpa');
         client.stato = $(this).attr('data-stato');
         client.pagamento = $(this).attr('data-pagamento');
-        $.mobile.changePage("#clientDetail");
+        $.mobile.changePage("#clientDetail", { transition: "flip"});
+        e.preventDefault();
     },
     //function to render the Client detail information in the client detail page
     renderClientDetails: function () {
@@ -483,10 +481,7 @@ AGENTI.item = {
 
         /*End of variable declaration************/
 
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
 
         //get data from the server
         AGENTI.getData(queryData,
@@ -606,15 +601,221 @@ AGENTI.item = {
 
         //fill itemsSalesHistory ul
         $('#itemsSalesHistory').html(html).listview("refresh").slideToggle('fast');
-    },
-    //Add an item to the current client's order
-    addItemToOrder: function () {
-        var item = AGENTI.item;
-        $('#qtty').val("1");
-        $('#prz').val(item.Prezzo);
     }
 };
 
+AGENTI.offerta = {
+    header: {totaleOfferta : 0},
+    detail: [],
+
+    addItemToOfferta: function (itemId, itemDesc, qty, prezzo) {
+        var offerta = AGENTI.offerta,
+            totaleRiga = parseFloat(qty.replace(',', '.')) * parseFloat(prezzo.replace(',', '.'));
+
+
+            offerta.detail.push({
+                itemId : itemId,
+                itemDesc : itemDesc,
+                qty : qty,
+                prezzo : prezzo,
+                totaleRiga : totaleRiga
+
+        });
+
+        offerta.header.totaleOfferta = offerta.header.totaleOfferta  +  totaleRiga; //summing the grand total of the offerta
+
+        $( "#popupOfferta" ).popup( "close" );
+        //navigator.notification.alert("articolo aggiunto all' offerta");
+    },
+
+    renderOffertaDetail: function () {
+        /*Variable declaration*******************/
+            var offerta = AGENTI.offerta;
+        /*End of variable declaration************/
+
+        $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale);
+        $.each(offerta.detail, function () {
+
+            $('#offertaTable tbody').append('<tr><th></th><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
+            this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td></tr>');
+        });
+
+        $('#totaleOfferta').html('Totale offerta: &#8364;' + offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
+        $('#offertaTable').table("refresh");
+    },
+
+    checkIsInserted: function (e) {
+
+        var offerta = AGENTI.offerta;
+
+        if (offerta.detail.length !== 0) {
+
+            AGENTI.utils.vibrate();
+            navigator.notification.confirm(
+                "C'è un' offerta inserita per questo cliente, come vuoi procedere?", // message
+                offerta.deleteCurrent,            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Elimina offerta', 'Annulla']         // buttonLabels
+            );
+        } else {
+            $.mobile.changePage('#clienti');
+        }
+        if(e) {
+            e.preventDefault();
+        }
+
+    },
+
+    deleteCurrent: function (buttonIndex) {
+
+
+        if (buttonIndex === 1) {
+            AGENTI.offerta.detail.length = 0; //empty offerta detail array
+            AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
+            $('#offertaTable tbody').empty(); // empty table in offerta detail page
+
+            navigator.notification.alert('Offerta cancellata');
+            $.mobile.changePage("#clienti", {transition: "flip"});
+
+        }
+
+    },
+
+    inviaOfferta: function () {
+        var offerta = AGENTI.offerta,
+              emailProperties = { to: AGENTI.client.email,
+                cc: ['vendite@siderprofessional.com', AGENTI.db.getItem('email')],
+                subject: 'Offerta Sidercampania Professional srl',
+                isHtml:  true},
+            tableData = [],
+            columns = [],
+            options = {},
+            height = 180;
+
+
+        //FIRST GENERATE THE PDF DOCUMENT
+        offerta.pdfFileName = 'offerta.pdf';
+
+        console.log("generating pdf...");
+        var doc = new jsPDF('p', 'pt', 'a4');
+
+        doc.setFontSize(20);
+        doc.setFontType("bold");
+        doc.text(20, 50, 'Sidercampania Professional srl');
+
+        doc.setFontSize(12);
+        doc.setFontType("normal");
+        doc.text(20, 65, 'Offerta commerciale');
+
+        doc.setFontSize(10);
+        doc.text(20, 80, 'Spett.le: ' + AGENTI.client.ragSociale);
+        doc.text(20, 95, AGENTI.client.indirizzo);
+        doc.text(20, 110, AGENTI.client.indirizzo2);
+
+        options = {
+            padding: 3, // Vertical cell padding
+            fontSize: 10,
+            lineHeight: 15,
+            renderCell: function (x, y, w, h, txt, fillColor, options) {
+                doc.setFillColor.apply(this, fillColor);
+                doc.rect(x, y, w, h, 'F');
+                doc.text(txt, x + options.padding, y + doc.internal.getLineHeight());
+            },
+            margins: { horizontal: 20, top: 130, bottom: 40 }, // How much space around the table
+            extendWidth: true // If true, the table will span 100% of page width minus horizontal margins.
+        };
+
+        columns = [
+            {title: "Codice", key: "codice"},
+            {title: "Descrizione", key: "descrizione"},
+            {title: "Qta", key: "qta"},
+            {title: "Prezzo", key: "prezzo"},
+            {title: "Totale", key: "totale"}
+        ];
+
+
+        $.each(offerta.detail, function () {
+
+            tableData.push({
+                "codice": this.itemId,
+                "descrizione": this.itemDesc,
+                "qta": this.qty.replace(/\./g , ","),
+                "prezzo": this.prezzo.replace(/\./g , ","),
+                "totale": this.totaleRiga.toFixed(2).replace(/\./g , ",") //change into string again and replace dots with comas
+            });
+            height = height + 20;
+        });
+
+        doc.autoTable(columns, tableData, options);
+        //height = doc.drawTable(tableData, {xstart:15,ystart:20,tablestart:50,marginleft:50, xOffset:5, yOffset:5});
+
+        doc.setFontType("bolditalic");
+        doc.setFontSize(12);
+        doc.text(400, height, 'Totale offerta: ' +  offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ",") + ' +IVA');
+
+        doc.setFontType("bolditalic");
+        doc.setFontSize(10);
+        doc.text(20, height + 30, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
+        doc.text(20, height + 45, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
+        doc.text(20, height + 70, 'Validita\' offerta 15gg');
+
+        doc.setFontType("normal");
+        doc.text(20, height + 85, 'Nominativo addetto: ' +  AGENTI.db.getItem('full_name'));
+
+        var pdfOutput = doc.output();
+        console.log( pdfOutput );
+
+        function pdfSave (name, data, success, fail) {
+
+            var gotFileSystem = function (fileSystem) {
+
+                offerta.pdfFilePath = fileSystem.root.nativeURL;
+
+                fileSystem.root.getFile(name, { create: true, exclusive: false }, gotFileEntry, fail);
+            };
+
+            var gotFileEntry = function (fileEntry) {
+                fileEntry.createWriter(gotFileWriter, fail);
+            };
+
+            var gotFileWriter = function (writer) {
+                writer.onwrite = success;
+                writer.onerror = fail;
+                writer.write(data);
+            };
+
+            window.requestFileSystem(window.LocalFileSystem.PERSISTENT, data.length || 0, gotFileSystem, fail);
+        }
+
+        pdfSave(offerta.pdfFileName, pdfOutput, function () {
+            // success! - generate email body
+            emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale + '</h3>'+
+                                    '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
+                                    'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
+                                    '<p>Distini saluti,<br>' + AGENTI.db.getItem('full_name') + '<br>Sidercampania Professional srl<br>' +
+                                    'tel. 0817580177<br>Fax 0815405590</p>';
+
+
+
+            emailProperties.attachments = offerta.pdfFilePath + offerta.pdfFileName;
+
+            cordova.plugins.email.open(emailProperties,function () {
+                //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
+            }, this);
+
+
+
+
+
+        }, function (error) {
+            // handle error
+            console.log(error);
+            navigator.notification.alert(error);
+        });
+
+    }
+
+};
 
 AGENTI.log = {
     getLog: function () {
@@ -705,11 +906,9 @@ AGENTI.order = {
             }
             prevMonth = curMonth;
 
-            html += '<li data-orderId="' + this.orderId + '"><a href="#"><p style="font-size:small;">Data: ' + curDate.toString("d-M-yyyy") + '</p>\n\
-                         <p style="font-style:italic">Commessa No: ' + this.numDoc + '</p>\n\
+            html += '<li data-orderId="' + this.orderId + '"><a href="#"><p style="font-size:small;">' + curDate.toString("d-M-yyyy") + ' - No: ' + this.numDoc + ' - ' + this.descAgente +'</p>\n\
                          <p style="color:yellow;font-weight:bold;font-style:italic">' + this.codCliente + ' - ' + this.desCli + '</p>\n\
-                         <p style="font-size:small;">Totale: €<span style="font-weight:bold;font-style:italic">' + this.totImp + '</span> + IVA</p>\n\
-                         <p style="font-size:small;">Stato:  ' + statoOrdine + '</p></a></li>';
+                         <p style="font-size:small;">Totale: €<span style="font-weight:bold;font-style:italic">' + this.totImp + '</span> + IVA - ' + statoOrdine + '</p></a></li>';
         });
         html += '</ul></div>';
 
@@ -727,6 +926,7 @@ AGENTI.order = {
             queryData = {action: 'getOrderDetail', orderId: id, user: username};
         /*End of variable declaration************/
         AGENTI.order.id = id;
+
 
         //get data from the server       
         AGENTI.getData(queryData, that.renderOrderDetail);
@@ -770,6 +970,8 @@ AGENTI.user = {
                 if (result.status === 'ok') {
                     AGENTI.db.setItem("username", $("#loginForm #username").val());
                     AGENTI.db.setItem("password", $("#loginForm #password").val());
+                    AGENTI.db.setItem("full_name", result.full_name);
+                    AGENTI.db.setItem("email", result.email);
                     AGENTI.db.setItem("usertype", result.usertype);
                     AGENTI.db.setItem("idAgente", result.idAgente);
                     //Go to main screen
@@ -894,6 +1096,7 @@ AGENTI.utils = {
         // store contact phone numbers in ContactField[]
         var phoneNumbers = [];
         phoneNumbers[0] = new ContactField('work', AGENTI.client.noTelefono, true);
+        phoneNumbers[1] = new ContactField('mobile', AGENTI.client.noCell, false);
         contact.phoneNumbers = phoneNumbers;
 
         // store contact emails in ContactField[]
@@ -919,6 +1122,14 @@ AGENTI.utils = {
         };
 
 
+    },
+
+    vibrate: function (){
+        //shake it baby
+        if (AGENTI.deviceType === 'Android') {
+            //this doesn't work well in ios
+            navigator.notification.vibrate(10);
+        }
     }
 
 };
@@ -988,13 +1199,38 @@ AGENTI.init = function () {
         return false;
     });
 
-    $('#clientList').on('tap', 'li', AGENTI.client.selectClient);
+    $('#clientList').on('tap', 'li',  AGENTI.client.selectClient);
 
     //Client detail page
     $('#clientDetail').on('pageinit', function () {
+
         $('#addContact').on('tap', function () {
             AGENTI.utils.createContact();
         });
+
+        $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
+
+        //handle for delete offerta button in offertaDetails
+        $('#offertaDeleteBtn').on('tap', function() { //this is a duplicate of offerta.deleteCurrent but cannot be arsed to fix
+
+            navigator.notification.confirm(
+                "Vuoi cancellare l'offerta per questo cliente?",
+                // callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+                        AGENTI.offerta.detail.length = 0; //empty offerta detail array
+                        AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
+                        $('#offertaTable tbody').empty(); // empty table in offerta detail page
+                        navigator.notification.alert('Offerta cancellata');
+                        $.mobile.changePage("#clientDetail");
+                    }
+                },            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Elimina offerta', 'Annulla']         // buttonLabels
+            );
+
+        });
+
     });
 
 
@@ -1003,15 +1239,42 @@ AGENTI.init = function () {
         $("#listaArticoli").empty();
         $("#history").empty();
         $("#mainSalesList").empty();
+        $('#offertaTable tbody').empty(); // empty table in offerta detail page
         //hide the more results button in sales history page
         $('#clientSalesHistory .moreBtn').closest('.ui-btn').hide();
         //hide the more results button in major sales history page
         $('#majorSalesHistory .moreBtn').closest('.ui-btn').hide();
         //hide the more results button in listino page
         $('#listino .moreBtn').closest('.ui-btn').hide();
+        //set the page title to the client's name
+        $('#clientDetail .pageTitle').text(AGENTI.client.ragSociale);
+
+        //if no order is inserted disable invio offerta button
+        if (AGENTI.offerta.detail.length > 0) {
+            $('#offertaDetailBtn').removeClass('ui-disabled');
+        } else {
+            $('#offertaDetailBtn').addClass('ui-disabled');
+        }
+
         //render client details
         AGENTI.client.renderClientDetails();
     });
+
+    //code to check for android back button in client detail page while an offerta has been created
+    document.addEventListener("backbutton", function(e){
+        if($.mobile.activePage.is('#clientDetail')){
+            /*
+             Event preventDefault/stopPropagation not required as adding backbutton
+             listener itself override the default behaviour. Refer below PhoneGap link.
+             */
+            //e.preventDefault();
+            AGENTI.offerta.checkIsInserted();
+            //navigator.app.exitApp();
+        }
+        else {
+            navigator.app.backHistory();
+        }
+    }, false);
 
     //Storico acquisti page
     $('#clientSalesHistory').on('pageshow', function () {
@@ -1020,7 +1283,7 @@ AGENTI.init = function () {
         //Set the max number of records we want per ajax request (default is 20)
         AGENTI.pagination.setRecordsPerPage(30);
         //Change page title
-        $('#clientSalesHistory').find('h4').html('Storico acquisti ' + AGENTI.client.ragSociale);
+        $('#clientSalesHistory').find('h4').html(AGENTI.client.ragSociale);
         AGENTI.client.getSalesHistory();
     });
 
@@ -1047,7 +1310,7 @@ AGENTI.init = function () {
         //Set the max number of records we want per ajax request (default is 20)
         AGENTI.pagination.setRecordsPerPage(30);
         //Change page title
-        $('#majorSalesHistory').find('h4').html('Acquisti maggiori ' + AGENTI.client.ragSociale);
+        $('#majorSalesHistory').find('h4').html(AGENTI.client.ragSociale);
         //change the year in the help text of this page
         $('#lastYear').html(Date.today().getFullYear() - 1);
         AGENTI.client.getMajorSalesHistory();
@@ -1127,9 +1390,30 @@ AGENTI.init = function () {
         AGENTI.item.getItemSalesHistory();
     });
 
-    $('#popupOrder').on('popupafteropen', function() {
-        AGENTI.item.addItemToOrder();
+    $('#popupOfferta').on('popupafteropen', function() {
+        var item = AGENTI.item;
+        $('#qtty').val("1").focus().select();
+        $('#popupOfferta').popup("reposition", {
+            y: 0 /* move it to top */
+        });
+        $('#prz').val(parseFloat(item.Prezzo.replace(',', '.')));
     });
+
+    $('#insertItemToOffertaBtn').on('tap', function() {
+        var item = AGENTI.item,
+            qty = $('#qtty').val(),
+            prezzo = $('#prz').val();
+
+        AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo);
+    });
+//-----------------------------------------------------------------------------------
+    //Offerta detail page bindings
+    $('#offertaDetail').on('pageshow', AGENTI.offerta.renderOffertaDetail);
+
+    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
+
+
+
 //-----------------------------------------------------------------------------------
 
 
@@ -1155,9 +1439,10 @@ AGENTI.init = function () {
     });
 
     $('#orderListContainer').on('tap', 'div.month ul.orderList li', function () {
+        AGENTI.utils.vibrate();
         $('#orderItemTable tbody').empty();
-        AGENTI.order.getOrderDetail($(this).attr('data-orderId'));
         $.mobile.changePage("#ordiniDetail");
+        AGENTI.order.getOrderDetail($(this).attr('data-orderId'));
     });
 //-----------------------------------------------------------------------------------
 
@@ -1167,28 +1452,19 @@ AGENTI.init = function () {
     var navBarDiv = $("div:jqmData(role='navbar')");
 
     navBarDiv.on('tap', '.homeNavBtn', function (e) {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
         $.mobile.changePage("#home");
         e.preventDefault();
     });
 
     navBarDiv.on('tap', '.clientiNavBtn', function (e) {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
         $.mobile.changePage("#clienti");
         e.preventDefault();
     });
 
     navBarDiv.on('tap', '.ordiniNavBtn', function (e) {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
         $.mobile.changePage("#ordini");
         e.preventDefault();
     });
@@ -1206,25 +1482,15 @@ AGENTI.init = function () {
 
 //-----------------------------------------------------------------------------------
     //Right panel bindings
-    //initialise panel(because the panel is external to the jquery pages and will need to be initialised manually)
-    $(function () {
-        $("[data-role=panel]").panel().enhanceWithin();
-    });
     //vibrate on panel open
-    var panel = $('#right-panel');
+    var panel = $('.left-panel');
     panel.on('panelopen', function () {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
     });
 
     //vibrate on panel close
     panel.on('panelclose', function () {
-        if (AGENTI.deviceType === 'Android') {
-            //this doesn't work well in ios
-            navigator.notification.vibrate(10);
-        }
+        AGENTI.utils.vibrate();
     });
 
     $('#logoutDialog').on('tap', '#appExitbtn', AGENTI.user.logout);
