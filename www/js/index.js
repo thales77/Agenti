@@ -684,7 +684,7 @@ AGENTI.offerta = {
     inviaOfferta: function () {
         var offerta = AGENTI.offerta,
               emailProperties = { to: AGENTI.client.email,
-                cc: 'vendite@siderprofessional.com',
+                cc: ['vendite@siderprofessional.com', AGENTI.db.getItem('email')],
                 subject: 'Offerta Sidercampania Professional srl',
                 isHtml:  true},
             tableData = [],
@@ -971,6 +971,7 @@ AGENTI.user = {
                     AGENTI.db.setItem("username", $("#loginForm #username").val());
                     AGENTI.db.setItem("password", $("#loginForm #password").val());
                     AGENTI.db.setItem("full_name", result.full_name);
+                    AGENTI.db.setItem("email", result.email);
                     AGENTI.db.setItem("usertype", result.usertype);
                     AGENTI.db.setItem("idAgente", result.idAgente);
                     //Go to main screen
