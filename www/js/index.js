@@ -608,7 +608,7 @@ AGENTI.offerta = {
     header: {totaleOfferta : 0},
     detail: [],
 
-    addItemToOfferta: function (itemId, itemDesc, qty, prezzo) {
+    addItemToOfferta: function (itemId, itemDesc, qty, prezzo, nota) {
         var offerta = AGENTI.offerta,
             totaleRiga = parseFloat(qty.replace(',', '.')) * parseFloat(prezzo.replace(',', '.'));
 
@@ -618,8 +618,8 @@ AGENTI.offerta = {
                 itemDesc : itemDesc,
                 qty : qty,
                 prezzo : prezzo,
-                totaleRiga : totaleRiga
-
+                totaleRiga : totaleRiga,
+                nota: nota
         });
 
         offerta.header.totaleOfferta = offerta.header.totaleOfferta  +  totaleRiga; //summing the grand total of the offerta
@@ -638,8 +638,7 @@ AGENTI.offerta = {
         $.each(offerta.detail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
             this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td><td>' +
-            '<button data-mini="true" data-inline="true" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
-
+            this.nota + '</td><td>' + '<button data-mini="true" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
         $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
@@ -650,8 +649,8 @@ AGENTI.offerta = {
         $('.deleteOffertaDetailRow').on('tap', function (event) {
 
 
-            var tableRow =  $(this).parents("tr");
-            var itemForDeletion = $(this).parents("tr").prevAll("tr").length; //get the number of rows before the row to be deleted, use this for updating model array
+            var tableRow =  $(this).parents("tr"); //cache the current row on the dom
+            var itemForDeletion = $(this).parents("tr").prevAll("tr").length; //get the number of rows before the row to be deleted, use this for splicing model array
             var totaleRiga = offerta.detail[itemForDeletion].totaleRiga;
 
             navigator.notification.confirm(
@@ -768,6 +767,7 @@ AGENTI.offerta = {
         columns = [
             {title: "Codice", key: "codice"},
             {title: "Descrizione", key: "descrizione"},
+            {title: "Note", key: "nota"},
             {title: "Qta", key: "qta"},
             {title: "Prezzo", key: "prezzo"},
             {title: "Totale", key: "totale"}
@@ -779,6 +779,7 @@ AGENTI.offerta = {
             tableData.push({
                 "codice": this.itemId,
                 "descrizione": this.itemDesc,
+                "nota": this.nota,
                 "qta": this.qty.replace(/\./g , ","),
                 "prezzo": this.prezzo.replace(/\./g , ","),
                 "totale": this.totaleRiga.toFixed(2).replace(/\./g , ",") //change into string again and replace dots with comas
@@ -803,7 +804,7 @@ AGENTI.offerta = {
 
         doc.setFontType("bolditalic");
         doc.setFontSize(10);
-        doc.text(20, height + noteHeight + 70, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
+        doc.text(20, height + noteHeight + 70, 'La Sidercampania Professional srl non e\' responsabile per eventuali ritardi di consegna del materiale, dovuta ');
         doc.text(20, height + noteHeight + 85, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
         doc.text(20, height + noteHeight + 110, 'Validita\' offerta 15gg');
 
@@ -1445,14 +1446,16 @@ AGENTI.init = function () {
             y: 0 /* move it to top */
         });
         $('#prz').val(parseFloat(item.Prezzo.replace(',', '.')));
+        $('#nota').val('');
     });
 
     $('#insertItemToOffertaBtn').on('tap', function() {
         var item = AGENTI.item,
             qty = $('#qtty').val().replace(',', '.'),
-            prezzo = $('#prz').val().replace(',', '.');
+            prezzo = $('#prz').val().replace(',', '.'),
+            nota = $('#nota').val();
 
-        AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo);
+        AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo, nota);
     });
 //-----------------------------------------------------------------------------------
     //Offerta detail page bindings
