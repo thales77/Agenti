@@ -636,11 +636,13 @@ AGENTI.offerta = {
         $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale);
         $.each(offerta.detail, function () {
 
-            $('#offertaTable tbody').append('<tr><th></th><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
-            this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td></tr>');
+            $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
+            this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td><td>' +
+            '<button data-mini="true" data-inline="true" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
         $('#totaleOfferta').html('Totale offerta: &#8364;' + offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
+        $('noteOffertaHeader').text(offerta.header.note);
         $('#offertaTable').table("refresh");
     },
 
@@ -690,11 +692,14 @@ AGENTI.offerta = {
             tableData = [],
             columns = [],
             options = {},
-            height = 180;
+            height = 180,
+            splitText ="",
+            noteHeight = 0;
 
 
         //FIRST GENERATE THE PDF DOCUMENT
         offerta.pdfFileName = 'offerta.pdf';
+        offerta.header.note = $('#noteOffertaHeader').val();
 
         console.log("generating pdf...");
         var doc = new jsPDF('p', 'pt', 'a4');
@@ -753,14 +758,22 @@ AGENTI.offerta = {
         doc.setFontSize(12);
         doc.text(400, height, 'Totale offerta: ' +  offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ",") + ' +IVA');
 
+        doc.setFontType("normal");
+        doc.setFontSize(10);
+        doc.text(20, height + 20, 'Note aggiuntive: ');
+        splitText = doc.splitTextToSize(offerta.header.note, 550); //this text could be long so we have to split it in chunks
+        doc.text(20, height + 35, splitText);
+
+        noteHeight= splitText.length *15; //push everything bellow the notes field down according to how many lines its is (lines*15pt)
+
         doc.setFontType("bolditalic");
         doc.setFontSize(10);
-        doc.text(20, height + 30, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
-        doc.text(20, height + 45, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
-        doc.text(20, height + 70, 'Validita\' offerta 15gg');
+        doc.text(20, height + noteHeight + 70, 'La Sidercampania Professional srl non e responsabile per eventuali ritardi di consegna del materiale, dovuta ');
+        doc.text(20, height + noteHeight + 85, 'ai nostri fornitori ed il loro ciclo di produzione e trasporto.');
+        doc.text(20, height + noteHeight + 110, 'Validita\' offerta 15gg');
 
         doc.setFontType("normal");
-        doc.text(20, height + 85, 'Nominativo addetto: ' +  AGENTI.db.getItem('full_name'));
+        doc.text(20, height + noteHeight + 125, 'Nominativo addetto: ' +  AGENTI.db.getItem('full_name'));
 
         var pdfOutput = doc.output();
         console.log( pdfOutput );
@@ -1401,8 +1414,8 @@ AGENTI.init = function () {
 
     $('#insertItemToOffertaBtn').on('tap', function() {
         var item = AGENTI.item,
-            qty = $('#qtty').val(),
-            prezzo = $('#prz').val();
+            qty = $('#qtty').val().replace(',', '.'),
+            prezzo = $('#prz').val().replace(',', '.');
 
         AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo);
     });
@@ -1412,6 +1425,27 @@ AGENTI.init = function () {
 
     $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 
+    $('#offertaDetail').on('pageshow', function () {
+        $('.deleteOffertaDetailRow').on('tap', function () {
+
+            $(this).closest('tr').remove();
+
+
+            /*navigator.notification.confirm(
+                "Cancellare articolo?",
+                // callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+
+                        $(this).closest('tr').remove();
+                    }
+                },            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Cancella articolo', 'Annulla']         // buttonLabels
+            );*/
+
+        });
+    });
 
 
 //-----------------------------------------------------------------------------------

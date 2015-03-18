@@ -118,7 +118,7 @@
                     Realizzata gestione invio offerte via email
                 </li>
                 <li>
-                    E Possibile aggiungere un cliente nella rubrica del telefono
+                    E possibile aggiungere un cliente nella rubrica del telefono
                 </li>
             </ul>
 
@@ -325,12 +325,12 @@
                class="table-stroke table-stripe ui-responsive">
             <thead>
             <tr>
-                <th></th>
                 <th>Codice</th>
                 <th>Desc</th>
                 <th>Qta</th>
                 <th>Prezzo</th>
                 <th>Totale</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -345,6 +345,10 @@
         <br>
         <span style="font-style: italic; text-align: right" id="totaleOfferta"></span>
         <br><br>
+        <div data-role="fieldcontain">
+            <label for="noteOffertaHeader">Note aggiuntive:</label>
+            <textarea name="noteOffertaHeader" id="noteOffertaHeader"></textarea>
+        </div>
         <button data-icon="mail" id="inviaOfferta">Invia offerta</button>
         <button data-icon="delete" id="offertaDeleteBtn">Cancella offerta</button>
     </div>
