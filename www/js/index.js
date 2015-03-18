@@ -634,16 +634,51 @@ AGENTI.offerta = {
         /*End of variable declaration************/
 
         $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale);
-        $.each(offerta.detail, function () {
 
+        $.each(offerta.detail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
             this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td><td>' +
             '<button data-mini="true" data-inline="true" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
+
         });
 
-        $('#totaleOfferta').html('Totale offerta: &#8364;' + offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
+        $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
         $('noteOffertaHeader').text(offerta.header.note);
         $('#offertaTable').table("refresh");
+
+        //Handle delete button, this shouldn't be here
+        $('.deleteOffertaDetailRow').on('tap', function (event) {
+
+
+            var tableRow =  $(this).parents("tr");
+            var itemForDeletion = $(this).parents("tr").prevAll("tr").length; //get the number of rows before the row to be deleted, use this for updating model array
+            var totaleRiga = offerta.detail[itemForDeletion].totaleRiga;
+
+            navigator.notification.confirm(
+                "Cancellare articolo?",
+                // callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+
+                        tableRow.remove(); //remove table row from DOM
+                        offerta.detail.splice(itemForDeletion, 1); //remove item from model
+
+                        //update totale in model
+                        offerta.header.totaleOfferta = offerta.header.totaleOfferta - totaleRiga;
+
+                        //DOM update total on the page
+                        $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
+                        if (offerta.detail.length == 0) {
+                            $.mobile.changePage('#clientDetail');
+                        }
+                    }
+                },            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Cancella articolo', 'Annulla']         // buttonLabels
+            );
+
+            event.preventDefault();
+        });
     },
 
     checkIsInserted: function (e) {
@@ -1424,28 +1459,6 @@ AGENTI.init = function () {
     $('#offertaDetail').on('pageshow', AGENTI.offerta.renderOffertaDetail);
 
     $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
-
-    $('#offertaDetail').on('pageshow', function () {
-        $('.deleteOffertaDetailRow').on('tap', function () {
-
-            $(this).closest('tr').remove();
-
-
-            /*navigator.notification.confirm(
-                "Cancellare articolo?",
-                // callback
-                function (buttonIndex) {
-                    if (buttonIndex === 1) {
-
-                        $(this).closest('tr').remove();
-                    }
-                },            // callback to invoke with index of button pressed
-                'Attenzione',           // title
-                ['Cancella articolo', 'Annulla']         // buttonLabels
-            );*/
-
-        });
-    });
 
 
 //-----------------------------------------------------------------------------------
