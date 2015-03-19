@@ -624,7 +624,7 @@ AGENTI.offerta = {
 
         offerta.header.totaleOfferta = offerta.header.totaleOfferta  +  totaleRiga; //summing the grand total of the offerta
 
-        $( "#popupOfferta" ).popup( "close" );
+
         //navigator.notification.alert("articolo aggiunto all' offerta");
     },
 
@@ -638,7 +638,7 @@ AGENTI.offerta = {
         $.each(offerta.detail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
             this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td><td>' +
-            this.nota + '</td><td>' + '<button data-mini="true" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
+            this.nota + '</td><td>' + '<button data-mini="true" data-icon="delete" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
         $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
@@ -1445,18 +1445,46 @@ AGENTI.init = function () {
         $('#popupOfferta').popup("reposition", {
             y: 0 /* move it to top */
         });
-        $('#prz').val(parseFloat(item.Prezzo.replace(',', '.')));
+        $('#prz').val(item.Prezzo);
         $('#nota').val('');
+    });
+
+    $('#addEmptyItemPopup').on('popupafteropen', function() {
+        $('#codiceArtLib').val('');
+        $('#descArtLib').val('');
+        $('#qttyArtLib').val('');
+        $('#przArtLib').val('');
+        $('#notaArtLib').val('');
+
+        $('#addEmptyItemPopup').popup("reposition", {
+            y: 0 /* move it to top */
+        });
+
     });
 
     $('#insertItemToOffertaBtn').on('tap', function() {
         var item = AGENTI.item,
-            qty = $('#qtty').val().replace(',', '.'),
-            prezzo = $('#prz').val().replace(',', '.'),
+            qty = $('#qtty').val(),
+            prezzo = $('#prz').val(),
             nota = $('#nota').val();
 
         AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo, nota);
+        $( "#popupOfferta" ).popup( "close" );
     });
+
+    $('#insertLibItemToOffertaBtn').on('tap', function() {
+        var codice = $('#codiceArtLib').val(),
+            descrizione = $('#descArtLib').val(),
+            qty = $('#qttyArtLib').val(),
+            prezzo = $('#przArtLib').val(),
+            nota = $('#notaArtLib').val();
+
+        AGENTI.offerta.addItemToOfferta(codice, descrizione, qty, prezzo, nota);
+        $('#offertaTable tbody').empty();
+        AGENTI.offerta.renderOffertaDetail();
+        $( "#addEmptyItemPopup" ).popup( "close" );
+    });
+
 //-----------------------------------------------------------------------------------
     //Offerta detail page bindings
     $('#offertaDetail').on('pageshow', AGENTI.offerta.renderOffertaDetail);
