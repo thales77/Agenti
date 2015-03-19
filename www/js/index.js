@@ -638,7 +638,7 @@ AGENTI.offerta = {
         $.each(offerta.detail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
             this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td><td>' +
-            this.nota + '</td><td>' + '<button data-mini="true" data-icon="delete" class="deleteOffertaDetailRow">Cancella</button></td></tr>');
+            this.nota + '</td><td>' + '<button class="ui-btn ui-icon-delete ui-mini ui-btn-icon-notext ui-corner-all deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
         $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
@@ -1450,8 +1450,8 @@ AGENTI.init = function () {
     });
 
     $('#addEmptyItemPopup').on('popupafteropen', function() {
-        $('#codiceArtLib').val('');
-        $('#descArtLib').val('');
+        $('#codiceArtLib').val('0000001');
+        $('#descArtLib').val('ARTICOLI VARI DA CODIFICARE').focus().select();
         $('#qttyArtLib').val('');
         $('#przArtLib').val('');
         $('#notaArtLib').val('');
@@ -1459,7 +1459,6 @@ AGENTI.init = function () {
         $('#addEmptyItemPopup').popup("reposition", {
             y: 0 /* move it to top */
         });
-
     });
 
     $('#insertItemToOffertaBtn').on('tap', function() {
