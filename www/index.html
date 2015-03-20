@@ -319,36 +319,42 @@
     </div>
 
     <div data-role="content">
-        <div id="offertaHeader"></div>
+        <div id="offertaWrapper" class="ui-corner-all">
+            <div class="ui-bar ui-bar-a">
+                <h3>Totale offerta: &#8364; <span id="totaleOfferta"></span></h3>
+            </div>
+            <div class="ui-body ui-body-a ui-corner-all">
 
-        <table data-role="table" id="offertaTable" data-mode="reflow" data-theme="a"
-               class="table-stroke table-stripe ui-responsive">
-            <thead>
-            <tr>
-                <th>Codice</th>
-                <th>Desc</th>
-                <th>Qta</th>
-                <th>Prezzo</th>
-                <th>Totale</th>
-                <th>Note</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <!--  <ul id="offertaItemList" data-role="listview" data-theme="a" data-inset="true">
+                <table data-role="table" id="offertaTable" data-mode="reflow" data-theme="a"
+                       class="table-stroke table-stripe ui-responsive">
+                    <thead>
+                    <tr>
+                        <th>Codice</th>
+                        <th>Desc</th>
+                        <th>Qta</th>
+                        <th>Prezzo</th>
+                        <th>Totale</th>
+                        <th>Note</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--  <ul id="offertaItemList" data-role="listview" data-theme="a" data-inset="true">
 
-             </ul> -->
+                     </ul> -->
 
 
-            </tbody>
-        </table>
-        <!-- todo - add functionality here -->
-        <a href="#addEmptyItemPopup" data-theme="a" data-role="button" data-icon="plus"
-           data-rel="popup" data-position-to="window" data-transition="pop">Inserisci articolo non codificato</a>
+                    </tbody>
+                </table>
+                <!-- todo - add functionality here -->
+                <a href="#listino" class="ui-btn ui-icon-search ui-btn-icon-left">Inserisci articolo dall' listino</a>
+                <a href="#addEmptyItemPopup" data-theme="a" data-role="button" data-icon="plus"
+                   data-rel="popup" data-position-to="window" data-transition="pop">Inserisci articolo non
+                    codificato</a>
+            </div>
+        </div>
         <br>
         <br>
-        <span style="font-weight: bold">Totale offerta: &#8364;</span><span style="font-weight: bold" id="totaleOfferta"></span>
-        <br><br>
         <div data-role="fieldcontain">
             <label for="noteOffertaHeader">Note aggiuntive:</label>
             <textarea name="noteOffertaHeader" id="noteOffertaHeader"></textarea>
@@ -438,7 +444,7 @@
         <a href="#clientSalesHistory" data-role="button" data-icon="calendar">Storico acquisti</a>
         <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
         <a href="#listino" data-role="button" data-icon="search" data-prefetch>Listino</a>
-        <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="mail" class="ui-disabled">Invio offerta</a>
+        <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="mail">Invio offerta</a>
 
 
 

@@ -638,7 +638,7 @@ AGENTI.offerta = {
         $.each(offerta.detail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
             this.qty.replace(/\./g , ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g , ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g , ",") + '</td><td>' +
-            this.nota + '</td><td>' + '<button class="ui-btn ui-icon-delete ui-mini ui-btn-icon-notext ui-corner-all deleteOffertaDetailRow">Cancella</button></td></tr>');
+            this.nota + '</td><td>' + '<button class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-mini deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
         $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
@@ -667,9 +667,10 @@ AGENTI.offerta = {
 
                         //DOM update total on the page
                         $('#totaleOfferta').text(offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ","));
-                        if (offerta.detail.length == 0) {
+
+                       /* if (offerta.detail.length == 0) {
                             $.mobile.changePage('#clientDetail');
-                        }
+                        }*/
                     }
                 },            // callback to invoke with index of button pressed
                 'Attenzione',           // title
@@ -1270,8 +1271,9 @@ AGENTI.init = function () {
                         AGENTI.offerta.detail.length = 0; //empty offerta detail array
                         AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
                         $('#offertaTable tbody').empty(); // empty table in offerta detail page
+                        $('#totaleOfferta').text(AGENTI.offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ",")); //reset offerta total on DOM
                         navigator.notification.alert('Offerta cancellata');
-                        $.mobile.changePage("#clientDetail");
+                        /*$.mobile.changePage("#clientDetail");*/
                     }
                 },            // callback to invoke with index of button pressed
                 'Attenzione',           // title
@@ -1298,12 +1300,12 @@ AGENTI.init = function () {
         //set the page title to the client's name
         $('#clientDetail .pageTitle').text(AGENTI.client.ragSociale);
 
-        //if no order is inserted disable invio offerta button
+       /* //if no order is inserted disable invio offerta button
         if (AGENTI.offerta.detail.length > 0) {
             $('#offertaDetailBtn').removeClass('ui-disabled');
         } else {
             $('#offertaDetailBtn').addClass('ui-disabled');
-        }
+        }*/
 
         //render client details
         AGENTI.client.renderClientDetails();
@@ -1486,7 +1488,10 @@ AGENTI.init = function () {
 
 //-----------------------------------------------------------------------------------
     //Offerta detail page bindings
-    $('#offertaDetail').on('pageshow', AGENTI.offerta.renderOffertaDetail);
+    $('#offertaDetail').on('pageshow', function () {
+        $('#offertaTable tbody').empty();
+        AGENTI.offerta.renderOffertaDetail();
+    });
 
     $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 
