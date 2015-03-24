@@ -1474,24 +1474,63 @@ AGENTI.init = function () {
     });
 
     $('#insertLibItemToOffertaBtn').on('tap', function() {
-        var codice = $('#codiceArtLib').val(),
-            descrizione = $('#descArtLib').val(),
-            qty = $('#qttyArtLib').val(),
-            prezzo = $('#przArtLib').val(),
-            nota = $('#notaArtLib').val();
+            var codice = $('#codiceArtLib').val(),
+                descrizione = $('#descArtLib').val(),
+                qty = $('#qttyArtLib').val(),
+                prezzo = $('#przArtLib').val(),
+                nota = $('#notaArtLib').val();
 
-        AGENTI.offerta.addItemToOfferta(codice, descrizione, qty, prezzo, nota);
-        $('#offertaTable tbody').empty();
-        AGENTI.offerta.renderOffertaDetail();
-        $( "#addEmptyItemPopup" ).popup( "close" );
+            AGENTI.offerta.addItemToOfferta(codice, descrizione, qty, prezzo, nota);
+            $('#offertaTable tbody').empty();
+            AGENTI.offerta.renderOffertaDetail();
+            $("#addEmptyItemPopup").popup("close");
     });
 
+
 //-----------------------------------------------------------------------------------
+
+
     //Offerta detail page bindings
     $('#offertaDetail').on('pageshow', function () {
         $('#offertaTable tbody').empty();
         AGENTI.offerta.renderOffertaDetail();
     });
+
+  /* $('#addEmptyItemPopup').on('popupafteropen', function () {
+        //jquery form validation rules for the popup addEmptyItemPopup popup
+        $("#addEmptyItemForm").validate({
+            rules: {
+                descArtLib: {
+                    required: true
+                },
+                qttyArtLib: {
+                    pattern: /^(\d+|\d+,\d{1,2})$/, //number with comma for decimal
+                    required: true
+                },
+                przArtLib: {
+                    pattern: /^(\d+|\d+,\d{1,2})$/, //number with comma for decimal
+                    required: true
+                }
+            },
+            messages: {
+                descArtLib: {
+                    required: "Inserire una descrizione."
+                },
+                qttyArtLib: {
+                    required: "Inserire quantità.",
+                    pattern: "Inserire solo valori numerici"
+
+                },
+                przArtLib: {
+                    required: "Inserire prezzo di vendita.",
+                    pattern: "Inserire solo valori numerici"
+                }
+            },
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    }); */
 
     $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 

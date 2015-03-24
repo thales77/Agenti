@@ -368,10 +368,10 @@
             <h1>Articolo non codificato</h1>
         </div>
         <div role="main" class="ui-content">
-            <form>
+            <form id="addEmptyItemForm">
                 <div style="padding:10px 20px;">
                     <!--<label for="codiceArtLib">Codice</label>-->
-                    <input type="text" name="codiceArtLib" id="codiceArtLib" value="" placeholder="codice articolo" data-theme="a" maxlength="10">
+                    <input type="text" name="codiceArtLib" id="codiceArtLib" value="" placeholder="codice articolo" data-theme="a" maxlength="10" disabled="true">
 
                     <!--<label for="descArtLib">Codice</label>-->
                     <input type="text" name="descArtLib" id="descArtLib" value="" placeholder="descrizione" data-theme="a" maxlength="30">
@@ -733,6 +733,9 @@
 <!--pdf generation library-->
 <script type="text/javascript" src="js/lib/jspdf.debug.js"></script>
 <script type="text/javascript" src="js/lib/jspdf.plugin.autotable.js"></script>
+
+<!--Jquery validation plugin-->
+<script type="text/javascript" src="js/lib/jquery.validate.js"></script>
 
 <!--Database import script-->
 <!--<script src="js/database.js"></script>-->
