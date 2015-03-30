@@ -710,6 +710,7 @@ AGENTI.offerta = {
             AGENTI.offerta.detail.length = 0; //empty offerta detail array
             AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
+            $('#offertaConfermedCheck').attr("checked",false);
 
             navigator.notification.alert('Offerta cancellata');
             $.mobile.changePage("#clienti", {transition: "flip"});
@@ -721,7 +722,7 @@ AGENTI.offerta = {
     inviaOfferta: function () {
         var offerta = AGENTI.offerta,
               emailProperties = { to: AGENTI.client.email,
-                cc: ['vendite@siderprofessional.com', AGENTI.db.getItem('email')],
+                cc: [AGENTI.db.getItem('email')],
                 subject: 'Offerta Sidercampania Professional srl',
                 isHtml:  true},
             tableData = [],
@@ -731,6 +732,9 @@ AGENTI.offerta = {
             splitText ="",
             noteHeight = 0;
 
+        if($('#offertaConfermedCheck').is(':checked')) {
+            emailProperties.cc.push('vendite@siderprofessional.com');
+        }
 
         //FIRST GENERATE THE PDF DOCUMENT
         offerta.pdfFileName = 'offerta.pdf';
@@ -1272,6 +1276,7 @@ AGENTI.init = function () {
                         AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
                         $('#offertaTable tbody').empty(); // empty table in offerta detail page
                         $('#totaleOfferta').text(AGENTI.offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ",")); //reset offerta total on DOM
+                        $('#offertaConfermedCheck').attr("checked",false);
                         navigator.notification.alert('Offerta cancellata');
                         /*$.mobile.changePage("#clientDetail");*/
                     }
