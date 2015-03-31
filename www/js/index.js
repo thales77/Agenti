@@ -694,6 +694,7 @@ AGENTI.offerta = {
                 'Attenzione',           // title
                 ['Elimina offerta', 'Annulla']         // buttonLabels
             );
+
         } else {
             $.mobile.changePage('#clienti');
         }
@@ -710,7 +711,7 @@ AGENTI.offerta = {
             AGENTI.offerta.detail.length = 0; //empty offerta detail array
             AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
-            $('#offertaConfermedCheck').attr("checked",false);
+            $('#offertaConfermedCheck').attr("checked",false).checkboxradio("refresh");
 
             navigator.notification.alert('Offerta cancellata');
             $.mobile.changePage("#clienti", {transition: "flip"});
@@ -1276,7 +1277,7 @@ AGENTI.init = function () {
                         AGENTI.offerta.header = {totaleOfferta: 0}; //reset offerta total
                         $('#offertaTable tbody').empty(); // empty table in offerta detail page
                         $('#totaleOfferta').text(AGENTI.offerta.header.totaleOfferta.toFixed(2).replace(/\./g , ",")); //reset offerta total on DOM
-                        $('#offertaConfermedCheck').attr("checked",false);
+                        $('#offertaConfermedCheck').attr("checked",false).checkboxradio("refresh");
                         navigator.notification.alert('Offerta cancellata');
                         /*$.mobile.changePage("#clientDetail");*/
                     }
