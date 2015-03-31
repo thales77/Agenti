@@ -1263,9 +1263,6 @@ AGENTI.init = function () {
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
 
-        //handle for delete offerta button in offertaDetails
-        $('#offertaDeleteBtn').on('tap', AGENTI.offerta.checkIsInserted);
-
     });
 
 
@@ -1518,7 +1515,12 @@ AGENTI.init = function () {
 
     $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 
-
+    //handle for delete offerta button in offertaDetails
+    $('#offertaDeleteBtn').on('tap', function () {
+        if (AGENTI.offerta.detail.length !== 0) {
+            AGENTI.offerta.checkIsInserted();
+        }
+    });
 //-----------------------------------------------------------------------------------
 
 
