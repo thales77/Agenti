@@ -1,15 +1,17 @@
 var AGENTI = {
-    //Server ip
     remoteUrl: "http://85.33.180.83/test/phonegapsrv/index.php",
-    //test  urls
-    //remoteUrl : "http://192.168.0.245/test/phonegapsrv/index.php",
-    //remoteUrl : "http://localhost/index.php",
-    //Check device type
     deviceType: "",
     appVersion: "",
-    db: localStorage,
-    getData: function (data, callback) {
-        var queryData = $.extend({}, data, AGENTI.pagination.getProperties());
+    db: localStorage
+};
+
+//This function handles all the api calls to the remote server
+AGENTI.getData = function (data, callback) {
+
+        var queryData = $.extend({}, data, AGENTI.pagination.getProperties()),
+            errorHandler = function () {
+                navigator.notification.alert('Errore di comunicazione con il server');
+            };
 
         $.ajax({
             type: 'GET',
@@ -26,12 +28,9 @@ var AGENTI = {
             cache: false,
             timeout: 20000,
             success: callback,
-            error: AGENTI.errorHandler
+            error: errorHandler
         });
-    },
-    errorHandler: function () {
-        navigator.notification.alert('Errore di comunicazione con il server');
-    }
+
 };
 
 //Pagination module
