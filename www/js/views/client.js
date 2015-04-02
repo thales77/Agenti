@@ -5,7 +5,7 @@
 AGENTI.client = {
     //function to get the client list in json format from the server
     getClientList: function () {
-        var that = AGENTI.client,
+        var self = AGENTI.client,
             searchString = $.trim($('#searchTerm').val()), //String to search for in server
             clientOptionString = JSON.stringify($('#clientSearchOptions').val()),//json.stringify this to pass search options to server via json
             userName = AGENTI.db.getItem('username'),
@@ -14,7 +14,7 @@ AGENTI.client = {
         if (searchString !== "") {
             //get Client list from remote server
             //make ajax call
-            AGENTI.getData(queryData, that.renderList);
+            AGENTI.getData(queryData, self.renderList);
         }
     },
 
