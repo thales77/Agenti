@@ -151,9 +151,9 @@ AGENTI.init = function () {
         $('#clientSalesHistory .moreBtn').closest('.ui-btn').hide();
     });
 
-    //Click on sales history list to see item details
+    //Click on sales history list to see listino details
     $('#history').on('tap', 'li', function () {
-        AGENTI.item.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
+        AGENTI.listino.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
     });
 
 
@@ -180,9 +180,9 @@ AGENTI.init = function () {
         $('#majorSalesHistory .moreBtn').closest('.ui-btn').hide();
     });
 
-    //Click on major sales history list to see item details
+    //Click on major sales history list to see listino details
     $('#mainSalesList').on('tap', 'li', function () {
-        AGENTI.item.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
+        AGENTI.listino.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
     });
 //-----------------------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ AGENTI.init = function () {
 
     //Item Search page
     $('#itemSearchForm').on('tap', ':submit', function () {
-        //Reset the item list
+        //Reset the listino list
         $("#listaArticoli").empty();
         //hide the more results button
         $('#listino .moreBtn').closest('.ui-btn').hide();
@@ -206,11 +206,11 @@ AGENTI.init = function () {
         AGENTI.utils.pagination.resetOffset();
         //Set the max number of records we want per ajax request (default is 20)
         AGENTI.utils.pagination.setRecordsPerPage(25);
-        AGENTI.item.getItemList();
+        AGENTI.listino.getItemList();
     });
 
     $('#listino').on('tap', '.moreBtn', function () {
-        AGENTI.item.getItemList();
+        AGENTI.listino.getItemList();
     });
 
     //prevent submiting the form when the user taps the 'go' key on the virtual keyboard
@@ -224,28 +224,28 @@ AGENTI.init = function () {
         $('#listino').find('h4').text('Listino ' + AGENTI.client.ragSociale);
     });
 
-    //Ajax call to get item details
+    //Ajax call to get listino details
     $('#listaArticoli').on('tap', 'li', function () {
-        AGENTI.item.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
+        AGENTI.listino.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
     });
 
 
     //itemDetail Page
     $('#itemDetail').on('pageshow', function () {
-        //set the page title to the item's name
-        $('#itemDetail').find('h5').html(AGENTI.item.descArt);
+        //set the page title to the listino's name
+        $('#itemDetail').find('h5').html(AGENTI.listino.descArt);
         $('#itemSalesHistoryButton').removeClass('ui-disabled');
-        AGENTI.item.renderItemDetails();
+        AGENTI.listino.renderItemDetails();
     });
 
-    //Sales history button in item detail page
+    //Sales history button in listino detail page
     $('#itemSalesHistoryButton').on('tap', function (){
         $(this).addClass('ui-disabled');
-        AGENTI.item.getItemSalesHistory();
+        AGENTI.listino.getItemSalesHistory();
     });
 
     $('#popupOfferta').on('popupafteropen', function() {
-        var item = AGENTI.item;
+        var item = AGENTI.listino;
         $('#qtty').val("1").focus().select();
         $('#popupOfferta').popup("reposition", {
             y: 0 /* move it to top */
@@ -267,7 +267,7 @@ AGENTI.init = function () {
     });
 
     $('#insertItemToOffertaBtn').on('tap', function() {
-        var item = AGENTI.item,
+        var item = AGENTI.listino,
             qty = $('#qtty').val(),
             prezzo = $('#prz').val(),
             nota = $('#nota').val();
@@ -399,7 +399,7 @@ AGENTI.init = function () {
         try {
             AGENTI.scanner.scan(
                 function (result) {
-                    AGENTI.item.getItemDetails(result.text, "barcode");
+                    AGENTI.listino.getItemDetails(result.text, "barcode");
                     /*navigator.notification.alert("We got a barcode\n" +
                      "Result: " + result.text + "\n" +
                      "Format: " + result.format + "\n" +

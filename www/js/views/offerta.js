@@ -58,7 +58,7 @@ AGENTI.offerta = {
                     if (buttonIndex === 1) {
 
                         tableRow.remove(); //remove table row from DOM
-                        offerta.detail.splice(itemForDeletion, 1); //remove item from model
+                        offerta.detail.splice(itemForDeletion, 1); //remove listino from model
 
                         //update totale in model
                         offerta.header.totaleOfferta = offerta.header.totaleOfferta - totaleRiga;

@@ -1136,8 +1136,8 @@ var jsPDF = (function(global) {
 			//, x2, y2 // bezier only. In page default measurement "units", *after* scaling
 			//, x3, y3 // bezier only. In page default measurement "units", *after* scaling
 			// ending point for all, lines and bezier. . In page default measurement "units", *after* scaling
-			x4 = x; // last / ending point = starting point for first item.
-			y4 = y; // last / ending point = starting point for first item.
+			x4 = x; // last / ending point = starting point for first listino.
+			y4 = y; // last / ending point = starting point for first listino.
 
 			for (i = 0; i < l; i++) {
 				leg = lines[i];
@@ -6344,9 +6344,9 @@ var Deflater = (function(obj) {
 				while (s.bl_count[bits] === 0)
 					bits--;
 				s.bl_count[bits]--; // move one leaf down the tree
-				s.bl_count[bits + 1] += 2; // move one overflow item as its brother
+				s.bl_count[bits + 1] += 2; // move one overflow listino as its brother
 				s.bl_count[max_length]--;
-				// The brother of the overflow item also moves one step up,
+				// The brother of the overflow listino also moves one step up,
 				// but this does not affect bl_count[max_length]
 				overflow -= 2;
 			} while (overflow > 0);
