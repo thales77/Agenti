@@ -6,7 +6,10 @@ var AGENTI = {
     remoteUrl: "http://85.33.180.83/test/phonegapsrv/index.php",
     deviceType: "",
     appVersion: "",
-    db: localStorage
+    db: localStorage,
+    client: {},
+    listino: {},
+    log: {}
 };
 
 /*Function to detect device type, Setup UI event bindings, check if the user is already loged in*/

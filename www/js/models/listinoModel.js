@@ -1,7 +1,6 @@
 /**
  * Created by Babis on 07/04/2015.
  */
-AGENTI.listino = {};
 
 //Get the item list from the server in json format
 AGENTI.listino.getItemList = function () {
