@@ -9,6 +9,7 @@ var AGENTI = {
     db: localStorage,
     client: {},
     listino: {},
+    order: {},
     log: {}
 };
 
