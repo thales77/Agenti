@@ -2,9 +2,11 @@
  * Created by Babis on 02/04/2015.
  */
 //Handles user login logout
-AGENTI.user = {
-    //checks username and password against server database
-    login: function () {
+//checks username and password against server database
+//using revealing module pattern for practise
+
+AGENTI.user = (function () {
+    var login = function () {
         /*Variable declaration*******************/
         var form = $('#loginForm').serialize();
         /*End of variable declaration************/
@@ -52,9 +54,11 @@ AGENTI.user = {
             }
         });
         $("#loginBtn").removeAttr("disabled");
-    },
+    };
+
+
     //deletes the locally stored username and password
-    logout: function () {
+    var logout = function () {
         AGENTI.db.clear();
         if (AGENTI.deviceType === 'Android') {
             navigator.app.exitApp();
@@ -62,5 +66,12 @@ AGENTI.user = {
             $.mobile.changePage('#loginPage');
         }
         console.log('logout succesful');
-    }
-};
+    };
+
+
+    return {
+        login: login,
+        logout: logout
+    };
+
+})();

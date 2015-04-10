@@ -13,7 +13,7 @@ var AGENTI = {
     log: {}
 };
 
-/*Function to detect device type, Setup UI event bindings, check if the user is already loged in*/
+/*Function to detect device type, Setup UI event bindings, check if the user is already logged in*/
 
 AGENTI.init = function () {
     console.log("App initialising...");
