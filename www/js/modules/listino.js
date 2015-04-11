@@ -1,222 +1,267 @@
 /**
- * Created by Babis on 02/04/2015.
+ * Created by Babis Boikos on 02/04/2015.
+ *
+ * requires: Jquery, app, utils, client
+ *
+ * exports: getItemList, getItemDetails, getItemSalesHistory, renderItemDetails, prezzo, descArt
  */
 
-/*MODELS*/
+
+AGENTI.listino = (function () {
+
+    var client = AGENTI.client,
+        codiceArticolo = "",
+        descArt = "",
+        fornitoreArticolo = "",
+        codForn1 = "",
+        codForn2 = "",
+        dispCa = "",
+        dispCe = "",
+        dispPo = "",
+        prezzoLordo = "",
+        sconto1 = "",
+        sconto2 = "",
+        prezzo = "",
+        prezzoAgenti = "",
+        descPromo = "",
+        scadenzaPromo = "",
+        queryData = {};
+
+    /*MODELS*/
 
 //Get the item list from the server in json format
-AGENTI.listino.getItemList = function () {
-    /*Variable declaration ***************************/
-    var self = AGENTI.listino,
-        itemSearchString = $.trim($('#itemSearchString').val()),
-        client = AGENTI.client,
-        fasciaSconto = client.categoriaSconto,
-        searchOptionsString = JSON.stringify($('#itemSearchOptions').val()),
-        userName = AGENTI.db.getItem('username'),
-        queryData = {action: 'searchItem', searchTerm: itemSearchString, fasciaSconto: fasciaSconto, itemSearchOptions: searchOptionsString, user: userName};
-    /*End of variable declaration********************/
+    var getItemList = function () {
+        /*Variable declaration ***************************/
+        var itemSearchString = $.trim($('#itemSearchString').val()),
+            searchOptionsString = JSON.stringify($('#itemSearchOptions').val());
+        /*End of variable declaration********************/
 
-    if (itemSearchString !== "") {
-        //get data from the server
-        AGENTI.getData(queryData, self.renderList);
-    }
-};
 
+        if (itemSearchString !== "") {
+
+            queryData = {
+                action: 'searchItem',
+                searchTerm: itemSearchString,
+                fasciaSconto: client.categoriaSconto(),
+                itemSearchOptions: searchOptionsString,
+                user: AGENTI.db.getItem('username')
+            };
+
+            //get data from the server
+            AGENTI.getData(queryData, renderList);
+        }
+    };
 
 
 //Get a single items's details from the server in json format
-AGENTI.listino.getItemDetails  = function (id, type) {
-    /*Variable declaration*******************/
-    var client = AGENTI.client,
-        fasciaSconto = client.categoriaSconto,
-        scadenzaPromo = "",
-        descPromo = "",
-        prezzo = "",
-        prezzoProm = "",
-        prezzoAgenti = "",
-        userName = AGENTI.db.getItem('username'),
-        item = AGENTI.listino,
-        queryData = {};
-    /*End of variable declaration************/
+    var getItemDetails = function (id, type) {
+        /*Variable declaration*******************/
+        var prezzoProm = "";
+        /*End of variable declaration************/
 
 
-    if (type === "codice") {
-        queryData = {action: 'getItemById', codiceArticolo: id, fasciaSconto: fasciaSconto, user: userName};
-    } else if (type === "barcode") {
-        queryData = {action: 'getItemByBarcode', barcode: id, fasciaSconto: fasciaSconto, user: userName};
-    } else {
-        return;
-    }
+        if (type === "codice") {
+            queryData = {
+                action: 'getItemById',
+                codiceArticolo: id,
+                fasciaSconto: client.categoriaSconto(),
+                user: AGENTI.db.getItem('username')
+            };
+        } else if (type === "barcode") {
+            queryData = {
+                action: 'getItemByBarcode',
+                barcode: id,
+                fasciaSconto: client.categoriaSconto(),
+                user: AGENTI.db.getItem('username')
+            };
+        } else {
+            return;
+        }
 
-    AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate();
 
-    //get data from the server
-    AGENTI.getData(queryData,
-        //callback
-        function (result) {
-            if (result.codiceArticolo) {
-                prezzoProm = result.prezzoProm;
+        //get data from the server
+        AGENTI.getData(queryData,
+            //callback
+            function (result) {
+                if (result.codiceArticolo) {
+                    prezzoProm = result.prezzoProm;
 
-                if (prezzoProm === null) {
-                    scadenzaPromo = "";
-                    descPromo = "";
-                    prezzo = result.prezzoNetto;
-                    prezzoAgenti = result.PrezzoNettoAgenti;
+                    if (prezzoProm === null) {
+                        scadenzaPromo = "";
+                        descPromo = "";
+                        prezzo = result.prezzoNetto;
+                        prezzoAgenti = result.PrezzoNettoAgenti;
+                    } else {
+                        scadenzaPromo = result.scadenzaProm;
+                        descPromo = result.descProm;
+                        prezzo = prezzoProm;
+                        prezzoAgenti = result.PrezzoNettoAgenti;
+                    }
+
+                    codiceArticolo = $.trim(result.codiceArticolo);
+                    descArt = $.trim(result.descrizione);
+                    fornitoreArticolo = $.trim(result.fornitoreArticolo);
+                    codForn1 = $.trim(result.codForn1);
+                    codForn2 = $.trim(result.codForn2);
+                    dispCa = $.trim(result.dispCa);
+                    dispCe = $.trim(result.dispCe);
+                    dispPo = $.trim(result.dispPo);
+                    prezzoLordo = $.trim(result.prezzoLordo);
+                    sconto1 = $.trim(result.sconto1);
+                    sconto2 = $.trim(result.sconto2);
+
+
+                    $.mobile.changePage("#itemDetail");
                 } else {
-                    scadenzaPromo = result.scadenzaProm;
-                    descPromo = result.descProm;
-                    prezzo = prezzoProm;
-                    prezzoAgenti = result.PrezzoNettoAgenti;
+                    navigator.notification.alert('Articolo non trovato');
                 }
-
-                item.codiceArticolo = $.trim(result.codiceArticolo);
-                item.descArt = $.trim(result.descrizione);
-                item.fornitoreArticolo = $.trim(result.fornitoreArticolo);
-                item.codForn1 = $.trim(result.codForn1);
-                item.codForn2 = $.trim(result.codForn2);
-                item.dispCa = $.trim(result.dispCa);
-                item.dispCe = $.trim(result.dispCe);
-                item.dispPo = $.trim(result.dispPo);
-                item.prezzoLordo = $.trim(result.prezzoLordo);
-                item.sconto1 = $.trim(result.sconto1);
-                item.sconto2 = $.trim(result.sconto2);
-                item.Prezzo = prezzo;
-                item.prezzoAgenti = prezzoAgenti;
-                item.descPromo = descPromo;
-                item.scadenzaPromo = scadenzaPromo;
-
-                $.mobile.changePage("#itemDetail");
-            } else {
-                navigator.notification.alert('Articolo non trovato');
-            }
-        });
-};
+            });
+    };
 
 
 //handles the button to bring up sales history for the listino diplayed
-AGENTI.listino.getItemSalesHistory = function () {
-    /*Variable declaration*******************/
-    var that = AGENTI.listino,
-        client = AGENTI.client,
-        clientId = $.trim(client.codice),
-        itemId = that.codiceArticolo,
-        userName = AGENTI.db.getItem('username'),
-        queryData = {action: 'storicoPrezzi', clientId: clientId, itemId: itemId, user: userName};
-    /*End of variable declaration************/
+    var getItemSalesHistory = function () {
 
-    //get data from the server
-    AGENTI.getData(queryData, that.renderItemsSalesHistory);
-};
+        queryData = {
+            action: 'storicoPrezzi',
+            clientId: client.codice(),
+            itemId: codiceArticolo,
+            user: AGENTI.db.getItem('username')
+        };
 
-/*VIEWS*/
+        //get data from the server
+        AGENTI.getData(queryData, renderItemsSalesHistory);
+    };
+
+    /*VIEWS*/
 
 // function to render the data from the searchItem function
-AGENTI.listino.renderList =  function (result) {
+    var renderList = function (result) {
 
-    /*Variable declaration*******************/
-    var html = "",
-        moreBtn = $('#listino .moreBtn').closest('.ui-btn'),
-    //Total number of records for the search term entered.
-        totalRecords = parseInt(result.numOfRows, 10),
-        listaArticoli = $('#listaArticoli');
-    /*End of variable declaration************/
+        /*Variable declaration*******************/
+        var html = "",
+            moreBtn = $('#listino .moreBtn').closest('.ui-btn'),
+        //Total number of records for the search term entered.
+            totalRecords = parseInt(result.numOfRows, 10),
+            listaArticoli = $('#listaArticoli');
+        /*End of variable declaration************/
 
-    if (typeof result.record !== "undefined") {
-        $.each(result.record, function () {
+        if (typeof result.record !== "undefined") {
+            $.each(result.record, function () {
 
-            html += '<li data-codiceArticolo="' + $.trim(this.codiceArticolo) + '" >' +
-            '<a href="#">' +
-            '<p style="font-style: italic;">' + $.trim(this.codiceArticolo) + '</p>' +
-            '<p>' + $.trim(this.fornitoreArticolo) + '</p> <p>Art. ' + $.trim(this.codForn1) + '</p>' +
-            '<p style="color:yellow;font-weight:bold;font-style:italic">' + $.trim(this.descrizione) + '</p>' +
-            '<span class="ui-li-count">Disp:' + $.trim(this.dispTot) + '</span></a></li>';
-        });
+                html += '<li data-codiceArticolo="' + this.codiceArticolo + '" >' +
+                '<a href="#">' +
+                '<p style="font-style: italic;">' + this.codiceArticolo + '</p>' +
+                '<p>' + this.fornitoreArticolo + '</p> <p>Art. ' + this.codForn1 + '</p>' +
+                '<p style="color:yellow;font-weight:bold;font-style:italic">' + this.descrizione + '</p>' +
+                '<span class="ui-li-count">Disp:' + this.dispTot + '</span></a></li>';
+            });
 
-        //Update record offset by adding the number of records returned from this specific ajax call
-        AGENTI.utils.pagination.addOffset(parseInt(result.record.length, 10));
+            //Update record offset by adding the number of records returned from this specific ajax call
+            AGENTI.utils.pagination.addOffset(parseInt(result.record.length, 10));
 
-        //while there are more records show "more" button
-        if (totalRecords > (AGENTI.utils.pagination.getOffset())) {
-            //show number of remaining records on bubble in the "more results" button
-            moreBtn.find('.countBubble').text(totalRecords - AGENTI.utils.pagination.getOffset());
-            moreBtn.show();
+            //while there are more records show "more" button
+            if (totalRecords > (AGENTI.utils.pagination.getOffset())) {
+                //show number of remaining records on bubble in the "more results" button
+                moreBtn.find('.countBubble').text(totalRecords - AGENTI.utils.pagination.getOffset());
+                moreBtn.show();
+            } else {
+                moreBtn.hide();
+            }
+
         } else {
-            moreBtn.hide();
+            html = '<li>Nessun risultato</li>';
         }
 
-    } else {
-        html = '<li>Nessun risultato</li>';
-    }
-
-    //Append to list and refresh
-    listaArticoli.append(html);
-    listaArticoli.listview("refresh");
-};
+        //Append to list and refresh
+        listaArticoli.append(html);
+        listaArticoli.listview("refresh");
+    };
 
 
 //Function to render the Item details to html
-AGENTI.listino.renderItemDetails = function () {
-    /*Variable declaration*******************/
-    var item = AGENTI.listino;
-    /*End of variable declaration************/
-
-    $("#itemsSalesHistory").hide();
-    $('#scadenzaPromo').text("");
-    $('#prezzoLordo').closest('li').show();
-
-    $('#codiceArticolo').text(item.codiceArticolo);
-    $('#descArt').text(item.descArt);
-    $('#codForn1').text(item.codForn1);
-    $('#codForn2').text(item.codForn2);
-    $('#fornitoreArticolo').text(item.fornitoreArticolo);
-    $('#dispCa').text(item.dispCa);
-    $('#dispCe').text(item.dispCe);
-    $('#dispPo').text(item.dispPo);
-    $('#prezzoLordo').text(item.prezzoLordo);
-    $('#sconto1').text(item.sconto1);
-    $('#sconto2').text(item.sconto2);
-    $('#Prezzo').text('€' + item.Prezzo);
-    $('#PrezzoAgenti').text('€' + item.prezzoAgenti);
-
-    //show the promotional message if the listino is in promotion
-    $('#promotion').hide();
-    $('#PrezzoAgenti').closest('li').hide();
-
-    //show the promotion li if there is a promotional price
-    if (item.descPromo !== "") {
-        $('#scadenzaPromo').text('In promozione fino: ' + item.scadenzaPromo);
-        $('#prezzoLordo').closest('li').hide();
-        $('#descPromo').text(item.descPromo);
-        $('#promotion').show();
-    }
-
-    //show the special agenti price if there is one
-    if (item.prezzoAgenti !== null) {
-        $('#PrezzoAgenti').closest('li').show();
-    }
+    var renderItemDetails = function () {
 
 
-    //apply jquery mobile formatting
-    $('#itemDetailList').listview("refresh");
+        $("#itemsSalesHistory").hide();
+        $('#scadenzaPromo').text("");
+        $('#prezzoLordo').closest('li').show();
 
-};
+        $('#codiceArticolo').text(codiceArticolo);
+        $('#descArt').text(descArt);
+        $('#codForn1').text(codForn1);
+        $('#codForn2').text(codForn2);
+        $('#fornitoreArticolo').text(fornitoreArticolo);
+        $('#dispCa').text(dispCa);
+        $('#dispCe').text(dispCe);
+        $('#dispPo').text(dispPo);
+        $('#prezzoLordo').text(prezzoLordo);
+        $('#sconto1').text(sconto1);
+        $('#sconto2').text(sconto2);
+        $('#Prezzo').text('€' + prezzo);
+        $('#PrezzoAgenti').text('€' + prezzoAgenti);
+
+        //show the promotional message if the listino is in promotion
+        $('#promotion').hide();
+        $('#PrezzoAgenti').closest('li').hide();
+
+        //show the promotion li if there is a promotional price
+        if (descPromo !== "") {
+            $('#scadenzaPromo').text('In promozione fino: ' + scadenzaPromo);
+            $('#prezzoLordo').closest('li').hide();
+            $('#descPromo').text(descPromo);
+            $('#promotion').show();
+        }
+
+        //show the special agenti price if there is one
+        if (prezzoAgenti !== null) {
+            $('#PrezzoAgenti').closest('li').show();
+        }
+
+
+        //apply jquery mobile formatting
+        $('#itemDetailList').listview("refresh");
+
+    };
 
 
 // Render the listino's sales history under the button
-AGENTI.listino.renderItemsSalesHistory = function (result) {
-    /*Variable declaration*******************/
-    var html = "";
-    /*End of variable declaration************/
+    var renderItemsSalesHistory = function (result) {
+        /*Variable declaration*******************/
+        var html = "";
+        /*End of variable declaration************/
 
-    $.each(result, function () {
-        html += '<li><p>' + this.dataVendita + ' - ' + this.filialeVendita + ' - ' + this.quantitaVendita + 'pz - <strong>&#8364;' +
-        this.prezzoVendita + '</strong></p></li>';
-    });
+        $.each(result, function () {
+            html += '<li><p>' + this.dataVendita + ' - ' + this.filialeVendita + ' - ' + this.quantitaVendita + 'pz - <strong>&#8364;' +
+            this.prezzoVendita + '</strong></p></li>';
+        });
 
-    if (!html) {
-        html = "<li style='color:crimson'>Il cliente non ha mai acquistato questo articolo finora</li>";
-    }
+        if (!html) {
+            html = "<li style='color:crimson'>Il cliente non ha mai acquistato questo articolo finora</li>";
+        }
 
-    //fill itemsSalesHistory ul
-    $('#itemsSalesHistory').html(html).listview("refresh").slideToggle('fast');
-};
+        //fill itemsSalesHistory ul
+        $('#itemsSalesHistory').html(html).listview("refresh").slideToggle('fast');
+    };
+
+    // private variables for exporting
+    var getPrezzo = function () {
+        return prezzo;
+    };
+
+    var getDescArt = function () {
+        return descArt;
+    };
+
+
+    return {
+        getItemList: getItemList,
+        getItemDetails: getItemDetails,
+        getItemSalesHistory: getItemSalesHistory,
+        renderItemDetails: renderItemDetails,
+        prezzo: getPrezzo,
+        descArt: getDescArt
+    };
+
+})();

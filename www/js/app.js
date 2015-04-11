@@ -192,7 +192,7 @@ AGENTI.init = function () {
 
 
 //-----------------------------------------------------------------------------------
-    //Item page bindings
+    //listino page bindings
 
     $('#listino').on('pageinit', function () {
         //hide the more results button in listino page
@@ -225,7 +225,7 @@ AGENTI.init = function () {
 
     //Change the listino page title and hide "more" btn
     $('#listino').on('pageshow', function () {
-        $('#listino').find('h4').text('Listino ' + AGENTI.client.ragSociale);
+        $('#listino').find('h4').text('Listino ' + AGENTI.client.ragSociale());
     });
 
     //Ajax call to get listino details
@@ -237,7 +237,7 @@ AGENTI.init = function () {
     //itemDetail Page
     $('#itemDetail').on('pageshow', function () {
         //set the page title to the listino's name
-        $('#itemDetail').find('h5').html(AGENTI.listino.descArt);
+        $('#itemDetail').find('h5').html(AGENTI.listino.descArt());
         $('#itemSalesHistoryButton').removeClass('ui-disabled');
         AGENTI.listino.renderItemDetails();
     });
@@ -254,7 +254,7 @@ AGENTI.init = function () {
         $('#popupOfferta').popup("reposition", {
             y: 0 /* move it to top */
         });
-        $('#prz').val(item.Prezzo);
+        $('#prz').val(item.prezzo());
         $('#nota').val('');
     });
 

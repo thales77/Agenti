@@ -1,6 +1,11 @@
 /**
- * Created by Babis on 02/04/2015.
+ * Created by Babis Boikos on 02/04/2015.
+ *
+ * requires: Jquery, app, utils
+ *
+ * exports: getClientList, getMajorSalesHistory, getSalesHistory, renderClientDetails, selectClient, categoriaSconto, ragSociale, codice
  */
+
 
 AGENTI.client = (function () {
 
@@ -23,7 +28,8 @@ AGENTI.client = (function () {
         stato = "",
         pagamento = "",
         historyShown = "",
-        majorHistoryShown = "";
+        majorHistoryShown = "",
+        queryData = {};
 
     /*MODELS*/
 
@@ -31,13 +37,14 @@ AGENTI.client = (function () {
     var getClientList = function () {
         var searchString = $.trim($('#searchTerm').val()), //String to search for in server
             clientOptionString = JSON.stringify($('#clientSearchOptions').val()),//json.stringify this to pass search options to server via json
-            userName = AGENTI.db.getItem('username'),
-            queryData = {
-                action: 'searchClient',
-                searchTerm: searchString,
-                clientSearchOptions: clientOptionString,
-                user: userName
-            };
+            userName = AGENTI.db.getItem('username');
+
+    queryData = {
+        action: 'searchClient',
+        searchTerm: searchString,
+        clientSearchOptions: clientOptionString,
+        user: userName
+    };
 
         if (searchString !== "") {
             //get Client list from remote server
@@ -51,9 +58,10 @@ AGENTI.client = (function () {
         if ((historyShown !== 'true') || (AGENTI.utils.pagination.getOffset() > 0)) {
             /*Variable declaration ***************************/
             var codCliente = codice,
-                userName = AGENTI.db.getItem('username'),
-                queryData = {action: 'ultimiAcquisti', clientId: codCliente, user: userName};
+                userName = AGENTI.db.getItem('username');
             /*End of variable declaration********************/
+
+            queryData = {action: 'ultimiAcquisti', clientId: codCliente, user: userName};
 
             //get data from the server
             AGENTI.getData(queryData, renderSalesHistory);
@@ -66,9 +74,10 @@ AGENTI.client = (function () {
         if ((majorHistoryShown !== 'true') || (AGENTI.utils.pagination.getOffset() > 0)) {
             /*Variable declaration ***************************/
             var codCliente = codice,
-                userName = AGENTI.db.getItem('username'),
-                queryData = {action: 'aqcuistiMaggiori', clientId: codCliente, user: userName};
+                userName = AGENTI.db.getItem('username');
             /*End of variable declaration********************/
+
+            queryData = {action: 'aqcuistiMaggiori', clientId: codCliente, user: userName};
 
             //get data from the server
             AGENTI.getData(queryData, renderMajorSalesHistory);
@@ -361,18 +370,30 @@ AGENTI.client = (function () {
         $('#mainSalesList').append(html).listview("refresh");
     };
 
+
+    // private variables for exporting
+    var getCategoriaSconto = function () {
+        return categoriaSconto;
+    };
+
+    var getRagSociale = function () {
+        return ragSociale;
+    };
+
+    var getCodiceCliente = function () {
+        return $.trim(codice);
+    };
+
+
     return {
         getClientList: getClientList,
         getMajorSalesHistory: getMajorSalesHistory,
         getSalesHistory: getSalesHistory,
         renderClientDetails: renderClientDetails,
-        renderList: renderList,
-        renderMajorSalesHistory: renderMajorSalesHistory,
-        renderSalesHistory: renderSalesHistory,
         selectClient: selectClient,
-        categoriaSconto : function () {
-            return categoriaSconto;
-        }
+        categoriaSconto : getCategoriaSconto,
+        ragSociale : getRagSociale,
+        codice : getCodiceCliente
     };
 
 })();

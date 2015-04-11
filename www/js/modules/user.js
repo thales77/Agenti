@@ -6,6 +6,7 @@
 //using revealing module pattern for practise
 
 AGENTI.user = (function () {
+
     var login = function () {
         /*Variable declaration*******************/
         var form = $('#loginForm').serialize();
