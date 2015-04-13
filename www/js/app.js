@@ -319,7 +319,8 @@ AGENTI.init = function () {
     //Log page bindings
     $('#admin').on('pageshow', function () {
         $("#log").empty();
-        AGENTI.log.getLog();
+        //getLog - element to render it in.
+        AGENTI.log.getLog('#log');
     });
 //-----------------------------------------------------------------------------------
 

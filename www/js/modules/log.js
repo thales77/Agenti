@@ -3,7 +3,7 @@
  */
 AGENTI.log = (function () {
 
-    var getLog = function () {
+    var getLog = function (el) {
         /*Variable declaration*******************/
         var userName = AGENTI.db.getItem('username'),
             queryData;
@@ -11,11 +11,10 @@ AGENTI.log = (function () {
 
         queryData = {action: 'getLog', user: userName};
         //get data from the server
-        AGENTI.getData(queryData, renderLog);
-
+        AGENTI.getData(queryData, renderLog, el);
     };
 
-    var renderLog = function (result) {
+    var renderLog = function (result, el) {
         /*Variable declaration*******************/
         var html = "";
         /*End of variable declaration************/
@@ -24,7 +23,7 @@ AGENTI.log = (function () {
             html += '<li><p style="font-size:x-small;">' + this.logTimestamp + ' ' + this.logIp + '</p><p style="font-size:x-small;">' + this.logDescr + '</p></li>';
         });
 
-        $('#log').html(html).listview("refresh");
+        $(el).html(html).listview("refresh");
     };
 
     return {
