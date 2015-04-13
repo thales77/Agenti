@@ -1,5 +1,5 @@
 /**
- * Created by Babis on 02/04/2015.
+ * Created by Babis Boikos on 02/04/2015.
  */
 AGENTI.log = (function () {
 
@@ -14,12 +14,12 @@ AGENTI.log = (function () {
         AGENTI.getData(queryData, renderLog, el);
     };
 
-    var renderLog = function (result, el) {
+    var renderLog = function (data, el) {
         /*Variable declaration*******************/
         var html = "";
         /*End of variable declaration************/
 
-        $.each(result, function () {
+        $.each(data, function () {
             html += '<li><p style="font-size:x-small;">' + this.logTimestamp + ' ' + this.logIp + '</p><p style="font-size:x-small;">' + this.logDescr + '</p></li>';
         });
 
