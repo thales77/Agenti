@@ -79,7 +79,7 @@ AGENTI.init = function () {
     $('#clientDetail').on('pageinit', function () {
 
         $('#addContact').on('tap', function () {
-            AGENTI.utils.createContact();
+            AGENTI.client.createContact();
         });
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);

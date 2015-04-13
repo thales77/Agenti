@@ -29,7 +29,8 @@ AGENTI.client = (function () {
         pagamento = "",
         historyShown = "",
         majorHistoryShown = "",
-        queryData = {};
+        queryData = {},
+        popUpShown = false;
 
     /*MODELS*/
 
@@ -39,12 +40,12 @@ AGENTI.client = (function () {
             clientOptionString = JSON.stringify($('#clientSearchOptions').val()),//json.stringify this to pass search options to server via json
             userName = AGENTI.db.getItem('username');
 
-    queryData = {
-        action: 'searchClient',
-        searchTerm: searchString,
-        clientSearchOptions: clientOptionString,
-        user: userName
-    };
+        queryData = {
+            action: 'searchClient',
+            searchTerm: searchString,
+            clientSearchOptions: clientOptionString,
+            user: userName
+        };
 
         if (searchString !== "") {
             //get Client list from remote server
@@ -199,11 +200,11 @@ AGENTI.client = (function () {
 
         if (numStatoCliente === '-2') {
             statoCliente = "<span style='color:crimson;'>Bloccato</span>";
-            AGENTI.utils.blockedClientPopup();
+            _blockedClientPopup();
             $('#clientBlocked').find('#stato').html(statoCliente);
         } else if (numStatoCliente === '-1') {
             statoCliente = "<span style='color:crimson;'>Contenzioso</span>";
-            AGENTI.utils.blockedClientPopup();
+            _blockedClientPopup();
             $('#clientBlocked').find('#stato').html(statoCliente);
         } else if (numStatoCliente === '0') {
             statoCliente = "Attivo";
@@ -215,7 +216,7 @@ AGENTI.client = (function () {
         //Check if client has alternative addresses and render them
         if (indirizziAlt !== '') {
 
-            indirizziAlt = AGENTI.utils.parseAltAddress(indirizziAlt);
+            indirizziAlt = _parseAltAddress(indirizziAlt);
             arrayLength = indirizziAlt.length;
 
             for (var i = 0; i < arrayLength; i++) {
@@ -281,7 +282,98 @@ AGENTI.client = (function () {
     };
 
 
-// render the client's recent sales history
+    //Function for adding cliente to phonebook
+    var createContact = function () {
+
+        // create a new contact
+        var contact = navigator.contacts.create();
+        contact.displayName =  ragSociale;
+        contact.nickname = ragSociale;
+
+        // populate some fields
+        var name = new ContactName();
+        name.givenName = ragSociale;
+        contact.name = name;
+
+        // store contact phone numbers in ContactField[]
+        var phoneNumbers = [];
+        phoneNumbers[0] = new ContactField('work', noTelefono, true);
+        phoneNumbers[1] = new ContactField('mobile', noCell, false);
+        contact.phoneNumbers = phoneNumbers;
+
+        // store contact emails in ContactField[]
+        var emails = [];
+        emails[0] = new ContactField('work', email, true);
+        contact.emails = emails;
+
+        // save the contact
+        contact.save(onSuccess,onError);
+
+        function onSuccess(contact) {
+            navigator.notification.alert("Contatto aggiunto nella rubrica del telefono");
+        };
+
+        function onError(contactError) {
+            navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
+        };
+    };
+
+    // pop-up for blocked clients
+    var _blockedClientPopup = function () {
+        //Check if the popup has not been shown already
+        if (popUpShown !== 'true') {
+            //set popup to shown
+            popUpShown = 'true';
+            setTimeout(function () {
+                $('#clientBlocked').popup({
+                    history: false
+                });
+                $('#clientBlocked').popup('open');
+                //navigator.notification.beep(1);
+                navigator.notification.vibrate(1000);
+            }, 1000);
+        }
+    };
+
+    //parse the alternative addresses array string as returned by the server and split in separate records.
+    var _parseAltAddress = function(string) {
+
+        var addressesArray =[];
+
+        var addressesTempArray = string.split(';');
+        var arrayLength = addressesTempArray.length;
+        var addressType = "";
+
+        for (var i=0; i < arrayLength; i++){
+
+            switch (addressesTempArray[i].substr(0,1)) {
+                case "M":
+                    addressType = "Magazzino";
+                    break;
+                case "F":
+                    addressType = "Fatturazione";
+                    break;
+                case "E":
+                    addressType = "Entrambi";
+                    break;
+                case "A":
+                    addressType = "Altro";
+                    break;
+                default:
+                    addressType = "";
+            }
+
+            addressesArray.push({
+
+                addressType : addressType,
+                address : addressesTempArray[i].substr(2)
+
+            });
+        }
+        return addressesArray;
+    };
+
+    // render the client's recent sales history
     var _renderSalesHistory = function (result) {
         /*Variable declaration ***************************/
         var html = "",
@@ -333,8 +425,7 @@ AGENTI.client = (function () {
         $('#history').append(html).listview("refresh");
     };
 
-
-//render the client's recent major sales history
+    //render the client's recent major sales history
     var _renderMajorSalesHistory = function (result) {
         /*Variable declaration ***************************/
         var html = "",
@@ -371,7 +462,7 @@ AGENTI.client = (function () {
     };
 
 
-    // private variables for exporting
+    // getter functions for private variables
     var getCategoriaSconto = function () {
         return categoriaSconto;
     };
@@ -391,9 +482,10 @@ AGENTI.client = (function () {
         getMajorSalesHistory: getMajorSalesHistory,
         selectClient: selectClient,
         renderClientDetails: renderClientDetails,
-        categoriaSconto : getCategoriaSconto,
-        ragSociale : getRagSociale,
-        codice : getCodiceCliente
+        createContact : createContact,
+        categoriaSconto: getCategoriaSconto,
+        ragSociale: getRagSociale,
+        codice: getCodiceCliente
     };
 
 })();
