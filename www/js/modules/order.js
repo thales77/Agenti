@@ -27,7 +27,7 @@ AGENTI.order = (function () {
         };
 
         //get data from the server
-        AGENTI.getData(queryData, renderOrderList);
+        AGENTI.getData(queryData, _renderOrderList);
 
     };
 
@@ -38,13 +38,12 @@ AGENTI.order = (function () {
         orderId = id;
 
         //get data from the server
-        AGENTI.getData(queryData, renderOrderDetail);
+        AGENTI.getData(queryData, _renderOrderDetail);
     };
 
     /*VIEWS*/
-
 //render the orders list in html
-    var renderOrderList = function (result) {
+    var _renderOrderList = function (result) {
         /*Variable declaration*******************/
         var html = "",
             prevMonth = "",
@@ -102,7 +101,7 @@ AGENTI.order = (function () {
     };
 
 
-    var renderOrderDetail = function (result) {
+    var _renderOrderDetail = function (result) {
         /*Variable declaration*******************/
         var i = 0;
         /*End of variable declaration************/

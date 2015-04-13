@@ -148,4 +148,4 @@ AGENTI.utils.pagination = (function () {
             };
         }
     };
-}());
+})();
