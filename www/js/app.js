@@ -6,15 +6,10 @@ var AGENTI = {
     remoteUrl: "http://85.33.180.83/test/phonegapsrv/index.php",
     deviceType: "",
     appVersion: "",
-    db: localStorage,
-    client: {},
-    listino: {},
-    order: {},
-    log: {}
+    db: localStorage
 };
 
 /*Function to detect device type, Setup UI event bindings, check if the user is already logged in*/
-
 AGENTI.init = function () {
     console.log("App initialising...");
 //-----------------------------------------------------------------------------------

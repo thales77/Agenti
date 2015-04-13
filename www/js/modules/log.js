@@ -11,10 +11,10 @@ AGENTI.log = (function () {
 
         queryData = {action: 'getLog', user: userName};
         //get data from the server
-        AGENTI.getData(queryData, renderLog, el);
+        AGENTI.getData(queryData, _renderLog, el);
     };
 
-    var renderLog = function (data, el) {
+    var _renderLog = function (data, el) {
         /*Variable declaration*******************/
         var html = "";
         /*End of variable declaration************/

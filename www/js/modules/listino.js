@@ -48,7 +48,7 @@ AGENTI.listino = (function () {
             };
 
             //get data from the server
-            AGENTI.getData(queryData, renderList);
+            AGENTI.getData(queryData, _renderList);
         }
     };
 
@@ -131,13 +131,13 @@ AGENTI.listino = (function () {
         };
 
         //get data from the server
-        AGENTI.getData(queryData, renderItemsSalesHistory);
+        AGENTI.getData(queryData, _renderItemsSalesHistory);
     };
 
     /*VIEWS*/
 
 // function to render the data from the searchItem function
-    var renderList = function (result) {
+    var _renderList = function (result) {
 
         /*Variable declaration*******************/
         var html = "",
@@ -227,7 +227,7 @@ AGENTI.listino = (function () {
 
 
 // Render the listino's sales history under the button
-    var renderItemsSalesHistory = function (result) {
+    var _renderItemsSalesHistory = function (result) {
         /*Variable declaration*******************/
         var html = "";
         /*End of variable declaration************/

@@ -49,7 +49,7 @@ AGENTI.client = (function () {
         if (searchString !== "") {
             //get Client list from remote server
             //make ajax call
-            AGENTI.getData(queryData, renderList);
+            AGENTI.getData(queryData, _renderList);
         }
     };
 
@@ -64,7 +64,7 @@ AGENTI.client = (function () {
             queryData = {action: 'ultimiAcquisti', clientId: codCliente, user: userName};
 
             //get data from the server
-            AGENTI.getData(queryData, renderSalesHistory);
+            AGENTI.getData(queryData, _renderSalesHistory);
 
         }
     };
@@ -80,7 +80,7 @@ AGENTI.client = (function () {
             queryData = {action: 'aqcuistiMaggiori', clientId: codCliente, user: userName};
 
             //get data from the server
-            AGENTI.getData(queryData, renderMajorSalesHistory);
+            AGENTI.getData(queryData, _renderMajorSalesHistory);
         }
     };
 
@@ -88,7 +88,7 @@ AGENTI.client = (function () {
     /*VIEWS*/
 
 //function to render the client list in a ul at the search client page
-    var renderList = function (result) {
+    var _renderList = function (result) {
 
         /*Variable declaration******************/
         var html = "",
@@ -282,7 +282,7 @@ AGENTI.client = (function () {
 
 
 // render the client's recent sales history
-    var renderSalesHistory = function (result) {
+    var _renderSalesHistory = function (result) {
         /*Variable declaration ***************************/
         var html = "",
             prevMonth = "",
@@ -335,7 +335,7 @@ AGENTI.client = (function () {
 
 
 //render the client's recent major sales history
-    var renderMajorSalesHistory = function (result) {
+    var _renderMajorSalesHistory = function (result) {
         /*Variable declaration ***************************/
         var html = "",
             moreBtn = $('#majorSalesHistory .moreBtn').closest('.ui-btn'),
@@ -387,10 +387,10 @@ AGENTI.client = (function () {
 
     return {
         getClientList: getClientList,
-        getMajorSalesHistory: getMajorSalesHistory,
         getSalesHistory: getSalesHistory,
-        renderClientDetails: renderClientDetails,
+        getMajorSalesHistory: getMajorSalesHistory,
         selectClient: selectClient,
+        renderClientDetails: renderClientDetails,
         categoriaSconto : getCategoriaSconto,
         ragSociale : getRagSociale,
         codice : getCodiceCliente
