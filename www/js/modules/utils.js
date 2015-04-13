@@ -5,7 +5,7 @@
 AGENTI.utils = (function () {
 
 //Function to handle pagination in long lists
-    var pagination = function () {
+    var pagination = (function () {
         //Private variables
         var _noRecordsPerPage = 20,
             _offset = 0;
@@ -40,7 +40,7 @@ AGENTI.utils = (function () {
             setRecordsPerPage: setRecordsPerPage,
             getProperties: getProperties
         }
-    };
+    })();
 
 
     //Open the map in native maps app
