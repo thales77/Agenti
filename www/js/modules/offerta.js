@@ -26,32 +26,32 @@ AGENTI.offerta = (function () {
     //delete item from the dom table and from the model (offertaDetail), and update the offerta rotal in header.
     var deleteItem = function (item, totalDiv) {
 
-            var tableRow = item.parents("tr"); //cache the current row on the dom
-            var itemForDeletion = item.parents("tr").prevAll("tr").length; //get the number of rows before the row to be deleted, use this for splicing model array
-            var totaleRiga = offertaDetail[itemForDeletion].totaleRiga;
+        var tableRow = item.parents("tr"); //cache the current row on the dom
+        var itemForDeletion = item.parents("tr").prevAll("tr").length; //get the number of rows before the row to be deleted, use this for splicing model array
+        var totaleRiga = offertaDetail[itemForDeletion].totaleRiga;
 
-            navigator.notification.confirm(
-                "Cancellare articolo?",
-                // callback
-                function (buttonIndex) {
-                    if (buttonIndex === 1) {
+        navigator.notification.confirm(
+            "Cancellare articolo?",
+            // callback
+            function (buttonIndex) {
+                if (buttonIndex === 1) {
 
-                        tableRow.remove(); //remove table row from DOM
-                        offertaDetail.splice(itemForDeletion, 1); //remove listino from model
+                    tableRow.remove(); //remove table row from DOM
+                    offertaDetail.splice(itemForDeletion, 1); //remove listino from model
 
-                        //update totale in model
-                        offertaHeader.totaleOfferta = offertaHeader.totaleOfferta - totaleRiga;
+                    //update totale in model
+                    offertaHeader.totaleOfferta = offertaHeader.totaleOfferta - totaleRiga;
 
-                        //DOM update total on the page
-                        totalDiv.text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
+                    //DOM update total on the page
+                    totalDiv.text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
 
-                    }
-                },            // callback to invoke with index of button pressed
-                'Attenzione',           // title
-                ['Cancella articolo', 'Annulla']         // buttonLabels
-            );
+                }
+            },            // callback to invoke with index of button pressed
+            'Attenzione',           // title
+            ['Cancella articolo', 'Annulla']         // buttonLabels
+        );
 
-            //event.preventDefault();
+        //event.preventDefault();
     };
 
     var renderOffertaDetail = function () {
@@ -258,7 +258,7 @@ AGENTI.offerta = (function () {
 
     return {
         addItem: addItem,
-        deleteItem : deleteItem,
+        deleteItem: deleteItem,
         renderOffertaDetail: renderOffertaDetail,
         checkIsInserted: checkIsInserted,
         deleteCurrentOfferta: deleteCurrentOfferta,
