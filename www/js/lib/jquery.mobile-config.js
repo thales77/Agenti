@@ -1,5 +1,8 @@
+/**
+ * Created by Babis on 02/04/2015.
+ */
 //application-wide settings
-$(document).bind( "mobileinit", function() {
+$(document).on("mobileinit", function () {
     $.support.cors = true;
     $.mobile.allowCrossDomainPages = true;
     $.mobile.pushStateEnabled = false;

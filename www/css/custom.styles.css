@@ -246,7 +246,7 @@ table {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Add stroke to the header and last item */
+/* Add stroke to the header and last listino */
 .table-stripe thead th,
 .table-stripe tbody tr:last-child {
     border-bottom: 1px solid rgba(0, 0, 0, .1);

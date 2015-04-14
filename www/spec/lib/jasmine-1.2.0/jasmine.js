@@ -1396,7 +1396,7 @@ jasmine.Matchers.prototype.wasNotCalledWith = function() {
 };
 
 /**
- * Matcher that checks that the expected item is an element in the actual Array.
+ * Matcher that checks that the expected listino is an element in the actual Array.
  *
  * @param {Object} expected
  */
@@ -1405,7 +1405,7 @@ jasmine.Matchers.prototype.toContain = function(expected) {
 };
 
 /**
- * Matcher that checks that the expected item is NOT an element in the actual Array.
+ * Matcher that checks that the expected listino is NOT an element in the actual Array.
  *
  * @param {Object} expected
  * @deprecated as of 1.0. Use not.toContain() instead.
@@ -1423,7 +1423,7 @@ jasmine.Matchers.prototype.toBeGreaterThan = function(expected) {
 };
 
 /**
- * Matcher that checks that the expected item is equal to the actual item
+ * Matcher that checks that the expected listino is equal to the actual listino
  * up to a given level of decimal precision (default 2).
  *
  * @param {Number} expected
