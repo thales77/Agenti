@@ -257,7 +257,7 @@ AGENTI.init = function () {
 
     //Delete offerta button in offerta Details page
     $('#offertaDeleteBtn').on('tap', function () {
-        if (AGENTI.offerta.detail.length !== 0) {
+        if (AGENTI.offerta.detail().length !== 0) {
             AGENTI.offerta.checkIsInserted();
         }
     });
@@ -304,12 +304,12 @@ AGENTI.init = function () {
             qty = $('#qtty').val(),
             prezzo = $('#prz').val(),
             nota = $('#nota').val();
-        AGENTI.offerta.addItem(item.codiceArticolo, item.descArt, qty, prezzo, nota);
+        AGENTI.offerta.addItem(item.codiceArticolo(), item.descArt(), qty, prezzo, nota);
         $( "#popupOfferta" ).popup( "close" );
     });
 
-    //delete item button press in offerta detail page
-    $('.deleteOffertaDetailRow').on('tap', function () {
+    //delete item button press in offerta detail page - these buttons are dynamically generated so we bind the event on parent element
+    $('#offertaTableBody').on('tap', '.deleteOffertaDetailRow', function () {
         AGENTI.offerta.deleteItem($(this), $('#totaleOfferta'));
     });
 //-----------------------------------------------------------------------------------

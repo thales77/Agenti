@@ -254,6 +254,10 @@ AGENTI.listino = (function () {
         return descArt;
     };
 
+    var getCodiceArticolo = function () {
+      return codiceArticolo;
+    };
+
 
     return {
         getItemList: getItemList,
@@ -261,7 +265,8 @@ AGENTI.listino = (function () {
         getItemSalesHistory: getItemSalesHistory,
         renderItemDetails: renderItemDetails,
         prezzo: getPrezzo,
-        descArt: getDescArt
+        descArt: getDescArt,
+        codiceArticolo : getCodiceArticolo
     };
 
 })();

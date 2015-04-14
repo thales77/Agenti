@@ -51,7 +51,7 @@ AGENTI.offerta = (function () {
             ['Cancella articolo', 'Annulla']         // buttonLabels
         );
 
-        //event.preventDefault();
+        event.preventDefault();
     };
 
     var renderOffertaDetail = function () {
@@ -256,13 +256,19 @@ AGENTI.offerta = (function () {
         }
     };
 
+    //getter functions for exporting private variables
+    var getOffertaDetail = function () {
+        return offertaDetail;
+    };
+
     return {
         addItem: addItem,
         deleteItem: deleteItem,
         renderOffertaDetail: renderOffertaDetail,
         checkIsInserted: checkIsInserted,
         deleteCurrentOfferta: deleteCurrentOfferta,
-        inviaOfferta: inviaOfferta
+        inviaOfferta: inviaOfferta,
+        detail : getOffertaDetail
     };
 
 })();
