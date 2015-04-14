@@ -243,6 +243,26 @@ AGENTI.init = function () {
         AGENTI.listino.getItemSalesHistory();
     });
 
+//-----------------------------------------------------------------------------------
+    //Offerta page bindings
+
+    //render offerta detail page on pageshow
+    $('#offertaDetail').on('pageshow', function () {
+        $('#offertaTable tbody').empty();
+        AGENTI.offerta.renderOffertaDetail();
+    });
+
+    //invia offerta button in offerta detail page
+    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
+
+    //Delete offerta button in offerta Details page
+    $('#offertaDeleteBtn').on('tap', function () {
+        if (AGENTI.offerta.detail.length !== 0) {
+            AGENTI.offerta.checkIsInserted();
+        }
+    });
+
+    //popup in item detail page to insert item to offerta
     $('#popupOfferta').on('popupafteropen', function() {
         var item = AGENTI.listino;
         $('#qtty').val("1").focus().select();
@@ -253,59 +273,44 @@ AGENTI.init = function () {
         $('#nota').val('');
     });
 
-    $('#addEmptyItemPopup').on('popupafteropen', function() {
-        $('#codiceArtLib').val('0000001');
-        $('#descArtLib').val('ARTICOLI VARI DA CODIFICARE').focus().select();
-        $('#qttyArtLib').val('');
-        $('#przArtLib').val('');
-        $('#notaArtLib').val('');
-
-        $('#addEmptyItemPopup').popup("reposition", {
-            y: 0 /* move it to top */
-        });
-    });
-
-    $('#insertItemToOffertaBtn').on('tap', function() {
-        var item = AGENTI.listino,
-            qty = $('#qtty').val(),
-            prezzo = $('#prz').val(),
-            nota = $('#nota').val();
-
-        AGENTI.offerta.addItemToOfferta(item.codiceArticolo, item.descArt, qty, prezzo, nota);
-        $( "#popupOfferta" ).popup( "close" );
-    });
-
+    //popup on 'inserisci articolo dal listino' button tap in offerta detail
     $('#insertLibItemToOffertaBtn').on('tap', function() {
         var codice = $('#codiceArtLib').val(),
             descrizione = $('#descArtLib').val(),
             qty = $('#qttyArtLib').val(),
             prezzo = $('#przArtLib').val(),
             nota = $('#notaArtLib').val();
-
-        AGENTI.offerta.addItemToOfferta(codice, descrizione, qty, prezzo, nota);
+        AGENTI.offerta.addItem(codice, descrizione, qty, prezzo, nota);
         $('#offertaTable tbody').empty();
         AGENTI.offerta.renderOffertaDetail();
         $("#addEmptyItemPopup").popup("close");
     });
 
-
-//-----------------------------------------------------------------------------------
-
-
-    //Offerta detail page bindings
-    $('#offertaDetail').on('pageshow', function () {
-        $('#offertaTable tbody').empty();
-        AGENTI.offerta.renderOffertaDetail();
+    //popup on 'inserisci articolo non codificato' button tap in offerta detail
+    $('#addEmptyItemPopup').on('popupafteropen', function() {
+        $('#codiceArtLib').val('0000001');
+        $('#descArtLib').val('ARTICOLI VARI DA CODIFICARE').focus().select();
+        $('#qttyArtLib').val('');
+        $('#przArtLib').val('');
+        $('#notaArtLib').val('');
+        $('#addEmptyItemPopup').popup("reposition", {
+            y: 0 /* move it to top */
+        });
     });
 
+    //ok button press in add item popup dialog
+    $('#insertItemToOffertaBtn').on('tap', function() {
+        var item = AGENTI.listino,
+            qty = $('#qtty').val(),
+            prezzo = $('#prz').val(),
+            nota = $('#nota').val();
+        AGENTI.offerta.addItem(item.codiceArticolo, item.descArt, qty, prezzo, nota);
+        $( "#popupOfferta" ).popup( "close" );
+    });
 
-    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
-
-    //handle for delete offerta button in offertaDetails
-    $('#offertaDeleteBtn').on('tap', function () {
-        if (AGENTI.offerta.detail.length !== 0) {
-            AGENTI.offerta.checkIsInserted();
-        }
+    //delete item button press in offerta detail page
+    $('.deleteOffertaDetailRow').on('tap', function () {
+        AGENTI.offerta.deleteItem($(this), $('#totaleOfferta'));
     });
 //-----------------------------------------------------------------------------------
 

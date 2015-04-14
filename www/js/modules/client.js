@@ -475,6 +475,18 @@ AGENTI.client = (function () {
         return $.trim(codice);
     };
 
+    var getEmail = function () {
+        return $.trim(email);
+    };
+
+    var getIndirizzo = function () {
+        return $.trim(indirizzo);
+    };
+
+    var getIndirizzo2 = function () {
+        return $.trim(indirizzo2);
+    };
+
 
     return {
         getClientList: getClientList,
@@ -485,7 +497,10 @@ AGENTI.client = (function () {
         createContact : createContact,
         categoriaSconto: getCategoriaSconto,
         ragSociale: getRagSociale,
-        codice: getCodiceCliente
+        codice: getCodiceCliente,
+        email : getEmail,
+        indirizzo : getIndirizzo,
+        indirizzo2 : getIndirizzo2
     };
 
 })();
