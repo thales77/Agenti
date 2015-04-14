@@ -28,5 +28,5 @@ AGENTI.log = (function () {
 
     return {
         getLog: getLog
-    }
+    };
 })();
