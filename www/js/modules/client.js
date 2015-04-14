@@ -154,7 +154,7 @@ AGENTI.client = (function () {
 //TODO change this, you already have this data in memory you don't have to store in DOM
     var selectClient = function (e) {
 
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
 
         codice = $(this).attr('data-codice');
         ragSociale = $(this).attr('data-ragSociale');
@@ -277,7 +277,7 @@ AGENTI.client = (function () {
 
         //bind click on address to open map in client detail page
         clientDetailList.on('tap', '.mapLink', function () {
-            AGENTI.utils.openMap($(this).attr('data-address'));
+            AGENTI.utils.openMap(AGENTI.deviceType, $(this).attr('data-address'));
         });
     };
 

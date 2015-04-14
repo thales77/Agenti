@@ -78,7 +78,7 @@ AGENTI.listino = (function () {
             return;
         }
 
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
 
         //get data from the server
         AGENTI.getData(queryData,

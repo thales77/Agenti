@@ -82,7 +82,7 @@ AGENTI.offerta = {
     checkIsInserted: function (e) {
         var offerta = AGENTI.offerta;
         if (offerta.detail.length !== 0) {
-            AGENTI.utils.vibrate();
+            AGENTI.utils.vibrate(AGENTI.deviceType);
             navigator.notification.confirm(
                 "Cancellare l'offerta inserita?", // message
                 offerta.deleteCurrentOfferta,            // callback to invoke with index of button pressed

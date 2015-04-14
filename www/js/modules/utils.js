@@ -43,19 +43,19 @@ AGENTI.utils = (function () {
     })();
 
 
-    //Open the map in native maps app
-    var openMap = function (address) {
-        if (AGENTI.deviceType === 'Android') {
+    //Open the map in native maps app in android/ios
+    var openMap = function (deviceType, address) {
+        if (deviceType === 'Android') {
             window.location = "geo:0,0?q=" + address;
         } else {
             window.location = "maps:q=" + address;
         }
     };
 
-    //wiggle it
-    var vibrate = function () {
+    //wiggle it - takes deviceType as input because navigator.notification.vibrate doesn't work well in ios
+    var vibrate = function (deviceType) {
         //shake it baby
-        if (AGENTI.deviceType === 'Android') {
+        if (deviceType === 'Android') {
             //this doesn't work well in ios
             navigator.notification.vibrate(10);
         }

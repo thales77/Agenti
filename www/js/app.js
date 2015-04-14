@@ -333,7 +333,7 @@ AGENTI.init = function () {
     });
 
     $('#orderListContainer').on('tap', 'div.month ul.orderList li', function () {
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
         $('#orderItemTable tbody').empty();
         $.mobile.changePage("#ordiniDetail");
         AGENTI.order.getOrderDetail($(this).attr('data-orderId'));
@@ -346,19 +346,19 @@ AGENTI.init = function () {
     var navBarDiv = $("div:jqmData(role='navbar')");
 
     navBarDiv.on('tap', '.homeNavBtn', function (e) {
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
         $.mobile.changePage("#home");
         e.preventDefault();
     });
 
     navBarDiv.on('tap', '.clientiNavBtn', function (e) {
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
         $.mobile.changePage("#clienti");
         e.preventDefault();
     });
 
     navBarDiv.on('tap', '.ordiniNavBtn', function (e) {
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
         $.mobile.changePage("#ordini");
         e.preventDefault();
     });
@@ -372,12 +372,12 @@ AGENTI.init = function () {
     //vibrate on panel open
     var panel = $('.left-panel');
     panel.on('panelopen', function () {
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
     });
 
     //vibrate on panel close
     panel.on('panelclose', function () {
-        AGENTI.utils.vibrate();
+        AGENTI.utils.vibrate(AGENTI.deviceType);
     });
 
     $('#logoutDialog').on('tap', '#appExitbtn', AGENTI.user.logout);
