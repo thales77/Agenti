@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/jqm-datebox.min.css"/>
 
     <!-- Custom css styles -->
+    <link rel="stylesheet" href="css/icon-pack-custom.css"/>
     <link rel="stylesheet" href="css/custom.styles.css"/>
 
     <!--cordova-->
@@ -340,7 +341,7 @@
                     </tbody>
                 </table>
                 <!-- todo - add functionality here -->
-                <a href="#listino" class="ui-btn ui-icon-search ui-btn-icon-left">Inserisci articolo dall' listino</a>
+                <a href="#listino" class="ui-btn ui-icon-euro ui-btn-icon-left">Inserisci articolo dall' listino</a>
                 <a href="#addEmptyItemPopup" data-theme="a" data-role="button" data-icon="edit"
                    data-rel="popup" data-position-to="window" data-transition="pop">Inserisci articolo non
                     codificato</a>
@@ -358,7 +359,7 @@
             <textarea name="noteOffertaHeader" id="noteOffertaHeader"></textarea>
         </div>
         <button data-icon="mail" id="inviaOfferta">Invia offerta</button>
-        <button data-icon="delete" id="offertaDeleteBtn">Cancella offerta</button>
+        <button data-icon="eraser" id="offertaDeleteBtn">Cancella offerta</button>
     </div>
 
     <div data-role="popup" id="addEmptyItemPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
@@ -441,8 +442,8 @@
 
         <a href="#clientSalesHistory" data-role="button" data-icon="calendar">Storico acquisti</a>
         <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
-        <a href="#listino" data-role="button" data-icon="search" data-prefetch>Listino</a>
-        <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="shop">Inserimento offerta</a>
+        <a href="#listino" data-role="button" data-icon="euro" data-prefetch>Listino</a>
+        <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="shopping-cart">Inserimento offerta</a>
 
 
 
@@ -565,7 +566,7 @@
 
             <div class=ui-grid-a>
                 <div class='ui-block-a side'>
-                    <button id="scan" data-icon="grid" data-mini="true" data-iconpos="top">Barcode</button>
+                    <button id="scan" data-icon="barcode" data-mini="true" data-iconpos="top">Barcode</button>
                 </div>
                 <div class='ui-block-b main'><input type="submit" name="cerca" value="Cerca" data-icon="search"
                                                     data-mini="true" data-iconpos="top"></div>
@@ -629,13 +630,13 @@
             </ul>
         </div>
 
-            <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="info">Storico prezzi applicati </a>
+            <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="clock-o">Storico prezzi applicati </a>
 
             <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
                 <!-- Fill this <ul> with data on click-->
             </ul>
 
-            <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="plus"
+            <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="shopping-cart"
                data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
 
 
