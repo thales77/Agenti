@@ -22,6 +22,10 @@ AGENTI.init = function () {
         $('#appVersion').text('Version ' + AGENTI.appVersion); //Version info in login page
         $('#appInfo').text(AGENTI.appVersion); //version info in side panel
     });
+
+    //initialise sqlite database
+    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db", androidLockWorkaround: 1});
+
 //-----------------------------------------------------------------------------------
     //Login page button bindinds
     $('#loginForm').on('tap', '#loginBtn', AGENTI.user.login);
@@ -253,7 +257,11 @@ AGENTI.init = function () {
     });
 
     //invia offerta button in offerta detail page
-    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
+    $('#inviaOfferta').on('tap', AGENTI.offerta.sendOfferta);
+
+    //invia offerta button in offerta detail page
+    $('#salvaOfferta').on('tap', AGENTI.offerta.saveOfferta);
+
 
     //Delete offerta button in offerta Details page
     $('#offertaDeleteBtn').on('tap', function () {

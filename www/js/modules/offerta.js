@@ -10,6 +10,11 @@ AGENTI.offerta = (function () {
     var addItem = function (itemId, itemDesc, qty, prezzo, nota) {
         var totaleRiga = parseFloat(qty.replace(',', '.')) * parseFloat(prezzo.replace(',', '.'));
 
+        //Better add some validation in the view instead of this shit
+        if (isNaN(totaleRiga)) {
+            totaleRiga = 0;
+        }
+
         offertaDetail.push({
             itemId: itemId,
             itemDesc: itemDesc,
@@ -101,7 +106,7 @@ AGENTI.offerta = (function () {
 
     };
 
-    var inviaOfferta = function () {
+    var sendOfferta = function () {
         var emailProperties = {
                 to: AGENTI.client.email(),
                 cc: [AGENTI.db.getItem('email')],
@@ -256,6 +261,57 @@ AGENTI.offerta = (function () {
         }
     };
 
+
+    var saveOfferta = function () {
+
+        if (offertaDetail.length !== 0) {
+            AGENTI.utils.vibrate(AGENTI.deviceType);
+            navigator.notification.confirm(
+                "Salvare l'offerta inserita?", // message
+
+                //callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+
+                        //initialise sqLite database
+                        var sqliteDb = AGENTI.sqliteDB
+
+                        //execute sql
+                        sqliteDb.transaction(function (tx) {
+
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS offertaTes (id INTEGER PRIMARY KEY, data TEXT, data_num INTEGER)');
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS offertaRig (id INTEGER PRIMARY KEY, data TEXT, data_num INTEGER)');
+
+                            //sql save header
+                            tx.executeSql("INSERT INTO offertaTes (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
+                                console.log("insertId: " + res.insertId + " -- probably 1");
+                                console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+                            }, function (e) {
+                                console.log("ERROR: " + e.message);
+                            });
+
+                            //sql save offerta detail
+                            $.each(offertaDetail, function () {
+                                tx.executeSql("INSERT INTO offertaRig (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
+                                    console.log("insertId: " + res.insertId + " -- probably 1");
+                                    console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+                                }, function (e) {
+                                    console.log("ERROR: " + e.message);
+                                });
+                            });
+
+                        });
+
+                    };
+                },
+                'Attenzione',           // title
+                ['Salva offerta', 'Annulla']         // buttonLabels
+            );
+        }
+        ;
+    };
+
+
     //getter functions for exporting private variables
     var getOffertaDetail = function () {
         return offertaDetail;
@@ -267,8 +323,9 @@ AGENTI.offerta = (function () {
         renderOffertaDetail: renderOffertaDetail,
         checkIsInserted: checkIsInserted,
         deleteCurrentOfferta: deleteCurrentOfferta,
-        inviaOfferta: inviaOfferta,
-        detail : getOffertaDetail
+        sendOfferta: sendOfferta,
+        saveOfferta: saveOfferta,
+        detail: getOffertaDetail
     };
 
 })();
