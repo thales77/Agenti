@@ -24,7 +24,8 @@ AGENTI.init = function () {
     });
 
     //initialise sqlite database
-    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db", androidLockWorkaround: 1});
+    //TODO add this functionality at some point --> see "saveOfferta" in offerta.js
+    //AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db", androidLockWorkaround: 1});
 
 //-----------------------------------------------------------------------------------
     //Login page button bindinds
