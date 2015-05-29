@@ -14,6 +14,7 @@ AGENTI.client = (function () {
         indirizzo = "",
         indirizzo2 = "",
         indirizziAlt = [],
+        indirizziAltTempStr = "", //temp variable for storing alt address string returned by server
         parIva = "",
         categoriaSconto = "",
         noTelefono = "",
@@ -160,7 +161,7 @@ AGENTI.client = (function () {
         ragSociale = $(this).attr('data-ragSociale');
         indirizzo = $(this).attr('data-indirizzo');
         indirizzo2 = $(this).attr('data-indirizzo2');
-        indirizziAlt = $(this).attr('data-indirizziAlt');
+        indirizziAltTempStr = $(this).attr('data-indirizziAlt');
         parIva = $(this).attr('data-parIva');
         categoriaSconto = $(this).attr('data-categoriaSconto');
         noTelefono = $(this).attr('data-noTelefono');
@@ -189,8 +190,7 @@ AGENTI.client = (function () {
             numStatoCliente = stato,
             statoCliente = "",
             clientDetailList = $('#clientDetailList'),
-            arrayLength = "", //length of previous array for caching
-            indirizzoAlt = {}; //Object to hold each alternative address' properties
+            arrayLength = ""; //length of previous array for caching
         /*End of variable declaration***************/
 
         historyShown = 'false';
@@ -214,16 +214,14 @@ AGENTI.client = (function () {
 
         //don't render these if null
         //Check if client has alternative addresses and render them
-        if (indirizziAlt !== '') {
+        if (indirizziAltTempStr !== '') {
 
-            indirizziAlt = _parseAltAddress(indirizziAlt);
+            indirizziAlt = _parseAltAddress(indirizziAltTempStr);
             arrayLength = indirizziAlt.length;
 
             for (var i = 0; i < arrayLength; i++) {
 
-                indirizzoAlt = indirizziAlt[i];
-
-                html += '<li class="mapLink" data-address="' + indirizzoAlt.address + '"><a href="#"><p style="white-space: normal;">' + indirizzoAlt.addressType + ': ' + indirizzoAlt.address + '</p></a></li>';
+                html += '<li class="mapLink" data-address="' +  indirizziAlt[i].address + '"><a href="#"><p style="white-space: normal;">' +  indirizziAlt[i].addressType + ': ' +  indirizziAlt[i].address + '</p></a></li>';
             }
         }
 
