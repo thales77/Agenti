@@ -96,10 +96,11 @@ AGENTI.offerta = (function () {
     var deleteCurrentOfferta = function (buttonIndex) {
         if (buttonIndex === 1) {
             offertaDetail.length = 0; //empty offerta detail array
-            offertaHeader = {totaleOfferta: 0}; //reset offerta total
+            offertaHeader = {totaleOfferta: 0, note : ""}; //reset offerta total
             $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ",")); //reset offerta total on DOM
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
             $('#offertaConfermedCheck').attr("checked", false).checkboxradio("refresh");
+            $('#noteOffertaHeader').val("");
 
             navigator.notification.alert('Offerta cancellata');
         }
