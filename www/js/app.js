@@ -25,7 +25,7 @@ AGENTI.init = function () {
 
     //initialise sqlite database
     //TODO add this functionality at some point --> see "saveOfferta" in offerta.js
-    //AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db", androidLockWorkaround: 1});
+    //AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db"});
 
 //-----------------------------------------------------------------------------------
     //Login page button bindinds
@@ -35,7 +35,6 @@ AGENTI.init = function () {
         e.preventDefault();
         return false;
     });
-
 //-----------------------------------------------------------------------------------
 
 
@@ -120,7 +119,13 @@ AGENTI.init = function () {
 
     //code to check for android back button in client detail page while an offerta has been created
     document.addEventListener("backbutton", function(e){
-        if($.mobile.activePage.is('#clientDetail')){
+
+        var activePage = $.mobile.activePage.attr('id');
+
+        if(activePage == '#ordini' || activePage == '#home' || activePage == '#clienti' || activePage == '#login') {
+            navigator.app.exitApp();
+        }
+        else if(activePage ==  '#clientDetail'){
             /*
              Event preventDefault/stopPropagation not required as adding backbutton
              listener itself override the default behaviour. Refer below PhoneGap link.
