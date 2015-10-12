@@ -3,7 +3,8 @@
  */
 /*Object for app name space*/
 var AGENTI = {
-    remoteUrl: "http://85.33.180.83/test/phonegapsrv/index.php",
+    /*remoteUrl: "http://85.33.180.83/phonegapsrv/",*/
+    remoteUrl: "http://95.110.224.136/phonegapsrv/",
     deviceType: "",
     appVersion: "",
     db: localStorage
@@ -118,21 +119,26 @@ AGENTI.init = function () {
     });
 
     //code to check for android back button in client detail page while an offerta has been created
-    document.addEventListener("backbutton", function(e){
+    //also it checks if the user taps the Android back button on the home screen and asks to terminate the app.
 
+    document.addEventListener("backbutton", function(e){
         var activePage = $.mobile.activePage.attr('id');
 
-        if(activePage == '#ordini' || activePage == '#home' || activePage == '#clienti' || activePage == '#login') {
-            navigator.app.exitApp();
+        if(activePage == 'ordini' || activePage == 'home' || activePage == 'clienti' || activePage == 'loginPage') {
+
+            var onConfirm = function (buttonIndex) {
+                if (buttonIndex == 1) {
+                    navigator.app.exitApp();
+                }
+            };
+
+            navigator.notification.confirm('Uscire dall\' app?', onConfirm, 'Termina' , ['Si', 'No']);
+
         }
-        else if(activePage ==  '#clientDetail'){
-            /*
-             Event preventDefault/stopPropagation not required as adding backbutton
-             listener itself override the default behaviour. Refer below PhoneGap link.
-             */
-            //e.preventDefault();
+        else if(activePage ==  'clientDetail'){
+
             AGENTI.offerta.checkIsInserted();
-            //navigator.app.exitApp();
+
         }
         else {
             navigator.app.backHistory();
