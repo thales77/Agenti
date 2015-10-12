@@ -3,7 +3,8 @@
  */
 /*Object for app name space*/
 var AGENTI = {
-    /*remoteUrl: "http://85.33.180.83/phonegapsrv/",*/
+    //remoteUrl: "http://85.33.180.83/test/phonegapsrv/",
+    //remoteUrl: "http://85.33.180.83/phonegapsrv/",
     remoteUrl: "http://95.110.224.136/phonegapsrv/",
     deviceType: "",
     appVersion: "",
