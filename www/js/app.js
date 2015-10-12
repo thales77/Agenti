@@ -4,8 +4,8 @@
 /*Object for app name space*/
 var AGENTI = {
     //remoteUrl: "http://85.33.180.83/test/phonegapsrv/",
-    //remoteUrl: "http://85.33.180.83/phonegapsrv/",
-    remoteUrl: "http://95.110.224.136/phonegapsrv/",
+    remoteUrl: "http://85.33.180.83/phonegapsrv/",
+    //remoteUrl: "http://95.110.224.136/phonegapsrv/",
     deviceType: "",
     appVersion: "",
     db: localStorage
@@ -287,12 +287,13 @@ AGENTI.init = function () {
     $('#popupOfferta').on('popupafteropen', function() {
         var item = AGENTI.listino;
         $('#qtty').val("1").focus().select();
-        $('#popupOfferta').popup("reposition", {
-            y: 0 /* move it to top */
+       $('#popupOfferta').popup("reposition", {
+            y: 0
         });
         $('#prz').val(item.prezzo());
         $('#nota').val('');
     });
+
 
     //popup on 'inserisci articolo dal listino' button tap in offerta detail
     $('#insertLibItemToOffertaBtn').on('tap', function() {

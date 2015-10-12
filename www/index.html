@@ -652,10 +652,14 @@
             <form>
                 <div style="padding:10px 20px;">
                     <!--<h3 class="ui-title">Inserire quantità e prezzo</h3>-->
-                    <label for="qtty">Quantità</label>
-                    <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
-                    <label for="prz">Prezzo &#8364;</label>
-                    <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+                    <div data-role="fieldcontain">
+                        <label for="qtty">Quantità :</label>
+                        <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="prz">Prezzo &#8364; :</label>
+                        <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+                    </div>
                     <!--<label for="nota">note aggiuntive</label>-->
                     <input type="text" name="nota" id="nota" value="" placeholder="note aggiuntive" data-theme="a" maxlength="30">
 
