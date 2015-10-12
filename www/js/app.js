@@ -3,7 +3,9 @@
  */
 /*Object for app name space*/
 var AGENTI = {
-    remoteUrl: "http://85.33.180.83/test/phonegapsrv/index.php",
+    //remoteUrl: "http://85.33.180.83/test/phonegapsrv/",
+    remoteUrl: "http://85.33.180.83/phonegapsrv/",
+    //remoteUrl: "http://95.110.224.136/phonegapsrv/",
     deviceType: "",
     appVersion: "",
     db: localStorage
@@ -22,6 +24,11 @@ AGENTI.init = function () {
         $('#appVersion').text('Version ' + AGENTI.appVersion); //Version info in login page
         $('#appInfo').text(AGENTI.appVersion); //version info in side panel
     });
+
+    //initialise sqlite database
+    //TODO add this functionality at some point --> see "saveOfferta" in offerta.js
+    //AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db"});
+
 //-----------------------------------------------------------------------------------
     //Login page button bindinds
     $('#loginForm').on('tap', '#loginBtn', AGENTI.user.login);
@@ -30,7 +37,6 @@ AGENTI.init = function () {
         e.preventDefault();
         return false;
     });
-
 //-----------------------------------------------------------------------------------
 
 
@@ -114,15 +120,26 @@ AGENTI.init = function () {
     });
 
     //code to check for android back button in client detail page while an offerta has been created
+    //also it checks if the user taps the Android back button on the home screen and asks to terminate the app.
+
     document.addEventListener("backbutton", function(e){
-        if($.mobile.activePage.is('#clientDetail')){
-            /*
-             Event preventDefault/stopPropagation not required as adding backbutton
-             listener itself override the default behaviour. Refer below PhoneGap link.
-             */
-            //e.preventDefault();
+        var activePage = $.mobile.activePage.attr('id');
+
+        if(activePage == 'ordini' || activePage == 'home' || activePage == 'clienti' || activePage == 'loginPage') {
+
+            var onConfirm = function (buttonIndex) {
+                if (buttonIndex == 1) {
+                    navigator.app.exitApp();
+                }
+            };
+
+            navigator.notification.confirm('Uscire dall\' app?', onConfirm, 'Termina' , ['Si', 'No']);
+
+        }
+        else if(activePage ==  'clientDetail'){
+
             AGENTI.offerta.checkIsInserted();
-            //navigator.app.exitApp();
+
         }
         else {
             navigator.app.backHistory();
@@ -253,7 +270,11 @@ AGENTI.init = function () {
     });
 
     //invia offerta button in offerta detail page
-    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
+    $('#inviaOfferta').on('tap', AGENTI.offerta.sendOfferta);
+
+    //invia offerta button in offerta detail page
+    $('#salvaOfferta').on('tap', AGENTI.offerta.saveOfferta);
+
 
     //Delete offerta button in offerta Details page
     $('#offertaDeleteBtn').on('tap', function () {
@@ -266,12 +287,13 @@ AGENTI.init = function () {
     $('#popupOfferta').on('popupafteropen', function() {
         var item = AGENTI.listino;
         $('#qtty').val("1").focus().select();
-        $('#popupOfferta').popup("reposition", {
-            y: 0 /* move it to top */
+       $('#popupOfferta').popup("reposition", {
+            y: 0
         });
         $('#prz').val(item.prezzo());
         $('#nota').val('');
     });
+
 
     //popup on 'inserisci articolo dal listino' button tap in offerta detail
     $('#insertLibItemToOffertaBtn').on('tap', function() {

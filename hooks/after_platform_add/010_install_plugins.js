@@ -12,8 +12,11 @@ var pluginlist = [
     "org.apache.cordova.contacts",
     "org.apache.cordova.file",
     "org.apache.cordova.console",
+    "cordova-plugin-whitelist",
+    "cordova-sqlite-storage",
     "uk.co.whiteoctober.cordova.appversion",
-    "de.appplant.cordova.plugin.email-composer"
+    "de.appplant.cordova.plugin.email-composer",
+    "https://github.com/brodysoft/Cordova-SQLitePlugin"
 ];
 
 // no need to configure below
