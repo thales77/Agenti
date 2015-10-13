@@ -26,8 +26,31 @@ AGENTI.init = function () {
     });
 
     //initialise sqlite database
-    //TODO add this functionality at some point --> see "saveOfferta" in offerta.js
-    //AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db"});
+    //Open local prepopulated database
+    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db", createFromLocation: 1});
+    //Open transaction and select remote server list
+    AGENTI.sqliteDB.transaction(function(tx) {
+
+            tx.executeSql("SELECT * FROM Servers ORDER BY Servers.Priority;", [], function(tx, res) {
+                if (res != null && res.rows != null) {
+                    for (var i = 0; i < res.rows.length; i++) {
+                        var row = res.rows.item(i);
+                        console.log(row.Description);
+                        console.log(row.Url);
+                        console.log(row.Priority);
+
+                        //update side panel with remote server list
+                        $('.options-list').append('<li data-serverId =' + row.ID + '><a href="#">' + row.Description + '</a></li>');
+                    }
+                    $( "#left-panel-home" ).trigger( "updatelayout" );
+                }
+
+        }, function(e) {
+            console.log("ERROR: " + e.message);
+        });
+    });
+
+
 
 //-----------------------------------------------------------------------------------
     //Login page button bindinds
