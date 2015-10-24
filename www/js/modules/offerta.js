@@ -4,7 +4,9 @@
 AGENTI.offerta = (function () {
 
     var offertaHeader = {totaleOfferta: 0},
-        offertaDetail = [];
+        offertaDetail = [],
+        pdfFileName = 'offerta.pdf',
+        pdfFilePath;
 
     // add an item to the offerta table and update total
     var addItem = function (itemId, itemDesc, qty, prezzo, nota) {
@@ -74,6 +76,7 @@ AGENTI.offerta = (function () {
         $('#offertaTable').table("refresh");
     };
 
+    //Controlla se un'offerta e stata inserita e se si, chiedi l'utente se la vuola cancellare
     var checkIsInserted = function (e) {
         if (offertaDetail.length !== 0) {
             AGENTI.utils.vibrate(AGENTI.deviceType);
@@ -96,7 +99,7 @@ AGENTI.offerta = (function () {
     var deleteCurrentOfferta = function (buttonIndex) {
         if (buttonIndex === 1) {
             offertaDetail.length = 0; //empty offerta detail array
-            offertaHeader = {totaleOfferta: 0, note : ""}; //reset offerta total
+            offertaHeader = {totaleOfferta: 0, note: ""}; //reset offerta total
             $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ",")); //reset offerta total on DOM
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
             $('#offertaConfermedCheck').attr("checked", false).checkboxradio("refresh");
@@ -107,27 +110,39 @@ AGENTI.offerta = (function () {
 
     };
 
-    var sendOfferta = function () {
-        var emailProperties = {
-                to: AGENTI.client.email(),
-                cc: [AGENTI.db.getItem('email')],
-                subject: 'Offerta Sidercampania Professional srl',
-                isHtml: true
-            },
-            tableData = [],
+    //Invia l'offerta via email e salvala su sqliteDB
+    var createOfferta = function () {
+
+        //Genera il file PDF usando la libreria jsPDF
+        createPDF();
+
+        //TODO check if everything went well
+        //Genera l'email usando il plugin email-composer
+         sendEmail();
+
+        //Se tutto ok salva l'offerta in localDB (sqlite plugin)
+        //saveOfferta();
+    };
+
+    //Genera il file PDF usando la libreria jsPDF
+    var createPDF = function () {
+        var tableData = [],
             columns = [],
             options = {},
             height = 180,
             splitText = "",
-            noteHeight = 0,
-            pdfFileName,
-            pdfFilePath;
+            noteHeight = 0;
+
+        var errorHandler = function (error) {
+            // handle error
+            console.log(error);
+            navigator.notification.alert(error);
+        };
 
         if (offertaDetail.length !== 0) {
 
 
             //FIRST GENERATE THE PDF DOCUMENT
-            pdfFileName = 'offerta.pdf';
             offertaHeader.note = $('#noteOffertaHeader').val();
 
             console.log("generating pdf...");
@@ -233,36 +248,45 @@ AGENTI.offerta = (function () {
 
             pdfSave(pdfFileName, pdfOutput, function () {
 
-                // success! - generate email body
-                emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale() + '</h3>' +
-                '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
-                'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
-                '<p>Distini saluti,<br>' + AGENTI.db.getItem('full_name') + '<br>Sidercampania Professional srl<br>' +
-                'tel. 0817580177<br>Fax 0815405590</p>';
+                return;
 
+            }, errorHandler);
 
-                emailProperties.attachments = pdfFilePath + pdfFileName;
+        };
 
-                //if offerta is definitiva add the 'vendite' email to the cc array of emaiProperties
-                if ($('#offertaConfermedCheck').is(':checked')) {
-                    emailProperties.cc.push('vendite@siderprofessional.com');
-                }
-
-                cordova.plugins.email.open(emailProperties, function () {
-                    //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
-                }, this);
-
-
-            }, function (error) {
-                // handle error
-                console.log(error);
-                navigator.notification.alert(error);
-            });
-
-        }
     };
 
+    //Genera l'email usando il plugin email-composer
+    var sendEmail = function () {
 
+        var emailProperties = {
+            to: AGENTI.client.email(),
+            cc: [AGENTI.db.getItem('email')],
+            subject: 'Offerta Sidercampania Professional srl',
+            isHtml: true
+        };
+
+        // success! - generate email body
+        emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale() + '</h3>' +
+        '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
+        'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
+        '<p>Distini saluti,<br>' + AGENTI.db.getItem('full_name') + '<br>Sidercampania Professional srl<br>' +
+        'tel. 0817580177<br>Fax 0815405590</p>';
+
+
+        emailProperties.attachments = pdfFilePath + pdfFileName;
+
+        //if offerta is definitiva add the 'vendite' email to the cc array of emaiProperties
+        if ($('#offertaConfermedCheck').is(':checked')) {
+            emailProperties.cc.push('vendite@siderprofessional.com');
+        }
+
+        cordova.plugins.email.open(emailProperties, function () {
+            //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
+        }, this);
+    };
+
+    //Salva l'offerta in sqlite db
     var saveOfferta = function () {
 
         if (offertaDetail.length !== 0) {
@@ -303,15 +327,14 @@ AGENTI.offerta = (function () {
 
                         });
 
-                    };
+                    }
+                    ;
                 },
                 'Attenzione',           // title
                 ['Salva offerta', 'Annulla']         // buttonLabels
             );
         }
-        ;
     };
-
 
     //getter functions for exporting private variables
     var getOffertaDetail = function () {
@@ -324,8 +347,7 @@ AGENTI.offerta = (function () {
         renderOffertaDetail: renderOffertaDetail,
         checkIsInserted: checkIsInserted,
         deleteCurrentOfferta: deleteCurrentOfferta,
-        sendOfferta: sendOfferta,
-        saveOfferta: saveOfferta,
+        createOfferta: createOfferta,
         detail: getOffertaDetail
     };
 

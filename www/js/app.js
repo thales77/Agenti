@@ -35,9 +35,6 @@ AGENTI.init = function () {
                 if (res != null && res.rows != null) {
                     for (var i = 0; i < res.rows.length; i++) {
                         var row = res.rows.item(i);
-                        console.log(row.Description);
-                        console.log(row.Url);
-                        console.log(row.Priority);
 
                         //update side panel with remote server list
                         $('.options-list').append('<li data-serverId =' + row.ID + '><a href="#">' + row.Description + '</a></li>');
@@ -293,11 +290,7 @@ AGENTI.init = function () {
     });
 
     //invia offerta button in offerta detail page
-    $('#inviaOfferta').on('tap', AGENTI.offerta.sendOfferta);
-
-    //invia offerta button in offerta detail page
-    $('#salvaOfferta').on('tap', AGENTI.offerta.saveOfferta);
-
+    $('#inviaOfferta').on('tap', AGENTI.offerta.createOfferta);
 
     //Delete offerta button in offerta Details page
     $('#offertaDeleteBtn').on('tap', function () {
