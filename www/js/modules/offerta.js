@@ -117,8 +117,7 @@ AGENTI.offerta = (function () {
         createPDF();
 
         //TODO check if everything went well
-        //Genera l'email usando il plugin email-composer
-         sendEmail();
+
 
         //Se tutto ok salva l'offerta in localDB (sqlite plugin)
         //saveOfferta();
@@ -133,7 +132,7 @@ AGENTI.offerta = (function () {
             splitText = "",
             noteHeight = 0;
 
-        var errorHandler = function (error) {
+        var errorHandler = function () {
             // handle error
             console.log(error);
             navigator.notification.alert(error);
@@ -222,7 +221,7 @@ AGENTI.offerta = (function () {
             doc.text(20, height + noteHeight + 125, 'Nominativo addetto: ' + AGENTI.db.getItem('full_name'));
 
             var pdfOutput = doc.output();
-            console.log(pdfOutput);
+            //console.log(pdfOutput);
 
             function pdfSave(name, data, success, fail) {
 
@@ -246,11 +245,8 @@ AGENTI.offerta = (function () {
                 window.requestFileSystem(window.LocalFileSystem.PERSISTENT, data.length || 0, gotFileSystem, fail);
             }
 
-            pdfSave(pdfFileName, pdfOutput, function () {
-
-                return;
-
-            }, errorHandler);
+            //If pdf file successfully created send Email, else display error
+            pdfSave(pdfFileName, pdfOutput, sendEmail, errorHandler);
 
         };
 
@@ -281,6 +277,7 @@ AGENTI.offerta = (function () {
             emailProperties.cc.push('vendite@siderprofessional.com');
         }
 
+        //check if the email sending has been cancelled by the user
         cordova.plugins.email.open(emailProperties, function () {
             //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
         }, this);
