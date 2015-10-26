@@ -116,9 +116,6 @@ AGENTI.offerta = (function () {
         //Genera il file PDF usando la libreria jsPDF
         createPDF();
 
-        //TODO check if everything went well
-
-
         //Se tutto ok salva l'offerta in localDB (sqlite plugin)
         //saveOfferta();
     };
