@@ -132,12 +132,6 @@ AGENTI.offerta = (function () {
             splitText = "",
             noteHeight = 0;
 
-        var errorHandler = function () {
-            // handle error
-            console.log(error);
-            navigator.notification.alert(error);
-        };
-
         if (offertaDetail.length !== 0) {
 
 
@@ -246,7 +240,11 @@ AGENTI.offerta = (function () {
             }
 
             //If pdf file successfully created send Email, else display error
-            pdfSave(pdfFileName, pdfOutput, sendEmail, errorHandler);
+            pdfSave(pdfFileName, pdfOutput, sendEmail, function (error) {
+                // handle error
+                console.log(error);
+                navigator.notification.alert(error);
+            });
 
         };
 
