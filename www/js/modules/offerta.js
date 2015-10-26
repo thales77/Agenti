@@ -3,7 +3,7 @@
  */
 AGENTI.offerta = (function () {
 
-    var offertaHeader = {totaleOfferta: 0},
+    var offertaHeader = {totaleOfferta: 0, stato : ""},
         offertaDetail = [],
         pdfFileName = 'offerta.pdf',
         pdfFilePath;
@@ -81,7 +81,7 @@ AGENTI.offerta = (function () {
         if (offertaDetail.length !== 0) {
             AGENTI.utils.vibrate(AGENTI.deviceType);
             navigator.notification.confirm(
-                "Cancellare l'offerta inserita?", // message
+                "C'è un' offerta in fase di modifica, voi cancellarla?", // message
                 deleteCurrentOfferta,            // callback to invoke with index of button pressed
                 'Attenzione',           // title
                 ['Elimina offerta', 'Annulla']         // buttonLabels
@@ -113,11 +113,12 @@ AGENTI.offerta = (function () {
     //Invia l'offerta via email e salvala su sqliteDB
     var createOfferta = function () {
 
-        //Genera il file PDF usando la libreria jsPDF
+        //Salva l'offerta in localDB (sqlite plugin)
+        saveOfferta();
+
+        //Genera il file PDF usando la libreria jsPDF e invia il file via email come allegato, utilizzando email-composer.
         createPDF();
 
-        //Se tutto ok salva l'offerta in localDB (sqlite plugin)
-        //saveOfferta();
     };
 
     //Genera il file PDF usando la libreria jsPDF
@@ -296,11 +297,9 @@ AGENTI.offerta = (function () {
                         //execute sql
                         sqliteDb.transaction(function (tx) {
 
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS offertaTes (id INTEGER PRIMARY KEY, data TEXT, data_num INTEGER)');
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS offertaRig (id INTEGER PRIMARY KEY, data TEXT, data_num INTEGER)');
-
                             //sql save header
-                            tx.executeSql("INSERT INTO offertaTes (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
+                            tx.executeSql("INSERT INTO Offerta_Header (ID, Client_ID, Data_inserimento, Totale_Offerta, Stato, Note) VALUES (?,?,?,?,?,?)", ["1", AGENTI.client.codice(), Date.now(), offertaHeader.totaleOfferta, offertaHeader.stato, offertaHeader.note],
+                                function (tx, res) {
                                 console.log("insertId: " + res.insertId + " -- probably 1");
                                 console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
                             }, function (e) {
@@ -309,7 +308,7 @@ AGENTI.offerta = (function () {
 
                             //sql save offerta detail
                             $.each(offertaDetail, function () {
-                                tx.executeSql("INSERT INTO offertaRig (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
+                                tx.executeSql("INSERT INTO Offerta_Detail (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
                                     console.log("insertId: " + res.insertId + " -- probably 1");
                                     console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
                                 }, function (e) {
