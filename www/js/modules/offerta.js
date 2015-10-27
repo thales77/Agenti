@@ -300,15 +300,15 @@ AGENTI.offerta = (function () {
                             //sql save header
                             tx.executeSql("INSERT INTO Offerta_Header (ID, Client_ID, Data_inserimento, Totale_Offerta, Stato, Note) VALUES (?,?,?,?,?,?)", ["1", AGENTI.client.codice(), Date.now(), offertaHeader.totaleOfferta, offertaHeader.stato, offertaHeader.note],
                                 function (tx, res) {
-                                console.log("insertId: " + res.insertId + " -- probably 1");
-                                console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
-                            }, function (e) {
-                                console.log("ERROR: " + e.message);
-                            });
+                                    console.log("insertId: " + res.insertId + " -- probably 1");
+                                    console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
+                                }, function (e) {
+                                    console.log("ERROR: " + e.message);
+                                });
 
                             //sql save offerta detail
                             $.each(offertaDetail, function () {
-                                tx.executeSql("INSERT INTO Offerta_Detail (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
+                                tx.executeSql("INSERT INTO Offerta_Detail (ID, Offerta_Header_ID, Articolo_ID, Articolo_Descr, Quantita, Prezzo, Totale_riga, Note) VALUES (?,?,?,?,?,?,?,?)", ["1", "1", offertaDetail.itemId, offertaDetail.itemDesc, offertaDetail.qty, offertaDetail.prezzo, offertaDetail.totaleRiga, offertaDetail.nota], function (tx, res) {
                                     console.log("insertId: " + res.insertId + " -- probably 1");
                                     console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
                                 }, function (e) {
@@ -316,10 +316,25 @@ AGENTI.offerta = (function () {
                                 });
                             });
 
+
+                            tx.executeSql("select count(id) as cnt from Offerta_Detail;", [], function(tx, res) {
+                                console.log("res.rows.length: " + res.rows.length + " -- should be 1");
+                                console.log("res.rows.item(0).cnt: " + res.rows.item(0).cnt + " -- should be 1");
+                            }, function (e) {
+                                console.log("ERROR: " + e.message);
+                            });
+
+                            tx.executeSql('SELECT * FROM Offerta_Detail', [], function(tx,results) {
+                                for (var i = 0; i < results.rows.length; i++) {
+                                    row = results.rows.item(i);
+                                    console.log("row is " + JSON.stringify(row));
+                                }
+                            });
+
+
                         });
 
-                    }
-                    ;
+                    };
                 },
                 'Attenzione',           // title
                 ['Salva offerta', 'Annulla']         // buttonLabels
