@@ -297,7 +297,7 @@ AGENTI.offerta = (function () {
                         //execute sql
                         sqliteDb.transaction(function (tx) {
 
-                            //sql save header
+                            //sql save offerta header
                             tx.executeSql("INSERT INTO Offerta_Header (Client_ID, Data_inserimento, Totale_Offerta, Stato, Note) VALUES (?,?,?,?,?)", [AGENTI.client.codice(), Date.now(), offertaHeader.totaleOfferta, offertaHeader.stato, offertaHeader.note],
                                 function (tx, res) {
                                     //get the last inserted record's id fo insert in the offerta_Detail foreign key
@@ -307,6 +307,9 @@ AGENTI.offerta = (function () {
                                     console.log("ERROR: " + e.message);
                                 });
 
+                        });
+
+                        sqliteDb.transaction(function (tx) {
                             //sql save offerta detail
                             $.each(offertaDetail, function () {
                                 tx.executeSql("INSERT INTO Offerta_Detail (Offerta_Header_ID, Articolo_ID, Articolo_Descr, Quantita, Prezzo, Totale_riga, Note) VALUES (?,?,?,?,?,?,?)", [offertaHeader.headerID, this.itemId, this.itemDesc, this.qty, this.prezzo, this.totaleRiga, this.nota], function (tx, res) {
@@ -317,7 +320,7 @@ AGENTI.offerta = (function () {
                             });
 
                             //select table
-                            tx.executeSql('SELECT * FROM Offerta_Header', [], function(tx,res) {
+                            tx.executeSql('SELECT * FROM Offerta_Header', [], function (tx, res) {
                                 var row = "";
                                 for (var i = 0; i < res.rows.length; i++) {
                                     row = res.rows.item(i);
@@ -326,7 +329,7 @@ AGENTI.offerta = (function () {
                             });
 
                             //select table
-                            tx.executeSql('SELECT * FROM Offerta_Detail', [], function(tx,res) {
+                            tx.executeSql('SELECT * FROM Offerta_Detail WHERE Offerta_Header_ID =' + offertaHeader.headerID, [], function (tx, res) {
                                 var row = "";
                                 for (var i = 0; i < res.rows.length; i++) {
                                     row = res.rows.item(i);
@@ -334,8 +337,8 @@ AGENTI.offerta = (function () {
                                 }
                             });
 
-
                         });
+
 
                     };
                 },
@@ -343,6 +346,29 @@ AGENTI.offerta = (function () {
                 ['Salva offerta', 'Annulla']         // buttonLabels
             );
         }
+    };
+
+    var getOffertaList = function (client) {
+
+        //initialise sqLite database
+        var sqliteDb = AGENTI.sqliteDB
+
+        //execute sql
+        sqliteDb.transaction(function (tx) {
+            //select table
+            tx.executeSql('SELECT * FROM Offerta_Header WHERE Client_ID LIKE \'%' + client + '%\'', [], function (tx, res) {
+
+                //render this to html instead of console
+                var row = "";
+                for (var i = 0; i < res.rows.length; i++) {
+                    row = res.rows.item(i);
+                    console.log("row is " + JSON.stringify(row));
+                }
+
+            });
+
+        });
+
     };
 
     //getter functions for exporting private variables
@@ -357,6 +383,7 @@ AGENTI.offerta = (function () {
         checkIsInserted: checkIsInserted,
         deleteCurrentOfferta: deleteCurrentOfferta,
         createOfferta: createOfferta,
+        getList: getOffertaList,
         detail: getOffertaDetail
     };
 

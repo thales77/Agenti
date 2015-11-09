@@ -220,6 +220,11 @@ AGENTI.init = function () {
     $('#mainSalesList').on('tap', 'li', function () {
         AGENTI.listino.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
     });
+
+    //Lista offerte inserite da Agente
+    $('#offertaListBtn').on('tap', function () {
+        AGENTI.offerta.getList(AGENTI.client.codice());
+    });
 //-----------------------------------------------------------------------------------
 
 
