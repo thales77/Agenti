@@ -112,6 +112,7 @@ AGENTI.init = function () {
 
         //Lista offerte inserite da Agente
         $('#offertaListBtn').on('tap', function () {
+
             AGENTI.offerta.getList(AGENTI.client.codice());
         });
 
