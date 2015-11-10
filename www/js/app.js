@@ -110,6 +110,11 @@ AGENTI.init = function () {
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
 
+        //Lista offerte inserite da Agente
+        $('#offertaListBtn').on('tap', function () {
+            AGENTI.offerta.getList(AGENTI.client.codice());
+        });
+
     });
 
 
@@ -118,6 +123,7 @@ AGENTI.init = function () {
         $("#listaArticoli").empty();
         $("#history").empty();
         $("#mainSalesList").empty();
+        $("#offertaList").empty();
         $('#offertaTable tbody').empty(); // empty table in offerta detail page
         //hide the more results button in sales history page
         $('#clientSalesHistory .moreBtn').closest('.ui-btn').hide();
@@ -221,10 +227,6 @@ AGENTI.init = function () {
         AGENTI.listino.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
     });
 
-    //Lista offerte inserite da Agente
-    $('#offertaListBtn').on('tap', function () {
-        AGENTI.offerta.getList(AGENTI.client.codice());
-    });
 //-----------------------------------------------------------------------------------
 
 

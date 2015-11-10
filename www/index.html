@@ -448,7 +448,7 @@
         <a href="#listino" data-role="button" data-icon="euro" data-prefetch>Listino</a>
         <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="shopping-cart">Gestione offerta</a>
         <a href="#" id="offertaListBtn" data-role="button" data-icon="info">Storico offerte</a>
-
+        <span id="offertaListWrapper"><ul id="offertaList" data-role="listview" data-inset="true"></ul></span>
 
 
         <div data-role="popup" id="clientBlocked" class="ui-content" data-overlay-theme="a">
@@ -734,8 +734,9 @@
 <script src="js/lib/jqm-datebox.mode.datebox.min.js"></script>
 <script src="js/lib/jquery.mobile.datebox.i18n.it.utf8.js"></script>
 
-<!-- Date manipulation library -->
+<!-- Date manipulation libraries -->
 <script src="js/lib/date.js"></script>
+<script src="js/lib/moment.min.js"></script>
 
 <!--pdf generation library-->
 <script type="text/javascript" src="js/lib/jspdf.debug.js"></script>
