@@ -118,7 +118,7 @@ AGENTI.offerta = (function () {
         if (offertaDetail.length !== 0) {
             AGENTI.utils.vibrate(AGENTI.deviceType);
             navigator.notification.confirm(
-                "Inviare l'offerta inserita e salvarla nel archivio locale?", // message
+                "Inviare l'offerta e salvarla nel archivio locale?", // message
 
                 //callback
                 function (buttonIndex) {
@@ -143,6 +143,7 @@ AGENTI.offerta = (function () {
 
     //Genera il file PDF usando la libreria jsPDF
     var createPDF = function () {
+
         var tableData = [],
             columns = [],
             options = {},
@@ -344,7 +345,7 @@ AGENTI.offerta = (function () {
         //execute sql
         sqliteDb.transaction(function (tx) {
             //select table
-            tx.executeSql('SELECT * FROM Offerta_Header WHERE Client_ID LIKE \'%' + client + '%\' ORDER BY ID', [], function (tx, res) {
+            tx.executeSql('SELECT * FROM Offerta_Header WHERE Client_ID LIKE \'%' + client + '%\' ORDER BY ID DESC', [], function (tx, res) {
 
                 //render this to html instead of console
                 var row = "",
@@ -353,7 +354,7 @@ AGENTI.offerta = (function () {
 
                 for (var i = 0; i < res.rows.length; i++) {
                     row = res.rows.item(i);
-                    html = html + '<li><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta + '</p></a></li>'
+                    html = html + '<li><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + '</p></a></li>'
                     offertaList.html(html);
                     offertaList.listview("refresh");
                     //console.log("row is " + JSON.stringify(row));
