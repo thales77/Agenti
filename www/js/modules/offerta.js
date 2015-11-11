@@ -3,7 +3,7 @@
  */
 AGENTI.offerta = (function () {
 
-    var offertaHeader = {totaleOfferta: 0, stato: ""},
+    var offertaHeader = {totaleOfferta: 0, stato: "", note: ""},
         offertaDetail = [],
         pdfFileName = 'offerta.pdf',
         pdfFilePath;
@@ -67,12 +67,15 @@ AGENTI.offerta = (function () {
 
         $.each(offertaDetail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
-            this.qty.replace(/\./g, ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g, ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g, ",") + '</td><td>' +
+            this.qty.toString().replace(/\./g, ",") + '</td><td>' + '&#8364;' + this.prezzo.toString().replace(/\./g, ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g, ",") + '</td><td>' +
             this.nota + '</td><td>' + '<button class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-mini deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
+        if (offertaHeader.stato = 'C') {
+            $('#offertaConfermedCheck').prop('checked', true).checkboxradio('refresh');
+        }
         $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
-        $('noteOffertaHeader').text(offertaHeader.note);
+        $('#noteOffertaHeader').val(offertaHeader.note);
         $('#offertaTable').table("refresh");
     };
 
@@ -99,7 +102,7 @@ AGENTI.offerta = (function () {
     var deleteCurrentOfferta = function (buttonIndex, alert) {
         if (buttonIndex === 1) {
             offertaDetail.length = 0; //empty offerta detail array
-            offertaHeader = {totaleOfferta: 0, note: ""}; //reset offerta total
+            offertaHeader = {totaleOfferta: 0, stato: "", note: ""}; //reset offerta total
             $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ",")); //reset offerta total on DOM
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
             $('#offertaConfermedCheck').attr("checked", false).checkboxradio("refresh");
@@ -155,7 +158,6 @@ AGENTI.offerta = (function () {
 
 
             //FIRST GENERATE THE PDF DOCUMENT
-            offertaHeader.note = $('#noteOffertaHeader').val();
 
             console.log("generating pdf...");
             var doc = new jsPDF('p', 'pt', 'a4');
@@ -304,13 +306,21 @@ AGENTI.offerta = (function () {
     //Salva l'offerta in local sqlite db
     var saveOfferta = function (callback) {
 
-        //initialise sqLite database
-        var sqliteDb = AGENTI.sqliteDB
+
+        var sqliteDb = AGENTI.sqliteDB,
+            today = moment().format('DD/MM/YYYY');
+
+        offertaHeader.note = $('#noteOffertaHeader').val();
+
+        if ($('#offertaConfermedCheck').is(':checked')) {
+            offertaHeader.stato = 'C';
+        } else {
+            offertaHeader.stato = 'O';
+        }
 
         //execute sql
         sqliteDb.transaction(function (tx) {
 
-            var today = moment().format('DD/MM/YYYY');
             //sql save offerta header
 
             tx.executeSql("INSERT INTO Offerta_Header (Client_ID, Data_inserimento, Totale_Offerta, Stato, Note) VALUES (?,?,?,?,?)", [AGENTI.client.codice(), today, offertaHeader.totaleOfferta, offertaHeader.stato, offertaHeader.note],
@@ -328,12 +338,11 @@ AGENTI.offerta = (function () {
             //sql save offerta detail and execute callback
             $.each(offertaDetail, function () {
                 tx.executeSql("INSERT INTO Offerta_Detail (Offerta_Header_ID, Articolo_ID, Articolo_Descr, Quantita, Prezzo, Totale_riga, Note) VALUES (?,?,?,?,?,?,?)", [offertaHeader.headerID, this.itemId, this.itemDesc, this.qty, this.prezzo, this.totaleRiga, this.nota], function (tx, res) {
-                    callback();
                 }, function (e) {
                     console.log("ERROR: " + e.message);
                 });
             });
-
+            callback();
         });
     };
 
@@ -354,7 +363,7 @@ AGENTI.offerta = (function () {
 
                 for (var i = 0; i < res.rows.length; i++) {
                     row = res.rows.item(i);
-                    html = html + '<li><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + '</p></a></li>'
+                    html = html + '<li data-headerID=' + row.ID + '><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + '</p></a></li>'
                     offertaList.html(html);
                     offertaList.listview("refresh");
                     //console.log("row is " + JSON.stringify(row));
@@ -367,8 +376,53 @@ AGENTI.offerta = (function () {
     };
 
     //getter functions for exporting private variables
-    var getOffertaDetail = function () {
-        return offertaDetail;
+    var getOffertaDetail = function (headerID, callback) {
+        if (!headerID) {
+            return offertaDetail;
+        } else {
+            //initialise sqLite database
+            var sqliteDb = AGENTI.sqliteDB
+
+            //get offerta header data
+            sqliteDb.transaction(function (tx) {
+                //select table
+                tx.executeSql('SELECT * FROM Offerta_Header WHERE ID =' + headerID, [], function (tx, res) {
+
+                    var row = "";
+
+                    for (var i = 0; i < res.rows.length; i++) {
+                        row = res.rows.item(i);
+                        offertaHeader.totaleOfferta = row.Totale_Offerta;
+                        offertaHeader.stato = row.Stato;
+                        offertaHeader.note = row.Note;
+                    }
+                });
+            });
+
+            //get offerta detail data
+            sqliteDb.transaction(function (tx) {
+                //select table
+                tx.executeSql('SELECT * FROM Offerta_Detail WHERE Offerta_Header_ID =' + headerID, [], function (tx, res) {
+
+                    var row = "";
+                    //reset offertaDetail in case it is already populated
+                    offertaDetail.length = 0;
+
+                    for (var i = 0; i < res.rows.length; i++) {
+                        row = res.rows.item(i);
+                        offertaDetail.push({
+                            itemId: row.Articolo_ID,
+                            itemDesc: row.Articolo_Descr,
+                            qty: row.Quantita,
+                            prezzo: row.Prezzo,
+                            totaleRiga: row.Totale_riga,
+                            nota: row.Note
+                        });
+                    }
+                callback();
+                });
+            });
+        }
     };
 
     return {

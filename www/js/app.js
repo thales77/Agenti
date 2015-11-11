@@ -116,6 +116,15 @@ AGENTI.init = function () {
             AGENTI.offerta.getList(AGENTI.client.codice());
         });
 
+
+        //tap on archivio offerte list button
+        $('#offertaList').on('tap', 'li', function () {
+            AGENTI.offerta.detail($(this).attr('data-headerID'), function() {
+                //call back function beacuse of asyncronous access to local db
+                $.mobile.changePage("#offertaDetail");
+            });
+
+        });
     });
 
 
