@@ -3,7 +3,7 @@
  */
 AGENTI.offerta = (function () {
 
-    var offertaHeader = {totaleOfferta: 0, stato: "", note: ""},
+    var offertaHeader = {totaleOfferta: 0, stato: "", note: "", headerID : null},
         offertaDetail = [],
         pdfFileName = 'offerta.pdf',
         pdfFilePath;
@@ -71,9 +71,12 @@ AGENTI.offerta = (function () {
             this.nota + '</td><td>' + '<button class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-mini deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
-        if (offertaHeader.stato = 'C') {
+        if (offertaHeader.stato === 'C') {
             $('#offertaConfermedCheck').prop('checked', true).checkboxradio('refresh');
+        } else {
+            $('#offertaConfermedCheck').prop('checked', false).checkboxradio('refresh');
         }
+
         $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
         $('#noteOffertaHeader').val(offertaHeader.note);
         $('#offertaTable').table("refresh");
@@ -102,7 +105,7 @@ AGENTI.offerta = (function () {
     var deleteCurrentOfferta = function (buttonIndex, alert) {
         if (buttonIndex === 1) {
             offertaDetail.length = 0; //empty offerta detail array
-            offertaHeader = {totaleOfferta: 0, stato: "", note: ""}; //reset offerta total
+            offertaHeader = {totaleOfferta: 0, stato: "", note: "", headerID : null}; //reset offerta total
             $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ",")); //reset offerta total on DOM
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
             $('#offertaConfermedCheck').attr("checked", false).checkboxradio("refresh");
@@ -129,7 +132,7 @@ AGENTI.offerta = (function () {
 
                         //Salva l'offerta in localDB (sqlite plugin)
                         //Genera il file PDF usando la libreria jsPDF e invia il file via email come allegato, utilizzando email-composer.
-                        saveOfferta(createPDF);
+                        saveOfferta();
 
                         //cancella l'offerta dal GUI
                         //deleteCurrentOfferta(buttonIndex,1);
@@ -204,8 +207,8 @@ AGENTI.offerta = (function () {
                     "codice": this.itemId,
                     "descrizione": this.itemDesc,
                     "nota": this.nota,
-                    "qta": this.qty.replace(/\./g, ","),
-                    "prezzo": this.prezzo.replace(/\./g, ","),
+                    "qta": this.qty.toString().replace(/\./g, ","),
+                    "prezzo": this.prezzo.toString().replace(/\./g, ","),
                     "totale": this.totaleRiga.toFixed(2).replace(/\./g, ",") //change into string again and replace dots with comas
                 });
                 height = height + 20;
@@ -303,8 +306,8 @@ AGENTI.offerta = (function () {
         }, this);
     };
 
-    //Salva l'offerta in local sqlite db
-    var saveOfferta = function (callback) {
+    //Salva l'offerta in local sqlite db and call createpdf
+    var saveOfferta = function () {
 
 
         var sqliteDb = AGENTI.sqliteDB,
@@ -318,11 +321,15 @@ AGENTI.offerta = (function () {
             offertaHeader.stato = 'O';
         }
 
-        //execute sql
+
         sqliteDb.transaction(function (tx) {
-
             //sql save offerta header
+            tx.executeSql("DELETE FROM Offerta_Header WHERE ID="+offertaHeader.headerID);
+            tx.executeSql("DELETE FROM Offerta_Detail WHERE Offerta_Header_ID="+offertaHeader.headerID);
+        });
 
+        sqliteDb.transaction(function (tx) {
+            //sql save offerta header
             tx.executeSql("INSERT INTO Offerta_Header (Client_ID, Data_inserimento, Totale_Offerta, Stato, Note) VALUES (?,?,?,?,?)", [AGENTI.client.codice(), today, offertaHeader.totaleOfferta, offertaHeader.stato, offertaHeader.note],
                 function (tx, res) {
                     //get the last inserted record's id fo insert in the offerta_Detail foreign key
@@ -331,19 +338,22 @@ AGENTI.offerta = (function () {
                 }, function (e) {
                     console.log("ERROR: " + e.message);
                 });
-
         });
-
+        //Insert detail to db
         sqliteDb.transaction(function (tx) {
             //sql save offerta detail and execute callback
             $.each(offertaDetail, function () {
-                tx.executeSql("INSERT INTO Offerta_Detail (Offerta_Header_ID, Articolo_ID, Articolo_Descr, Quantita, Prezzo, Totale_riga, Note) VALUES (?,?,?,?,?,?,?)", [offertaHeader.headerID, this.itemId, this.itemDesc, this.qty, this.prezzo, this.totaleRiga, this.nota], function (tx, res) {
-                }, function (e) {
+                tx.executeSql("INSERT INTO Offerta_Detail (Offerta_Header_ID, Articolo_ID, Articolo_Descr, Quantita, Prezzo, Totale_riga, Note) VALUES (?,?,?,?,?,?,?)", [offertaHeader.headerID, this.itemId, this.itemDesc, this.qty, this.prezzo, this.totaleRiga, this.nota],
+                    function (tx, res) {
+                    //Do nothing
+                    }, function (e) {
                     console.log("ERROR: " + e.message);
                 });
             });
-            callback();
         });
+
+        //Generate email and pdf as attachment
+        createPDF();
     };
 
     var getOffertaList = function (client) {
@@ -359,11 +369,18 @@ AGENTI.offerta = (function () {
                 //render this to html instead of console
                 var row = "",
                     html = "",
-                    offertaList = $('#offertaList');
+                    offertaList = $('#offertaList'),
+                    statoString = "";
+
 
                 for (var i = 0; i < res.rows.length; i++) {
                     row = res.rows.item(i);
-                    html = html + '<li data-headerID=' + row.ID + '><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + '</p></a></li>'
+                    if (row.Stato === "C") {
+                        statoString = "Confermata";
+                    } else {
+                        statoString = "Offerta";
+                    }
+                    html = html + '<li data-headerID=' + row.ID + '><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + " - " + statoString + '</p></a></li>'
                     offertaList.html(html);
                     offertaList.listview("refresh");
                     //console.log("row is " + JSON.stringify(row));
@@ -392,6 +409,7 @@ AGENTI.offerta = (function () {
 
                     for (var i = 0; i < res.rows.length; i++) {
                         row = res.rows.item(i);
+                        offertaHeader.headerID = row.ID;
                         offertaHeader.totaleOfferta = row.Totale_Offerta;
                         offertaHeader.stato = row.Stato;
                         offertaHeader.note = row.Note;
