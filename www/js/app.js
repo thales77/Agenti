@@ -307,13 +307,26 @@ AGENTI.init = function () {
     });
 
     //invia offerta button in offerta detail page
-    $('#inviaOfferta').on('tap', AGENTI.offerta.createOfferta);
+    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
+
+    //salva offerta button in offerta detail page
+    $('#saveOfferta').on('tap', AGENTI.offerta.saveOfferta);
 
     //Delete offerta button in offerta Details page
     $('#offertaDeleteBtn').on('tap', function () {
         if (AGENTI.offerta.detail().length !== 0) {
-            AGENTI.offerta.checkIsInserted();
-        }
+            var deleteFromDb = true;
+                AGENTI.utils.vibrate(AGENTI.deviceType);
+                navigator.notification.confirm(
+                    "Eliminare l'offerta dall' archivio?", // message
+                    function(buttonIndex) { // callback to invoke with index of button pressed
+                        AGENTI.offerta.deleteCurrentOfferta(buttonIndex, deleteFromDb)
+                    },
+                    'Attenzione',           // title
+                    ['Si', 'Annulla']         // buttonLabels
+                );
+
+            }
     });
 
     //popup in item detail page to insert item to offerta
