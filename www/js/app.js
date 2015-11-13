@@ -29,7 +29,7 @@ AGENTI.init = function () {
     //Open local prepopulated database
     AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db", createFromLocation: 1});
     //Open transaction and select remote server list
-    AGENTI.sqliteDB.transaction(function(tx) {
+    /*AGENTI.sqliteDB.transaction(function(tx) {
 
             tx.executeSql("SELECT * FROM Servers ORDER BY Servers.Priority;", [], function(tx, res) {
                 if (res != null && res.rows != null) {
@@ -45,7 +45,7 @@ AGENTI.init = function () {
         }, function(e) {
             console.log("ERROR: " + e.message);
         });
-    });
+    });*/
 
 
 

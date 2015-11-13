@@ -74,7 +74,7 @@
             <li class="admin"><a href="#admin">Consulta log</a></li>
             <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
             <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
-            <li data-role="list-divider">Server remoti</li>
+            <!--<li data-role="list-divider">Server remoti</li>-->
         </ul>
     </div>
 
@@ -110,10 +110,7 @@
 
             <ul>
                 <li>
-                    Realizzata gestione inserimento e invio offerte via email
-                </li>
-                <li>
-                    E possibile aggiungere un cliente nella rubrica del telefono
+                    Realizzazione archivio offerte con possibilità di modifica.
                 </li>
             </ul>
 
@@ -359,11 +356,14 @@
             <label for="noteOffertaHeader">Note aggiuntive:</label>
             <textarea name="noteOffertaHeader" id="noteOffertaHeader"></textarea>
         </div>
-        <button data-icon="check" id="saveOfferta">Salva</button>
-        <button data-icon="mail" id="inviaOfferta">Invia</button>
-        <!--TODO enable this functionality at some point-->
-        <!--<button data-icon="save" id="salvaOfferta">Salva offerta</button>-->
-        <button data-icon="eraser" id="offertaDeleteBtn">Elimina</button>
+        <br>
+        <div data-role="navbar"  data-iconpos="top">
+            <ul>
+                <li><button data-icon="check" id="saveOfferta">Salva offerta</button></li>
+                <li><button data-icon="mail" id="inviaOfferta">Invia offerta</button></li>
+                <li><button data-icon="eraser" id="offertaDeleteBtn">Elimina offerta</button></li>
+            </ul>
+        </div>
 
     </div>
 
@@ -636,14 +636,14 @@
             </ul>
         </div>
 
-            <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="clock-o">Storico prezzi applicati </a>
+        <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="shopping-cart"
+           data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
 
-            <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
+        <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="clock-o">Storico prezzi applicati </a>
+
+        <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
                 <!-- Fill this <ul> with data on click-->
-            </ul>
-
-            <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="shopping-cart"
-               data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
+        </ul>
 
 
     </div>
