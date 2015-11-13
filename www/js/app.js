@@ -307,6 +307,11 @@ AGENTI.init = function () {
     });
 
     //invia offerta button in offerta detail page
+    $('#newOffertaBtn').on('tap', function () {
+        AGENTI.offerta.checkIsInserted();
+    });
+
+    //invia offerta button in offerta detail page
     $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 
     //salva offerta button in offerta detail page

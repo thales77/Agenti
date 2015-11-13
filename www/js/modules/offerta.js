@@ -77,6 +77,18 @@ AGENTI.offerta = (function () {
             $('#offertaConfermedCheck').prop('checked', false).checkboxradio('refresh');
         }
 
+        if (offertaDetail.length === 0) {
+            $('#newOffertaBtn').prop( "disabled", true );
+            $('#saveOfferta').prop( "disabled", true );
+            $('#inviaOfferta').prop( "disabled", true );
+            $('#offertaDeleteBtn').prop( "disabled", true );
+        } else {
+            $('#newOffertaBtn').prop( "disabled", false );
+            $('#saveOfferta').prop( "disabled", false );
+            $('#inviaOfferta').prop( "disabled", false );
+            $('#offertaDeleteBtn').prop( "disabled", false );
+        }
+
         $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
         $('#noteOffertaHeader').val(offertaHeader.note);
         $('#offertaTable').table("refresh");
@@ -87,7 +99,7 @@ AGENTI.offerta = (function () {
         if (offertaDetail.length !== 0) {
             AGENTI.utils.vibrate(AGENTI.deviceType);
             navigator.notification.confirm(
-                "C'è un' offerta in fase di modifica, la vuoi abandonare?", // message
+                "C'è un' offerta in fase di modifica, la vuoi abbandonare?", // message
                 deleteCurrentOfferta,            // callback to invoke with index of button pressed
                 'Attenzione',           // title
                 ['Si', 'Annulla']         // buttonLabels
@@ -121,6 +133,11 @@ AGENTI.offerta = (function () {
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
             $('#offertaConfermedCheck').attr("checked", false).checkboxradio("refresh");
             $('#noteOffertaHeader').val("");
+            $('#newOffertaBtn').prop( "disabled", true );
+            $('#saveOfferta').prop( "disabled", true );
+            $('#inviaOfferta').prop( "disabled", true );
+            $('#offertaDeleteBtn').prop( "disabled", true );
+
 
         }
 
