@@ -68,12 +68,13 @@
     <!-- /left panel -->
     <div data-role="panel" class="left-panel" id="left-panel-home" data-display="reveal" data-position="left"
          data-theme="a">
-        <ul data-role="listview" data-theme="a" data-icon="false">
+        <ul data-role="listview" data-theme="a" data-icon="false" class="options-list">
             <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
             <!--<li data-role="list-divider">Impostazioni</li>-->
             <li class="admin"><a href="#admin">Consulta log</a></li>
             <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
             <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+            <!--<li data-role="list-divider">Server remoti</li>-->
         </ul>
     </div>
 
@@ -109,10 +110,7 @@
 
             <ul>
                 <li>
-                    Realizzata gestione inserimento e invio offerte via email
-                </li>
-                <li>
-                    E possibile aggiungere un cliente nella rubrica del telefono
+                    Realizzazione archivio offerte con possibilità di modifica.
                 </li>
             </ul>
 
@@ -358,10 +356,16 @@
             <label for="noteOffertaHeader">Note aggiuntive:</label>
             <textarea name="noteOffertaHeader" id="noteOffertaHeader"></textarea>
         </div>
-        <button data-icon="mail" id="inviaOfferta">Invia offerta</button>
-        <!--TODO enable this functionality at some point-->
-        <!--<button data-icon="save" id="salvaOfferta">Salva offerta</button>-->
-        <button data-icon="eraser" id="offertaDeleteBtn">Cancella offerta</button>
+        <br>
+        <div data-role="navbar"  data-iconpos="top">
+            <ul>
+                <li><button data-icon="refresh" id="newOffertaBtn">Nuova</button></li>
+                <li><button data-icon="check" id="saveOfferta">Salva</button></li>
+                <li><button data-icon="mail" id="inviaOfferta">Invia</button></li>
+                <li><button data-icon="eraser" id="offertaDeleteBtn">Elimina</button></li>
+            </ul>
+        </div>
+
     </div>
 
     <div data-role="popup" id="addEmptyItemPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
@@ -446,7 +450,8 @@
         <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
         <a href="#listino" data-role="button" data-icon="euro" data-prefetch>Listino</a>
         <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="shopping-cart">Gestione offerta</a>
-
+        <a href="#" id="offertaListBtn" data-role="button" data-icon="info">Storico offerte</a>
+        <span id="offertaListWrapper"><ul id="offertaList" data-role="listview" data-inset="true"></ul></span>
 
 
         <div data-role="popup" id="clientBlocked" class="ui-content" data-overlay-theme="a">
@@ -632,14 +637,14 @@
             </ul>
         </div>
 
-            <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="clock-o">Storico prezzi applicati </a>
+        <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="shopping-cart"
+           data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
 
-            <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
+        <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="clock-o">Storico prezzi applicati </a>
+
+        <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
                 <!-- Fill this <ul> with data on click-->
-            </ul>
-
-            <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="shopping-cart"
-               data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
+        </ul>
 
 
     </div>
@@ -732,8 +737,9 @@
 <script src="js/lib/jqm-datebox.mode.datebox.min.js"></script>
 <script src="js/lib/jquery.mobile.datebox.i18n.it.utf8.js"></script>
 
-<!-- Date manipulation library -->
+<!-- Date manipulation libraries -->
 <script src="js/lib/date.js"></script>
+<script src="js/lib/moment.min.js"></script>
 
 <!--pdf generation library-->
 <script type="text/javascript" src="js/lib/jspdf.debug.js"></script>

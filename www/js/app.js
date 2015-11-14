@@ -26,8 +26,28 @@ AGENTI.init = function () {
     });
 
     //initialise sqlite database
-    //TODO add this functionality at some point --> see "saveOfferta" in offerta.js
-    //AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "agenti.db"});
+    //Open local prepopulated database
+    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db", createFromLocation: 1});
+    //Open transaction and select remote server list
+    /*AGENTI.sqliteDB.transaction(function(tx) {
+
+            tx.executeSql("SELECT * FROM Servers ORDER BY Servers.Priority;", [], function(tx, res) {
+                if (res != null && res.rows != null) {
+                    for (var i = 0; i < res.rows.length; i++) {
+                        var row = res.rows.item(i);
+
+                        //update side panel with remote server list
+                        $('.options-list').append('<li data-serverId =' + row.ID + '><a href="#">' + row.Description + '</a></li>');
+                    }
+                    $( "#left-panel-home" ).trigger( "updatelayout" );
+                }
+
+        }, function(e) {
+            console.log("ERROR: " + e.message);
+        });
+    });*/
+
+
 
 //-----------------------------------------------------------------------------------
     //Login page button bindinds
@@ -90,6 +110,21 @@ AGENTI.init = function () {
 
         $('#clientDetail #bckbtn').on('tap', AGENTI.offerta.checkIsInserted);
 
+        //Lista offerte inserite da Agente
+        $('#offertaListBtn').on('tap', function () {
+
+            AGENTI.offerta.getList(AGENTI.client.codice());
+        });
+
+
+        //tap on archivio offerte list button
+        $('#offertaList').on('tap', 'li', function () {
+            AGENTI.offerta.detail($(this).attr('data-headerID'), function() {
+                //call back function beacuse of asyncronous access to local db
+                $.mobile.changePage("#offertaDetail");
+            });
+
+        });
     });
 
 
@@ -98,6 +133,7 @@ AGENTI.init = function () {
         $("#listaArticoli").empty();
         $("#history").empty();
         $("#mainSalesList").empty();
+        $("#offertaList").empty();
         $('#offertaTable tbody').empty(); // empty table in offerta detail page
         //hide the more results button in sales history page
         $('#clientSalesHistory .moreBtn').closest('.ui-btn').hide();
@@ -200,6 +236,7 @@ AGENTI.init = function () {
     $('#mainSalesList').on('tap', 'li', function () {
         AGENTI.listino.getItemDetails($(this).attr('data-codiceArticolo'), "codice");
     });
+
 //-----------------------------------------------------------------------------------
 
 
@@ -270,17 +307,31 @@ AGENTI.init = function () {
     });
 
     //invia offerta button in offerta detail page
-    $('#inviaOfferta').on('tap', AGENTI.offerta.sendOfferta);
+    $('#newOffertaBtn').on('tap', function () {
+        AGENTI.offerta.checkIsInserted();
+    });
 
     //invia offerta button in offerta detail page
-    $('#salvaOfferta').on('tap', AGENTI.offerta.saveOfferta);
+    $('#inviaOfferta').on('tap', AGENTI.offerta.inviaOfferta);
 
+    //salva offerta button in offerta detail page
+    $('#saveOfferta').on('tap', AGENTI.offerta.saveOfferta);
 
     //Delete offerta button in offerta Details page
     $('#offertaDeleteBtn').on('tap', function () {
         if (AGENTI.offerta.detail().length !== 0) {
-            AGENTI.offerta.checkIsInserted();
-        }
+            var deleteFromDb = true;
+                AGENTI.utils.vibrate(AGENTI.deviceType);
+                navigator.notification.confirm(
+                    "Eliminare l'offerta dall' archivio?", // message
+                    function(buttonIndex) { // callback to invoke with index of button pressed
+                        AGENTI.offerta.deleteCurrentOfferta(buttonIndex, deleteFromDb)
+                    },
+                    'Attenzione',           // title
+                    ['Si', 'Annulla']         // buttonLabels
+                );
+
+            }
     });
 
     //popup in item detail page to insert item to offerta

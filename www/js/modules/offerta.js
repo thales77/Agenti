@@ -3,8 +3,10 @@
  */
 AGENTI.offerta = (function () {
 
-    var offertaHeader = {totaleOfferta: 0},
-        offertaDetail = [];
+    var offertaHeader = {totaleOfferta: 0, stato: "", note: "", headerID : null},
+        offertaDetail = [],
+        pdfFileName = 'offerta.pdf',
+        pdfFilePath;
 
     // add an item to the offerta table and update total
     var addItem = function (itemId, itemDesc, qty, prezzo, nota) {
@@ -65,25 +67,43 @@ AGENTI.offerta = (function () {
 
         $.each(offertaDetail, function () {
             $('#offertaTable tbody').append('<tr><td>' + this.itemId + '</td><td style=" font-weight: bold">' + this.itemDesc + '</td><td>' +
-            this.qty.replace(/\./g, ",") + '</td><td>' + '&#8364;' + this.prezzo.replace(/\./g, ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g, ",") + '</td><td>' +
+            this.qty.toString().replace(/\./g, ",") + '</td><td>' + '&#8364;' + this.prezzo.toString().replace(/\./g, ",") + '</td>><td>' + '&#8364;' + this.totaleRiga.toFixed(2).replace(/\./g, ",") + '</td><td>' +
             this.nota + '</td><td>' + '<button class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-mini deleteOffertaDetailRow">Cancella</button></td></tr>');
         });
 
+        if (offertaHeader.stato === 'C') {
+            $('#offertaConfermedCheck').prop('checked', true).checkboxradio('refresh');
+        } else {
+            $('#offertaConfermedCheck').prop('checked', false).checkboxradio('refresh');
+        }
+
+        if (offertaDetail.length === 0) {
+            $('#newOffertaBtn').prop( "disabled", true );
+            $('#saveOfferta').prop( "disabled", true );
+            $('#inviaOfferta').prop( "disabled", true );
+            $('#offertaDeleteBtn').prop( "disabled", true );
+        } else {
+            $('#newOffertaBtn').prop( "disabled", false );
+            $('#saveOfferta').prop( "disabled", false );
+            $('#inviaOfferta').prop( "disabled", false );
+            $('#offertaDeleteBtn').prop( "disabled", false );
+        }
+
         $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
-        $('noteOffertaHeader').text(offertaHeader.note);
+        $('#noteOffertaHeader').val(offertaHeader.note);
         $('#offertaTable').table("refresh");
     };
 
+    //Controlla se un'offerta e stata inserita e se si, chiedi l'utente se la vuola cancellare
     var checkIsInserted = function (e) {
         if (offertaDetail.length !== 0) {
             AGENTI.utils.vibrate(AGENTI.deviceType);
             navigator.notification.confirm(
-                "Cancellare l'offerta inserita?", // message
+                "C'è un' offerta in fase di modifica, la vuoi abbandonare?", // message
                 deleteCurrentOfferta,            // callback to invoke with index of button pressed
                 'Attenzione',           // title
-                ['Elimina offerta', 'Annulla']         // buttonLabels
+                ['Si', 'Annulla']         // buttonLabels
             );
-
         } else {
             $.mobile.changePage("#clienti", {transition: "flip"});
         }
@@ -93,42 +113,106 @@ AGENTI.offerta = (function () {
 
     };
 
-    var deleteCurrentOfferta = function (buttonIndex) {
+    var deleteCurrentOfferta = function (buttonIndex, deleteFromDb) {
         if (buttonIndex === 1) {
+
+            if (deleteFromDb === true) {
+                var sqliteDb = AGENTI.sqliteDB,
+                    headerID = offertaHeader.headerID;
+                sqliteDb.transaction(function (tx) {
+                    //sql save offerta header
+                    tx.executeSql("DELETE FROM Offerta_Header WHERE ID="+headerID);
+                    tx.executeSql("DELETE FROM Offerta_Detail WHERE Offerta_Header_ID="+headerID);
+                });
+                navigator.notification.alert('Offerta cancellata');
+            }
+
             offertaDetail.length = 0; //empty offerta detail array
-            offertaHeader = {totaleOfferta: 0, note : ""}; //reset offerta total
+            offertaHeader = {totaleOfferta: 0, stato: "", note: "", headerID : null}; //reset offerta total
             $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ",")); //reset offerta total on DOM
             $('#offertaTable tbody').empty(); // empty table in offerta detail page
             $('#offertaConfermedCheck').attr("checked", false).checkboxradio("refresh");
             $('#noteOffertaHeader').val("");
+            $('#newOffertaBtn').prop( "disabled", true );
+            $('#saveOfferta').prop( "disabled", true );
+            $('#inviaOfferta').prop( "disabled", true );
+            $('#offertaDeleteBtn').prop( "disabled", true );
 
-            navigator.notification.alert('Offerta cancellata');
+
         }
 
     };
 
-    var sendOfferta = function () {
-        var emailProperties = {
-                to: AGENTI.client.email(),
-                cc: [AGENTI.db.getItem('email')],
-                subject: 'Offerta Sidercampania Professional srl',
-                isHtml: true
-            },
-            tableData = [],
+    //Invia l'offerta via email e salvala su sqliteDB
+    var saveOfferta = function () {
+
+        if (offertaDetail.length !== 0) {
+            AGENTI.utils.vibrate(AGENTI.deviceType);
+            navigator.notification.confirm(
+                "Salva l'offerta nell' archivio?", // message
+
+                //callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+
+                        //Salva l'offerta in localDB (sqlite plugin)
+                        createOfferta();
+
+                        //cancella l'offerta dal GUI
+                        //deleteCurrentOfferta(buttonIndex,1);
+
+                    };
+                },
+                'Salvataggio',           // title
+                ['Si', 'Annulla']         // buttonLabels
+            );
+        }
+
+    };
+
+
+    //Invia l'offerta via email e salvala su sqliteDB
+    var inviaOfferta = function () {
+
+        if (offertaDetail.length !== 0) {
+            AGENTI.utils.vibrate(AGENTI.deviceType);
+            navigator.notification.confirm(
+                "Inviare l'offerta e salvare nell' archivio?", // message
+
+                //callback
+                function (buttonIndex) {
+                    if (buttonIndex === 1) {
+
+                        //Salva l'offerta in localDB (sqlite plugin)
+                        //Genera il file PDF usando la libreria jsPDF e invia il file via email come allegato, utilizzando email-composer.
+                        createOfferta(createPDF);
+
+                        //cancella l'offerta dal GUI
+                        //deleteCurrentOfferta(buttonIndex,1);
+
+                    };
+                },
+                'Inviare offerta',           // title
+                ['Invia', 'Annulla']         // buttonLabels
+            );
+        }
+
+    };
+
+    //Genera il file PDF usando la libreria jsPDF
+    var createPDF = function () {
+
+        var tableData = [],
             columns = [],
             options = {},
             height = 180,
             splitText = "",
-            noteHeight = 0,
-            pdfFileName,
-            pdfFilePath;
+            noteHeight = 0;
 
         if (offertaDetail.length !== 0) {
 
 
             //FIRST GENERATE THE PDF DOCUMENT
-            pdfFileName = 'offerta.pdf';
-            offertaHeader.note = $('#noteOffertaHeader').val();
 
             console.log("generating pdf...");
             var doc = new jsPDF('p', 'pt', 'a4');
@@ -175,8 +259,8 @@ AGENTI.offerta = (function () {
                     "codice": this.itemId,
                     "descrizione": this.itemDesc,
                     "nota": this.nota,
-                    "qta": this.qty.replace(/\./g, ","),
-                    "prezzo": this.prezzo.replace(/\./g, ","),
+                    "qta": this.qty.toString().replace(/\./g, ","),
+                    "prezzo": this.prezzo.toString().replace(/\./g, ","),
                     "totale": this.totaleRiga.toFixed(2).replace(/\./g, ",") //change into string again and replace dots with comas
                 });
                 height = height + 20;
@@ -207,7 +291,7 @@ AGENTI.offerta = (function () {
             doc.text(20, height + noteHeight + 125, 'Nominativo addetto: ' + AGENTI.db.getItem('full_name'));
 
             var pdfOutput = doc.output();
-            console.log(pdfOutput);
+            //console.log(pdfOutput);
 
             function pdfSave(name, data, success, fail) {
 
@@ -231,91 +315,186 @@ AGENTI.offerta = (function () {
                 window.requestFileSystem(window.LocalFileSystem.PERSISTENT, data.length || 0, gotFileSystem, fail);
             }
 
-            pdfSave(pdfFileName, pdfOutput, function () {
-
-                // success! - generate email body
-                emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale() + '</h3>' +
-                '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
-                'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
-                '<p>Distini saluti,<br>' + AGENTI.db.getItem('full_name') + '<br>Sidercampania Professional srl<br>' +
-                'tel. 0817580177<br>Fax 0815405590</p>';
-
-
-                emailProperties.attachments = pdfFilePath + pdfFileName;
-
-                //if offerta is definitiva add the 'vendite' email to the cc array of emaiProperties
-                if ($('#offertaConfermedCheck').is(':checked')) {
-                    emailProperties.cc.push('vendite@siderprofessional.com');
-                }
-
-                cordova.plugins.email.open(emailProperties, function () {
-                    //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
-                }, this);
-
-
-            }, function (error) {
+            //If pdf file successfully created send Email, else display error
+            pdfSave(pdfFileName, pdfOutput, sendEmail, function (error) {
                 // handle error
                 console.log(error);
                 navigator.notification.alert(error);
             });
 
         }
-    };
-
-
-    var saveOfferta = function () {
-
-        if (offertaDetail.length !== 0) {
-            AGENTI.utils.vibrate(AGENTI.deviceType);
-            navigator.notification.confirm(
-                "Salvare l'offerta inserita?", // message
-
-                //callback
-                function (buttonIndex) {
-                    if (buttonIndex === 1) {
-
-                        //initialise sqLite database
-                        var sqliteDb = AGENTI.sqliteDB
-
-                        //execute sql
-                        sqliteDb.transaction(function (tx) {
-
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS offertaTes (id INTEGER PRIMARY KEY, data TEXT, data_num INTEGER)');
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS offertaRig (id INTEGER PRIMARY KEY, data TEXT, data_num INTEGER)');
-
-                            //sql save header
-                            tx.executeSql("INSERT INTO offertaTes (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
-                                console.log("insertId: " + res.insertId + " -- probably 1");
-                                console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
-                            }, function (e) {
-                                console.log("ERROR: " + e.message);
-                            });
-
-                            //sql save offerta detail
-                            $.each(offertaDetail, function () {
-                                tx.executeSql("INSERT INTO offertaRig (data, data_num) VALUES (?,?)", ["test", 100], function (tx, res) {
-                                    console.log("insertId: " + res.insertId + " -- probably 1");
-                                    console.log("rowsAffected: " + res.rowsAffected + " -- should be 1");
-                                }, function (e) {
-                                    console.log("ERROR: " + e.message);
-                                });
-                            });
-
-                        });
-
-                    };
-                },
-                'Attenzione',           // title
-                ['Salva offerta', 'Annulla']         // buttonLabels
-            );
-        }
         ;
+
     };
 
+    //Genera l'email usando il plugin email-composer
+    var sendEmail = function () {
+
+        var emailProperties = {
+            to: AGENTI.client.email(),
+            cc: [AGENTI.db.getItem('email')],
+            subject: 'Offerta Sidercampania Professional srl',
+            isHtml: true
+        };
+
+        // success! - generate email body
+        emailProperties.body = Date.today().toString("dd-MM-yyyy") + '<h3>Spettabile cliente ' + AGENTI.client.ragSociale() + '</h3>' +
+        '<p>A seguito Vs. richiesta inviamo in allegato la ns. migliore offerta relativa agli articoli specificati.<br>' +
+        'Attendiamo Vs. conferma per procedere con l&apos;evasione dell&apos;ordine.</p>' +
+        '<p>Distini saluti,<br>' + AGENTI.db.getItem('full_name') + '<br>Sidercampania Professional srl<br>' +
+        'tel. 0817580177<br>Fax 0815405590</p>';
+
+
+        emailProperties.attachments = pdfFilePath + pdfFileName;
+
+        //if offerta is definitiva add the 'vendite' email to the cc array of emaiProperties
+        if ($('#offertaConfermedCheck').is(':checked')) {
+            emailProperties.cc.push('vendite@siderprofessional.com');
+        }
+
+        //check if the email sending has been cancelled by the user
+        cordova.plugins.email.open(emailProperties, function () {
+            //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
+        }, this);
+    };
+
+    //Salva l'offerta in local sqlite db and call createpdf
+    var createOfferta = function (callback) {
+
+
+        var sqliteDb = AGENTI.sqliteDB,
+            today = moment().format('DD/MM/YYYY');
+
+        offertaHeader.note = $('#noteOffertaHeader').val();
+
+        if ($('#offertaConfermedCheck').is(':checked')) {
+            offertaHeader.stato = 'C';
+        } else {
+            offertaHeader.stato = 'O';
+        }
+
+
+        sqliteDb.transaction(function (tx) {
+            //sql save offerta header
+            tx.executeSql("DELETE FROM Offerta_Header WHERE ID="+offertaHeader.headerID);
+            tx.executeSql("DELETE FROM Offerta_Detail WHERE Offerta_Header_ID="+offertaHeader.headerID);
+        });
+
+        sqliteDb.transaction(function (tx) {
+            //sql save offerta header
+            tx.executeSql("INSERT INTO Offerta_Header (Client_ID, Data_inserimento, Totale_Offerta, Stato, Note) VALUES (?,?,?,?,?)", [AGENTI.client.codice(), today, offertaHeader.totaleOfferta, offertaHeader.stato, offertaHeader.note],
+                function (tx, res) {
+                    //get the last inserted record's id fo insert in the offerta_Detail foreign key
+                    offertaHeader.headerID = res.insertId;
+
+                }, function (e) {
+                    console.log("ERROR: " + e.message);
+                });
+        });
+        //Insert detail to db
+        sqliteDb.transaction(function (tx) {
+            //sql save offerta detail and execute callback
+            $.each(offertaDetail, function () {
+                tx.executeSql("INSERT INTO Offerta_Detail (Offerta_Header_ID, Articolo_ID, Articolo_Descr, Quantita, Prezzo, Totale_riga, Note) VALUES (?,?,?,?,?,?,?)", [offertaHeader.headerID, this.itemId, this.itemDesc, this.qty, this.prezzo, this.totaleRiga, this.nota],
+                    function (tx, res) {
+                    //Do nothing
+                    }, function (e) {
+                    console.log("ERROR: " + e.message);
+                });
+            });
+        });
+
+        //Generate email and pdf as attachment if required
+        if (callback) {
+            callback();
+        }
+    };
+
+    var getOffertaList = function (client) {
+
+        //initialise sqLite database
+        var sqliteDb = AGENTI.sqliteDB;
+
+        //execute sql
+        sqliteDb.transaction(function (tx) {
+            //select table
+            tx.executeSql('SELECT * FROM Offerta_Header WHERE Client_ID LIKE \'%' + client + '%\' ORDER BY ID DESC', [], function (tx, res) {
+
+                //render this to html instead of console
+                var row = "",
+                    html = "",
+                    offertaList = $('#offertaList'),
+                    statoString = "";
+
+
+                for (var i = 0; i < res.rows.length; i++) {
+                    row = res.rows.item(i);
+                    if (row.Stato === "C") {
+                        statoString = "Confermata";
+                    } else {
+                        statoString = "Offerta";
+                    }
+                    html = html + '<li data-headerID=' + row.ID + '><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + " - " + statoString + '</p></a></li>'
+                    offertaList.html(html);
+                    offertaList.listview("refresh");
+                    //console.log("row is " + JSON.stringify(row));
+                }
+
+            });
+
+        });
+
+    };
 
     //getter functions for exporting private variables
-    var getOffertaDetail = function () {
-        return offertaDetail;
+    var getOffertaDetail = function (headerID, callback) {
+        if (!headerID) {
+            return offertaDetail;
+        } else {
+            //initialise sqLite database
+            var sqliteDb = AGENTI.sqliteDB;
+
+            //get offerta header data
+            sqliteDb.transaction(function (tx) {
+                //select table
+                tx.executeSql('SELECT * FROM Offerta_Header WHERE ID =' + headerID, [], function (tx, res) {
+
+                    var row = "";
+
+                    for (var i = 0; i < res.rows.length; i++) {
+                        row = res.rows.item(i);
+                        offertaHeader.headerID = row.ID;
+                        offertaHeader.totaleOfferta = row.Totale_Offerta;
+                        offertaHeader.stato = row.Stato;
+                        offertaHeader.note = row.Note;
+                    }
+                });
+            });
+
+            //get offerta detail data
+            sqliteDb.transaction(function (tx) {
+                //select table
+                tx.executeSql('SELECT * FROM Offerta_Detail WHERE Offerta_Header_ID =' + headerID, [], function (tx, res) {
+
+                    var row = "";
+                    //reset offertaDetail in case it is already populated
+                    offertaDetail.length = 0;
+
+                    for (var i = 0; i < res.rows.length; i++) {
+                        row = res.rows.item(i);
+                        offertaDetail.push({
+                            itemId: row.Articolo_ID,
+                            itemDesc: row.Articolo_Descr,
+                            qty: row.Quantita,
+                            prezzo: row.Prezzo,
+                            totaleRiga: row.Totale_riga,
+                            nota: row.Note
+                        });
+                    }
+                callback();
+                });
+            });
+        }
     };
 
     return {
@@ -324,8 +503,9 @@ AGENTI.offerta = (function () {
         renderOffertaDetail: renderOffertaDetail,
         checkIsInserted: checkIsInserted,
         deleteCurrentOfferta: deleteCurrentOfferta,
-        sendOfferta: sendOfferta,
+        inviaOfferta: inviaOfferta,
         saveOfferta: saveOfferta,
+        getList: getOffertaList,
         detail: getOffertaDetail
     };
 
