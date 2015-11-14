@@ -31,7 +31,7 @@ AGENTI.offerta = (function () {
     };
 
     //delete item from the dom table and from the model (offertaDetail), and update the offerta rotal in header.
-    var deleteItem = function (item, totalDiv) {
+    var deleteItem = function (item) {
 
         var tableRow = item.parents("tr"); //cache the current row on the dom
         var itemForDeletion = item.parents("tr").prevAll("tr").length; //get the number of rows before the row to be deleted, use this for splicing model array
@@ -50,7 +50,15 @@ AGENTI.offerta = (function () {
                     offertaHeader.totaleOfferta = offertaHeader.totaleOfferta - totaleRiga;
 
                     //DOM update total on the page
-                    totalDiv.text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
+                    $('#totaleOfferta').text(offertaHeader.totaleOfferta.toFixed(2).replace(/\./g, ","));
+
+                    //Disable buttons if the item table is empty
+                    if (offertaDetail.length === 0) {
+                        $('#newOffertaBtn').prop( "disabled", true );
+                        $('#saveOfferta').prop( "disabled", true );
+                        $('#inviaOfferta').prop( "disabled", true );
+                        $('#offertaDeleteBtn').prop( "disabled", true );
+                    }
 
                 }
             },            // callback to invoke with index of button pressed

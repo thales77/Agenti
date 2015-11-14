@@ -383,7 +383,7 @@ AGENTI.init = function () {
 
     //delete item button press in offerta detail page - these buttons are dynamically generated so we bind the event on parent element
     $('#offertaTableBody').on('tap', '.deleteOffertaDetailRow', function () {
-        AGENTI.offerta.deleteItem($(this), $('#totaleOfferta'));
+        AGENTI.offerta.deleteItem($(this));
     });
 //-----------------------------------------------------------------------------------
 
