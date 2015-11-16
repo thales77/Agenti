@@ -4,19 +4,19 @@
 
 // add your plugins to this list--either the identifier, the filesystem location or the URL
 var pluginlist = [
-    "org.apache.cordova.splashscreen",
-    "org.apache.cordova.dialogs",
-    "org.apache.cordova.device",
-    "com.phonegap.plugins.barcodescanner",
-    "org.apache.cordova.vibration",
-    "org.apache.cordova.contacts",
-    "org.apache.cordova.file",
-    "org.apache.cordova.console",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-dialogs",
+    "cordova-plugin-device",
+    "phonegap-plugin-barcodescanner",
+    "cordova-plugin-vibration",
+    "cordova-plugin-contacts",
+    "cordova-plugin-file",
+    "cordova-plugin-console",
     "cordova-plugin-whitelist",
     "cordova-sqlite-storage",
-    "uk.co.whiteoctober.cordova.appversion",
-    "de.appplant.cordova.plugin.email-composer",
-    "https://github.com/brodysoft/Cordova-SQLitePlugin"
+    "cordova-plugin-app-version",
+    "cordova-sqlite-storage",
+    "de.appplant.cordova.plugin.email-composer"
 ];
 
 // no need to configure below
