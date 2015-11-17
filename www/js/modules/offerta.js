@@ -94,7 +94,7 @@ AGENTI.offerta = (function () {
                     } else {
                         statoString = "Offerta";
                     }
-                    html = html + '<li data-headerID=' + row.ID + '><a href=\'#\'><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + " - " + statoString + '</p></a></li>'
+                    html = html + '<li data-headerID=' + row.ID + '><a href="#"><p>' + row.Data_inserimento + ' - Totale:  &#8364;' + row.Totale_Offerta.toFixed(2).replace(/\./g, ",") + " - " + statoString + '</p></a></li>';
                     offertaList.html(html);
                     offertaList.listview("refresh");
                     //console.log("row is " + JSON.stringify(row));
@@ -245,7 +245,7 @@ AGENTI.offerta = (function () {
                             navigator.notification.alert('Impossibile salvare l\'offerta');
                         });
 
-                    };
+                    }
                 },
                 'Salvataggio',           // title
                 ['Si', 'Annulla']         // buttonLabels
@@ -281,7 +281,7 @@ AGENTI.offerta = (function () {
                             navigator.notification.alert('Impossibile inviare l\'offerta');
                         });
 
-                    };
+                    }
                 },
                 'Inviare offerta',           // title
                 ['Invia', 'Annulla']         // buttonLabels
@@ -473,10 +473,7 @@ AGENTI.offerta = (function () {
                 console.log(error);
                 navigator.notification.alert(error);
             });
-
         }
-        ;
-
     };
 
     //Genera l'email usando il plugin email-composer

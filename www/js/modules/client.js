@@ -59,11 +59,10 @@ AGENTI.client = (function () {
     var getSalesHistory = function () {
         if ((historyShown !== 'true') || (AGENTI.utils.pagination.getOffset() > 0)) {
             /*Variable declaration ***************************/
-            var codCliente = codice,
-                userName = AGENTI.db.getItem('username');
+            var userName = AGENTI.db.getItem('username');
             /*End of variable declaration********************/
 
-            queryData = {action: 'ultimiAcquisti', clientId: codCliente, user: userName};
+            queryData = {action: 'ultimiAcquisti', clientId: codice, user: userName};
 
             //get data from the server
             AGENTI.getData(queryData, _renderSalesHistory);
@@ -75,11 +74,10 @@ AGENTI.client = (function () {
     var getMajorSalesHistory = function () {
         if ((majorHistoryShown !== 'true') || (AGENTI.utils.pagination.getOffset() > 0)) {
             /*Variable declaration ***************************/
-            var codCliente = codice,
-                userName = AGENTI.db.getItem('username');
+            var userName = AGENTI.db.getItem('username');
             /*End of variable declaration********************/
 
-            queryData = {action: 'aqcuistiMaggiori', clientId: codCliente, user: userName};
+            queryData = {action: 'aqcuistiMaggiori', clientId: codice, user: userName};
 
             //get data from the server
             AGENTI.getData(queryData, _renderMajorSalesHistory);
@@ -304,16 +302,16 @@ AGENTI.client = (function () {
         emails[0] = new ContactField('work', email, true);
         contact.emails = emails;
 
-        // save the contact
-        contact.save(onSuccess,onError);
-
-        function onSuccess(contact) {
+        var onSuccess = function (){
             navigator.notification.alert("Contatto aggiunto nella rubrica del telefono");
         };
 
-        function onError(contactError) {
+        var onError = function (contactError) {
             navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
         };
+
+        // save the contact
+        contact.save(onSuccess,onError);
     };
 
     // pop-up for blocked clients
@@ -322,11 +320,12 @@ AGENTI.client = (function () {
         if (popUpShown !== 'true') {
             //set popup to shown
             popUpShown = 'true';
+            var clientBlocked = $('#clientBlocked');
             setTimeout(function () {
-                $('#clientBlocked').popup({
+                clientBlocked.popup({
                     history: false
                 });
-                $('#clientBlocked').popup('open');
+                clientBlocked.popup('open');
                 //navigator.notification.beep(1);
                 navigator.notification.vibrate(1000);
             }, 1000);
