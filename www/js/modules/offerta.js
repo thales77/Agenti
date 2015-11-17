@@ -8,7 +8,7 @@ AGENTI.offerta = (function () {
         pdfFileName = 'offerta.pdf',
         pdfFilePath;
 
-    // add an item to the offerta table and update total
+    // add a single item to the offerta table and update total
     var addItem = function (itemId, itemDesc, qty, prezzo, nota) {
         var totaleRiga = parseFloat(qty.replace(',', '.')) * parseFloat(prezzo.replace(',', '.'));
 
@@ -30,7 +30,7 @@ AGENTI.offerta = (function () {
 
     };
 
-    //delete item from the dom table and from the model (offertaDetail), and update the offerta rotal in header.
+    //delete a single item from the dom table and from the model (offertaDetail), and update the offerta total in header.
     var deleteItem = function (item) {
 
         var tableRow = item.parents("tr"); //cache the current row on the dom
@@ -69,6 +69,7 @@ AGENTI.offerta = (function () {
         event.preventDefault();
     };
 
+    //Retrieve offerta list for the current client from sqlite DB
     var getOffertaList = function (client) {
 
         //initialise sqLite database
@@ -105,7 +106,7 @@ AGENTI.offerta = (function () {
 
     };
 
-    //getter functions for exporting private variables
+    //Retrieve offerta from sqlite DB
     var getOffertaDetail = function (headerID, callback) {
         if (!headerID) {
             return offertaDetail;
@@ -156,6 +157,7 @@ AGENTI.offerta = (function () {
         }
     };
 
+    //render offerta in GUI
     var renderOffertaDetail = function () {
 
         $('#offertaDetail').find('h5').text('Offerta a ' + AGENTI.client.ragSociale());
@@ -189,25 +191,7 @@ AGENTI.offerta = (function () {
         $('#offertaTable').table("refresh");
     };
 
-    //Controlla se un'offerta e stata inserita e se si, chiedi l'utente se la vuola cancellare
-    var checkIsInserted = function (e) {
-        if (offertaDetail.length !== 0) {
-            AGENTI.utils.vibrate(AGENTI.deviceType);
-            navigator.notification.confirm(
-                "C'è un' offerta in fase di modifica, la vuoi abbandonare?", // message
-                deleteCurrentOfferta,            // callback to invoke with index of button pressed
-                'Attenzione',           // title
-                ['Si', 'Annulla']         // buttonLabels
-            );
-        } else {
-            $.mobile.changePage("#clienti", {transition: "flip"});
-        }
-        if (e) {
-            e.preventDefault();
-        }
-
-    };
-
+    //Clear Gui in offerta page and if deleteFromDb is set delete it from sqlite DB also
     var deleteCurrentOfferta = function (buttonIndex, deleteFromDb) {
         if (buttonIndex === 1) {
 
@@ -238,7 +222,7 @@ AGENTI.offerta = (function () {
 
     };
 
-    //Invia l'offerta via email e salvala su sqliteDB
+    //Salva offerta su sqliteDB
     var saveOfferta = function () {
 
         if (offertaDetail.length !== 0) {
@@ -251,10 +235,15 @@ AGENTI.offerta = (function () {
                     if (buttonIndex === 1) {
 
                         //Salva l'offerta in localDB (sqlite plugin)
-                        createOfferta();
+                        var promise = createOfferta();
 
-                        //cancella l'offerta dal GUI
-                        //deleteCurrentOfferta(buttonIndex,1);
+                        promise.done(function () {
+                            navigator.notification.alert('Offerta salvata nell\' archivio');
+                        });
+
+                        promise.fail(function () {
+                            navigator.notification.alert('Impossibile salvare l\'offerta');
+                        });
 
                     };
                 },
@@ -264,7 +253,6 @@ AGENTI.offerta = (function () {
         }
 
     };
-
 
     //Invia l'offerta via email e salvala su sqliteDB
     var inviaOfferta = function () {
@@ -290,7 +278,7 @@ AGENTI.offerta = (function () {
                         });
 
                         promise.fail(function () {
-                           alert('Impossibile inviare l\'offerta');
+                            navigator.notification.alert('Impossibile inviare l\'offerta');
                         });
 
                     };
@@ -520,6 +508,25 @@ AGENTI.offerta = (function () {
         cordova.plugins.email.open(emailProperties, function () {
             //navigator.notification.alert('invio annullato'); //fix this, it always executes his part
         }, this);
+    };
+
+    //Controlla se un'offerta e stata inserita e se si, chiedi l'utente se la vuola cancellare
+    var checkIsInserted = function (e) {
+        if (offertaDetail.length !== 0) {
+            AGENTI.utils.vibrate(AGENTI.deviceType);
+            navigator.notification.confirm(
+                "C'è un' offerta in fase di modifica, la vuoi abbandonare?", // message
+                deleteCurrentOfferta,            // callback to invoke with index of button pressed
+                'Attenzione',           // title
+                ['Si', 'Annulla']         // buttonLabels
+            );
+        } else {
+            $.mobile.changePage("#clienti", {transition: "flip"});
+        }
+        if (e) {
+            e.preventDefault();
+        }
+
     };
 
     return {
