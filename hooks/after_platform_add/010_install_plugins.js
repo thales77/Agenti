@@ -12,9 +12,8 @@ var pluginlist = [
     "cordova-plugin-file",
     "cordova-plugin-console",
     "cordova-plugin-whitelist",
-    "cordova-sqlite-storage",
     "cordova-plugin-app-version",
-    "cordova-sqlite-storage",
+    "https://github.com/litehelpers/Cordova-sqlite-storage", //change to Cordova-sqlite-storage as soon as they fix it
     "de.appplant.cordova.plugin.email-composer"
 ];
 
