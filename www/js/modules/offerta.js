@@ -238,7 +238,7 @@ AGENTI.offerta = (function () {
                         var promise = createOfferta();
 
                         promise.done(function () {
-                            navigator.notification.alert('Offerta salvata nell\' archivio');
+                            navigator.notification.alert('Offerta salvata');
                         });
 
                         promise.fail(function () {
