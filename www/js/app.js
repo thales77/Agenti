@@ -27,7 +27,7 @@ AGENTI.init = function () {
 
     //initialise sqlite database
     //Open local prepopulated database
-    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db", createFromLocation: 1});
+    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db"});
     //Open transaction and select remote server list
     /*AGENTI.sqliteDB.transaction(function(tx) {
 
