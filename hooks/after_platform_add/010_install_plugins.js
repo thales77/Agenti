@@ -6,14 +6,14 @@
 var pluginlist = [
     "cordova-plugin-dialogs",
     "cordova-plugin-device",
-    "phonegap-plugin-barcodescanner",
+    "cordova-plugin-barcodescanner",
     "cordova-plugin-vibration",
     "cordova-plugin-contacts",
     "cordova-plugin-file",
     "cordova-plugin-console",
     "cordova-plugin-whitelist",
     "cordova-plugin-app-version",
-    "https://github.com/litehelpers/Cordova-sqlite-storage", //change to Cordova-sqlite-storage as soon as they fix it
+    "cordova-sqlite-ext", //This is a version of the cordova-sqlite-storage plugin with extra support for pre-populated databases
     "de.appplant.cordova.plugin.email-composer"
 ];
 
