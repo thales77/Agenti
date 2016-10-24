@@ -27,6 +27,7 @@ AGENTI.client = (function () {
         SaldoService = "",
         SaldoSpa = "",
         stato = "",
+        agente = "",
         pagamento = "",
         historyShown = "",
         majorHistoryShown = "",
@@ -119,6 +120,7 @@ AGENTI.client = (function () {
                 '" data-SaldoService="' + this.saldoService +
                 '" data-SaldoSpa="' + $.trim('n/d') +
                 '" data-stato="' + $.trim(this.stato) +
+                '" data-agente="' + $.trim(this.agente) +
                 '" data-pagamento="' + $.trim(this.pagamento) +
                 '" >'
                 + '<a href="#">'
@@ -172,6 +174,7 @@ AGENTI.client = (function () {
         SaldoService = $(this).attr('data-SaldoService');
         SaldoSpa = $(this).attr('data-SaldoSpa');
         stato = $(this).attr('data-stato');
+        agente = $(this).attr('data-agente');
         pagamento = $(this).attr('data-pagamento');
         $.mobile.changePage("#clientDetail", {transition: "flip"});
         e.preventDefault();
@@ -263,7 +266,7 @@ AGENTI.client = (function () {
             html += '<p>Saldo spa: &#8364;0,00</p></li>';
         }
 
-        html += '<li><p>Pagamento: ' + pagamento + '</p></li><li><p>Stato cliente: ' + statoCliente + '</p></li>';
+        html += '<li><p>Pagamento: ' + pagamento + '</p></li><li><p>Stato cliente: ' + statoCliente + '</p></li><li><p>Agente: ' + agente + '</p></li>';
 
         clientDetailList.html(html);
         clientDetailList.listview("refresh");
