@@ -27,6 +27,7 @@ AGENTI.client = (function () {
         SaldoService = "",
         SaldoSpa = "",
         stato = "",
+        categoriaMerceologica = "",
         agente = "",
         pagamento = "",
         historyShown = "",
@@ -122,6 +123,7 @@ AGENTI.client = (function () {
                 '" data-stato="' + $.trim(this.stato) +
                 '" data-agente="' + $.trim(this.agente) +
                 '" data-pagamento="' + $.trim(this.pagamento) +
+                '" data-categoriaMerceologica="' + $.trim(this.categoria) +
                 '" >'
                 + '<a href="#">'
                 + '<p style="font-style:italic;">' + $.trim(this.codice) + '</p>'
@@ -176,6 +178,7 @@ AGENTI.client = (function () {
         stato = $(this).attr('data-stato');
         agente = $(this).attr('data-agente');
         pagamento = $(this).attr('data-pagamento');
+        categoriaMerceologica = $(this).attr('data-categoriaMerceologica');
         $.mobile.changePage("#clientDetail", {transition: "flip"});
         e.preventDefault();
     };
@@ -211,7 +214,15 @@ AGENTI.client = (function () {
             statoCliente = "Attivo";
         }
 
-        html += '<li><p>' + codice + '</p><h4>' + ragSociale + '</h4>' + '<p>P.Iva: ' + parIva + '</p></li>' + '<li class="mapLink" data-address="' + indirizzo + indirizzo2 + ', ITALIA"><a href="#"><p>' + indirizzo + '</p><p>' + indirizzo2 + '</p></a></li>';
+        html += '<li><p>' + codice + ' - P.Iva: ' + parIva + '</p><h4>' + ragSociale + '</h4>';
+
+        if (categoriaMerceologica !== 'null') {
+            html += '<p>' + categoriaMerceologica + '</p></li>';
+        } else {
+            html += '</li>';
+        }
+
+        html += '<li class="mapLink" data-address="' + indirizzo + indirizzo2 + ', ITALIA"><a href="#"><p>' + indirizzo + '</p><p>' + indirizzo2 + '</p></a></li>';
 
         //don't render these if null
         //Check if client has alternative addresses and render them
@@ -227,7 +238,7 @@ AGENTI.client = (function () {
         }
 
         if (categoriaSconto !== 'null') {
-            html += '<li><p>Categoria: ' + categoriaSconto + '</p></li>';
+            html += '<li><p>Categoria di sconto: ' + categoriaSconto + '</p></li>';
         }
 
         if (noTelefono !== 'null') {

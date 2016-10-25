@@ -3,7 +3,7 @@
  */
 /*Object for app name space*/
 var AGENTI = {
-    remoteUrl: "/*insert remote url*/",
+    remoteUrl: "--insert ip--",
     deviceType: "",
     appVersion: "",
     db: localStorage
