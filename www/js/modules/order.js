@@ -34,7 +34,7 @@ AGENTI.order = (function () {
 //get the details for the order clicked in the list
     var getOrderDetail = function (id) {
 
-        queryData = {action: 'getOrderDetail', orderId: id, user: userName}
+        queryData = {action: 'getOrderDetail', orderId: id, user: userName};
         orderId = id;
 
         //get data from the server

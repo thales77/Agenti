@@ -27,6 +27,8 @@ AGENTI.client = (function () {
         SaldoService = "",
         SaldoSpa = "",
         stato = "",
+        categoriaMerceologica = "",
+        agente = "",
         pagamento = "",
         historyShown = "",
         majorHistoryShown = "",
@@ -59,11 +61,10 @@ AGENTI.client = (function () {
     var getSalesHistory = function () {
         if ((historyShown !== 'true') || (AGENTI.utils.pagination.getOffset() > 0)) {
             /*Variable declaration ***************************/
-            var codCliente = codice,
-                userName = AGENTI.db.getItem('username');
+            var userName = AGENTI.db.getItem('username');
             /*End of variable declaration********************/
 
-            queryData = {action: 'ultimiAcquisti', clientId: codCliente, user: userName};
+            queryData = {action: 'ultimiAcquisti', clientId: codice, user: userName};
 
             //get data from the server
             AGENTI.getData(queryData, _renderSalesHistory);
@@ -75,11 +76,10 @@ AGENTI.client = (function () {
     var getMajorSalesHistory = function () {
         if ((majorHistoryShown !== 'true') || (AGENTI.utils.pagination.getOffset() > 0)) {
             /*Variable declaration ***************************/
-            var codCliente = codice,
-                userName = AGENTI.db.getItem('username');
+            var userName = AGENTI.db.getItem('username');
             /*End of variable declaration********************/
 
-            queryData = {action: 'aqcuistiMaggiori', clientId: codCliente, user: userName};
+            queryData = {action: 'aqcuistiMaggiori', clientId: codice, user: userName};
 
             //get data from the server
             AGENTI.getData(queryData, _renderMajorSalesHistory);
@@ -121,7 +121,9 @@ AGENTI.client = (function () {
                 '" data-SaldoService="' + this.saldoService +
                 '" data-SaldoSpa="' + $.trim('n/d') +
                 '" data-stato="' + $.trim(this.stato) +
+                '" data-agente="' + $.trim(this.agente) +
                 '" data-pagamento="' + $.trim(this.pagamento) +
+                '" data-categoriaMerceologica="' + $.trim(this.categoria) +
                 '" >'
                 + '<a href="#">'
                 + '<p style="font-style:italic;">' + $.trim(this.codice) + '</p>'
@@ -174,7 +176,9 @@ AGENTI.client = (function () {
         SaldoService = $(this).attr('data-SaldoService');
         SaldoSpa = $(this).attr('data-SaldoSpa');
         stato = $(this).attr('data-stato');
+        agente = $(this).attr('data-agente');
         pagamento = $(this).attr('data-pagamento');
+        categoriaMerceologica = $(this).attr('data-categoriaMerceologica');
         $.mobile.changePage("#clientDetail", {transition: "flip"});
         e.preventDefault();
     };
@@ -210,7 +214,15 @@ AGENTI.client = (function () {
             statoCliente = "Attivo";
         }
 
-        html += '<li><p>' + codice + '</p><h4>' + ragSociale + '</h4>' + '<p>P.Iva: ' + parIva + '</p></li>' + '<li class="mapLink" data-address="' + indirizzo + indirizzo2 + ', ITALIA"><a href="#"><p>' + indirizzo + '</p><p>' + indirizzo2 + '</p></a></li>';
+        html += '<li><p>' + codice + ' - P.Iva: ' + parIva + '</p><h4>' + ragSociale + '</h4>';
+
+        if (categoriaMerceologica !== 'null') {
+            html += '<p>' + categoriaMerceologica + '</p></li>';
+        } else {
+            html += '</li>';
+        }
+
+        html += '<li class="mapLink" data-address="' + indirizzo + indirizzo2 + ', ITALIA"><a href="#"><p>' + indirizzo + '</p><p>' + indirizzo2 + '</p></a></li>';
 
         //don't render these if null
         //Check if client has alternative addresses and render them
@@ -226,7 +238,7 @@ AGENTI.client = (function () {
         }
 
         if (categoriaSconto !== 'null') {
-            html += '<li><p>Categoria: ' + categoriaSconto + '</p></li>';
+            html += '<li><p>Categoria di sconto: ' + categoriaSconto + '</p></li>';
         }
 
         if (noTelefono !== 'null') {
@@ -265,7 +277,7 @@ AGENTI.client = (function () {
             html += '<p>Saldo spa: &#8364;0,00</p></li>';
         }
 
-        html += '<li><p>Pagamento: ' + pagamento + '</p></li><li><p>Stato cliente: ' + statoCliente + '</p></li>';
+        html += '<li><p>Pagamento: ' + pagamento + '</p></li><li><p>Stato cliente: ' + statoCliente + '</p></li><li><p>Agente: ' + agente + '</p></li>';
 
         clientDetailList.html(html);
         clientDetailList.listview("refresh");
@@ -304,16 +316,16 @@ AGENTI.client = (function () {
         emails[0] = new ContactField('work', email, true);
         contact.emails = emails;
 
-        // save the contact
-        contact.save(onSuccess,onError);
-
-        function onSuccess(contact) {
+        var onSuccess = function (){
             navigator.notification.alert("Contatto aggiunto nella rubrica del telefono");
         };
 
-        function onError(contactError) {
+        var onError = function (contactError) {
             navigator.notification.alert("Errore di salvataggio  = " + contactError.code);
         };
+
+        // save the contact
+        contact.save(onSuccess,onError);
     };
 
     // pop-up for blocked clients
@@ -322,11 +334,12 @@ AGENTI.client = (function () {
         if (popUpShown !== 'true') {
             //set popup to shown
             popUpShown = 'true';
+            var clientBlocked = $('#clientBlocked');
             setTimeout(function () {
-                $('#clientBlocked').popup({
+                clientBlocked.popup({
                     history: false
                 });
-                $('#clientBlocked').popup('open');
+                clientBlocked.popup('open');
                 //navigator.notification.beep(1);
                 navigator.notification.vibrate(1000);
             }, 1000);
