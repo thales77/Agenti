@@ -292,7 +292,7 @@ AGENTI.client = (function () {
     };
 
 
-    //Function for adding cliente to phonebook
+    //Function for adding client to phonebook
     var createContact = function () {
 
         // create a new contact

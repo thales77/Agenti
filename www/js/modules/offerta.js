@@ -6,7 +6,9 @@ AGENTI.offerta = (function () {
     var offertaHeader = {totaleOfferta: 0, stato: "", note: "", headerID : null},
         offertaDetail = [],
         pdfFileName = 'offerta.pdf',
-        pdfFilePath;
+        pdfFilePath,
+        writeXML = AGENTI.utils.writeXML,
+        sendXML = AGENTI.utils.sendXML;
 
     // add a single item to the offerta table and update total
     var addItem = function (itemId, itemDesc, qty, prezzo, nota) {
@@ -269,7 +271,7 @@ AGENTI.offerta = (function () {
                         //Salva l'offerta in localDB (sqlite plugin)
                         //Genera il file PDF usando la libreria jsPDF e invia il file via email come allegato, utilizzando email-composer.
 
-                        var promise = createOfferta(createPDF);
+                        var promise = createOfferta(createPDFandXML);
                         //asynchronous call so using promise
 
                         promise.done(function () {
@@ -290,7 +292,7 @@ AGENTI.offerta = (function () {
 
     };
 
-    //Salva l'offerta in local sqlite db and call createpdf
+    //Salva l'offerta in local sqlite db and call createPDFandXML
     var createOfferta = function (callback) {
 
         var sqliteDb = AGENTI.sqliteDB,
@@ -351,8 +353,8 @@ AGENTI.offerta = (function () {
         return deferred.promise();
     };
 
-    //Genera il file PDF usando la libreria jsPDF
-    var createPDF = function () {
+    //Generate PDF and xml file using the jsPDF library
+    var createPDFandXML = function () {
 
         var tableData = [],
             columns = [],
@@ -466,6 +468,12 @@ AGENTI.offerta = (function () {
 
                 window.requestFileSystem(window.LocalFileSystem.PERSISTENT, data.length || 0, gotFileSystem, fail);
             }
+
+            //TODO
+            //generate xml file
+            writeXML();
+            //FTP xml file
+            sendXML();
 
             //If pdf file successfully created send Email, else display error
             pdfSave(pdfFileName, pdfOutput, sendEmail, function (error) {

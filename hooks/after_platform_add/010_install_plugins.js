@@ -14,7 +14,8 @@ var pluginlist = [
     "cordova-plugin-whitelist",
     "cordova-plugin-app-version",
     "cordova-sqlite-ext", //This is a version of the cordova-sqlite-storage plugin with extra support for pre-populated databases
-    "de.appplant.cordova.plugin.email-composer"
+    "de.appplant.cordova.plugin.email-composer",
+    "cordova-plugin-ftp"
 ];
 
 // no need to configure below
