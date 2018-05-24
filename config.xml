@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.siderprofessional.agenti" version="3.0.5" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.siderprofessional.agenti" version="3.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Agenti Sidercampania</name>
     <description>
         Applicazione per la consultazione di informazioni commerciali on-the-go
     </description>
-    <author href="http://www.siderprofessional.com" email="xboikos@gmail.com">
+    <author email="xboikos@gmail.com" href="http://www.siderprofessional.com">
         Babis Boikos
     </author>
     <content src="index.html" />
@@ -71,8 +71,19 @@
     <gap:splash gap:platform="ios" height="768" src="res/screen/ios/screen-ipad-landscape.png" width="1024" />
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" />
     <allow-navigation href="http://*/*" />
-    <!--Give the ability to launch external applications-->
-    <access origin="geo:*" launch-external="yes" />
-    <access origin="tel:*" launch-external="yes" />
-    <access origin="mailto:*" launch-external="yes" />
+    <access launch-external="yes" origin="geo:*" />
+    <access launch-external="yes" origin="tel:*" />
+    <access launch-external="yes" origin="mailto:*" />
+    <engine name="android" spec="~6.3.0" />
+    <plugin name="cordova-plugin-dialogs" spec="^2.0.1" />
+    <plugin name="cordova-plugin-device" spec="^2.0.2" />
+    <plugin name="cordova-plugin-barcodescanner" spec="^0.7.4" />
+    <plugin name="cordova-plugin-vibration" spec="^3.1.0" />
+    <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="cordova-plugin-console" spec="^1.1.0" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
+    <plugin name="cordova-sqlite-ext" spec="^2.2.0" />
+    <plugin name="cordova-plugin-email-composer" spec="^0.8.15" />
 </widget>

@@ -3,7 +3,7 @@
  */
 /*Object for app name space*/
 var AGENTI = {
-    remoteUrl: "/*insert remote url*/",
+    remoteUrl: "http://45.76.135.175/index.php",
     deviceType: "",
     appVersion: "",
     db: localStorage
@@ -25,7 +25,7 @@ AGENTI.init = function () {
 
     //initialise sqlite database
     //Open local prepopulated database
-    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db", createFromLocation: 1});
+    AGENTI.sqliteDB = window.sqlitePlugin.openDatabase({name: "database.db", location: 'default', createFromLocation: 1});
     //Open transaction and select remote server list
     /*AGENTI.sqliteDB.transaction(function(tx) {
 

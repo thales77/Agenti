@@ -52,12 +52,12 @@ AGENTI.utils = (function () {
         }
     };
 
-    //wiggle it - takes deviceType as input because navigator.notification.vibrate doesn't work well in ios
+    //wiggle it - takes deviceType as input because navigator.vibrate doesn't work well in ios
     var vibrate = function (deviceType) {
         //shake it baby
         if (deviceType === 'Android') {
             //this doesn't work well in ios
-            navigator.notification.vibrate(10);
+            navigator.vibrate(10);
         }
     };
 
