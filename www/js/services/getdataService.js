@@ -39,8 +39,18 @@ AGENTI.getData = function (query, callback, el) {
 
         })
 
-        .fail(function () {
-            navigator.notification.alert('Errore di comunicazione con il server');
+        .fail(function (xhr) {
+            switch (xhr.status) {
+                case 404:
+                    navigator.notification.alert(xhr.status + ' Non trovato');
+                    break;
+
+                /* add cases accordingly*/
+
+                default:
+                    navigator.notification.alert(xhr.status + ' Errore di comunicazione con il server');
+            }
+
         });
 
 };
