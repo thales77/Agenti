@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+
+    <meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+
+    <title>Sidercampania Professional srl</title>
+    <meta name="description" content=""/>
+    <meta name="author" content="Babis Boikos"/>
+
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1" />-->
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1"/>
+
+
+
+    <!--jquery mobile style sheet-->
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css"/>
+
+
+    <!--datebox style sheet-->
+    <link rel="stylesheet" href="css/jqm-datebox.min.css"/>
+
+    <!-- Custom css styles -->
+    <link rel="stylesheet" href="css/icon-pack-custom.css"/>
+    <link rel="stylesheet" href="css/custom.styles.css"/>
+
+    <!--cordova-->
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- jquery-->
+    <script src="js/lib/jquery-2.1.3.min.js"></script>
+
+    <!-- jquery mobile-->
+    <script src="js/lib/jquery.mobile-config.js"></script>
+    <script src="js/lib/jquery.mobile-1.4.5.min.js"></script>
+
+</head>
+
+<body>
+<div data-role="page" id="loginPage">
+    <div data-role="header" data-position="fixed" data-tap-toggle="false"><h1>CRM Agenti</h1></div>
+    <div data-role="content">
+
+        <div style="text-align: center;">
+            <img src="img/logo.png" width="200" alt="Logo">
+        </div>
+
+        <form id="loginForm" class="ui-hide-label">
+            <input type="hidden" name="action" id="action" value="login"/>
+
+            <label for="username">Utente:</label>
+            <input type="text" name="username" id="username" placeholder="Utente" required autofocus maxlength="50">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Password" required maxlength="30">
+
+
+            <input type="submit" id="loginBtn" value="Login">
+
+        </form>
+
+    </div>
+    <div data-role="footer" data-position="fixed"><span id="appVersion">#</span></div>
+</div>
+
+
+<div data-role="page" id="home">
+    <!-- /left panel -->
+    <div data-role="panel" class="left-panel" id="left-panel-home" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false" class="options-list">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+            <!--<li data-role="list-divider">Server remoti</li>-->
+        </ul>
+    </div>
+
+    <!--main welcome page -->
+    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
+        <!-- data-position="fixed"-->
+
+        <h1>Home agenti</h1>
+        <a href="#left-panel-home" data-icon="bars" data-iconpos="notext">Menu</a>
+
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#" class="homeNavBtn ui-btn-active ui-state-persist">Home</a>
+                </li>
+                <li>
+                    <a href="#" class="clientiNavBtn">Clienti</a>
+                </li>
+                <li>
+                    <a href="#" class="ordiniNavBtn">Ordini</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div data-role="content">
+        <div style="text-align: center;"><img src="img/logo.png" width="200" alt="Logo">
+
+            <h2>Ciao <span id="nomeUtente" class="capitalize"></span></h2>
+        </div>
+
+        <div data-role="collapsible" data-collapsed="false">
+            <h3>Novità</h3>
+
+            <ul>
+                <li>
+                    Realizzazione archivio offerte con possibilità di modifica.
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- popup per il primo login -->
+    <!-- <div data-role="popup" id="firstAccess" class="ui-content" data-overlay-theme="a">
+    <h3>Per effetuare il primo accesso deve cambiare la sua password.</h3>
+    <p>La password deve essere alfanumerica, con lunghezza tra 8 e 20 caratteri.</p>
+
+    <form method="POST" action="<?php echo APP_URL ?>?action=changePassword" name="changePasswordForm">
+
+    <label for="password" class="ui-hidden-accessible">Nuova password:</label> <input name="password" type="password" value="" placeholder="Nuova password"  id="password"  required maxlength="20">
+    <label for="confirmpw" class="ui-hidden-accessible">Ripeti:</label> <input name="confirmpw" type="password" value="" placeholder="Ripeti" id="confirmpw" required maxlength="20">
+    <div data-role="fieldcontain"><input type="submit" class="button" name="submit" value="Avanti" /></div>
+    </form>
+    </div> -->
+</div>
+<!--End of welcome page-->
+
+<!--start of client search page-->
+<div data-role="page" id="clienti">
+    <!--left panel-->
+    <div data-role="panel" class="left-panel" id="left-panel-clienti" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
+
+        <h1>Ricerca clienti</h1>
+        <a href="#left-panel-clienti" data-icon="bars" data-iconpos="notext">Menu</a>
+
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#" class="homeNavBtn">Home</a>
+                </li>
+                <li>
+                    <a href="#" class="clientiNavBtn ui-btn-active ui-state-persist">Clienti</a>
+                </li>
+                <li>
+                    <a href="#" class="ordiniNavBtn">Ordini</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div data-role="content">
+
+        <form id="searchClientForm" data-ajax="true">
+            <input type="hidden" name="action" value="searchClient"/>
+            <input type="hidden" name="searchClient" value="true"/>
+
+            <fieldset data-role="controlgroup">
+
+                <label for="clientSearchOptions[]">Opzioni ricerca:</label>
+                <select name="clientSearchOptions[]" id="clientSearchOptions" data-native-menu="true" multiple>
+
+                    <!--<option value="">Campo di ricerca...</option>-->
+
+                    <option value="ragioneSociale" selected>Rag. sociale</option>
+
+                    <option value="codiceCliente">Cod. cliente</option>
+
+                    <option value="comune">Comune</option>
+
+                    <option value="partitaIva">Part. IVA</option>
+
+                </select>
+
+            </fieldset>
+
+            <input type="search" name="searchTerm" id="searchTerm" placeholder="Cerca cliente">
+
+            <input type="submit" name="cerca" value="Cerca">
+
+        </form>
+        <br>
+        <ul id="clientList" data-role="listview" data-inset="true" data-theme="b" data-filter="false"
+            data-listomatic="true">
+
+            <!-- CLient list goes here -->
+
+        </ul>
+
+        <button type="button" class="moreBtn">Carica altri risultati<span
+                class="ui-li-count ui-btn-corner-all countBubble">*</span></button>
+
+    </div>
+
+</div>
+
+<!--start of Ordini search page-->
+<div data-role="page" id="ordini">
+    <!--left panel-->
+    <div data-role="panel" class="left-panel" id="left-panel-ordini" data-display="reveal" data-position="left"
+         data-theme="a">
+        <ul data-role="listview" data-theme="a" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Chiudi</a></li>
+            <!--<li data-role="list-divider">Impostazioni</li>-->
+            <li class="admin"><a href="#admin">Consulta log</a></li>
+            <li class="appInfo"><a href="#appInfoDialog" data-rel="dialog">Informazioni app</a></li>
+            <li class="logout"><a href="#logoutDialog" data-rel="dialog">Logout</a></li>
+        </ul>
+    </div>
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
+
+        <h1>Ricerca ordini effettuati</h1>
+        <a href="#left-panel-ordini" data-icon="bars" data-iconpos="notext">Menu</a>
+
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#" class="homeNavBtn">Home</a>
+                </li>
+                <li>
+                    <a href="#" class="clientiNavBtn">Clienti</a>
+                </li>
+                <li>
+                    <a href="#" class="ordiniNavBtn ui-btn-active ui-state-persist">Ordini</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div data-role="content">
+        <div data-role="fieldset">
+            <label for="DateFrom">Data inizio:</label>
+            <input type="date" data-theme="a" data-role="datebox" name="DateFrom" id="DateFrom"
+                   data-options='{"mode": "datebox", "beforeToday": true, "useFocus": true, "enablePopup": true }'/>
+            <label for="DateTo">Data fine:</label>
+            <input type="date" data-theme="a" data-role="datebox" name="DateTo" id="DateTo"
+                   data-options='{"mode": "datebox", "beforeToday": true, "useFocus": true, "enablePopup": true }'/>
+            <button id="orderSearchButton">Cerca</button>
+        </div>
+        <div id="orderListContainer" data-inset="true" data-role="collapsible-set">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--start of Ordini detail page-->
+<div data-role="page" id="ordiniDetail">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#ordini" data-rel="back" data-icon="carat-l">Indietro</a>
+        <h5>Dettaglio ordine</h5>
+    </div>
+
+    <div data-role="content">
+        <div id="orderHeader"></div>
+
+        <table data-role="table" id="orderItemTable" data-mode="reflow" data-theme="a"
+               class="table-stroke table-stripe ui-responsive">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Codice</th>
+                <th>Descr.</th>
+                <th>Ordinati</th>
+                <th>Spediti</th>
+                <th>Resid.</th>
+                <th>Prezzo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--  <ul id="orderItemList" data-role="listview" data-theme="a" data-inset="true">
+
+             </ul> -->
+
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!--start of Offerta detail page-->
+<div data-role="page" id="offertaDetail">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#clientDetail" data-icon="carat-l" data-rel="back">Indietro</a>
+        <h5>Dettaglio offerta</h5>
+    </div>
+
+    <div data-role="content">
+        <div id="offertaWrapper" class="ui-corner-all">
+            <div class="ui-bar ui-bar-a">
+                <h3>Totale offerta: &#8364; <span id="totaleOfferta"></span></h3>
+            </div>
+            <div class="ui-body ui-body-a ui-corner-all">
+
+                <table data-role="table" id="offertaTable" data-mode="reflow" data-theme="a"
+                       class="table-stroke table-stripe ui-responsive">
+                    <thead>
+                    <tr>
+                        <th>Codice</th>
+                        <th>Desc</th>
+                        <th>Qta</th>
+                        <th>Prezzo</th>
+                        <th>Totale</th>
+                        <th>Note</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="offertaTableBody">
+                    <!--  <ul id="offertaItemList" data-role="listview" data-theme="a" data-inset="true">
+
+                     </ul> -->
+
+
+                    </tbody>
+                </table>
+                <!-- todo - add functionality here -->
+                <a href="#listino" class="ui-btn ui-icon-euro ui-btn-icon-left">Inserisci articolo dall' listino</a>
+                <a href="#addEmptyItemPopup" data-theme="a" data-role="button" data-icon="edit"
+                   data-rel="popup" data-position-to="window" data-transition="pop">Inserisci articolo non
+                    codificato</a>
+            </div>
+        </div>
+        <br>
+        <div data-role="fieldcontain">
+            <!--<label for="speseTrasporto">Spese di trasporto &#8364;</label>
+            <input type="text" name="speseTrasporto" id="speseTrasporto">-->
+
+            <label for="offertaConfermedCheck">Offerta confermata</label>
+            <input type="checkbox" name="offertaConfermedCheck" id="offertaConfermedCheck">
+            <br>
+            <label for="noteOffertaHeader">Note aggiuntive:</label>
+            <textarea name="noteOffertaHeader" id="noteOffertaHeader"></textarea>
+        </div>
+        <br>
+        <div data-role="navbar"  data-iconpos="top">
+            <ul>
+                <li><button data-icon="refresh" id="newOffertaBtn">Nuova</button></li>
+                <li><button data-icon="check" id="saveOfferta">Salva</button></li>
+                <li><button data-icon="mail" id="inviaOfferta">Invia</button></li>
+                <li><button data-icon="eraser" id="offertaDeleteBtn">Elimina</button></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div data-role="popup" id="addEmptyItemPopup" data-theme="a" class="ui-corner-all" data-dismissible="false">
+        <div data-role="header" data-theme="a">
+            <h1>Articolo non codificato</h1>
+        </div>
+        <div role="main" class="ui-content">
+            <form id="addEmptyItemForm">
+                <div style="padding:10px 20px;">
+                    <!--<label for="codiceArtLib">Codice</label>-->
+                    <input type="text" name="codiceArtLib" id="codiceArtLib" value="" placeholder="codice articolo" data-theme="a" maxlength="10" disabled="true">
+
+                    <!--<label for="descArtLib">Codice</label>-->
+                    <input type="text" name="descArtLib" id="descArtLib" value="" placeholder="descrizione" data-theme="a" maxlength="30">
+
+                    <!--<label for="qttyArtLib">Quantità</label>-->
+                    <input type="text" name="qttyArtLib" id="qttyArtLib" value="" placeholder="quantità" data-theme="a">
+
+                    <!--<label for="przArtLib">Prezzo &#8364;</label>-->
+                    <input type="text" name="przArtLib" id="przArtLib" value="" placeholder="prezzo" data-theme="a">
+
+                    <!--<label for="notaArtLib">note aggiuntive</label>-->
+                    <input type="text" name="notaArtLib" id="notaArtLib" value="" placeholder="note aggiuntive" data-theme="a" maxlength="30">
+
+                    <button type="button" id="insertLibItemToOffertaBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
+                    <a href="#offertaDetail" data-role="button" data-rel="back">Annulla</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<div data-role="page" id="admin">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-id="header1">
+        <a href="#" data-icon="carat-l" data-rel="back">Indietro</a>
+
+        <h1>Log</h1>
+
+    </div>
+
+    <div data-role="content">
+
+        <ul id="log" data-role="listview" data-inset="true">
+
+            <!--user activity log details-->
+
+        </ul>
+
+    </div>
+
+    <div data-role="footer" data-position="fixed" data-id="nav" data-tap-toggle="false">
+
+    </div>
+
+</div>
+<!--End of client search page-->
+
+<!--Start of Client detail page-->
+<div data-role="page" id="clientDetail">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#" id="bckbtn" data-icon="carat-l">Indietro</a>
+        <h5 class="pageTitle">Dettaglio cliente</h5>
+
+    </div>
+
+    <div data-role="content">
+
+        <div data-role="collapsible" data-collapsed="true">
+            <h3>Scheda anagrafica/Fatturato</h3>
+            <ul id="clientDetailList" data-role="listview" data-theme="d" data-inset="true">
+                <!-- Client detail list -->
+
+            </ul>
+            <button  data-icon="user" id="addContact">Aggiungi alla rubrica</button>
+        </div>
+
+        <a href="#clientSalesHistory" data-role="button" data-icon="calendar">Storico acquisti</a>
+        <a href="#majorSalesHistory" data-role="button" data-icon="calendar">Spese piu' importanti</a>
+        <a href="#listino" data-role="button" data-icon="euro" data-prefetch>Listino</a>
+        <a href="#offertaDetail" id="offertaDetailBtn" data-role="button" data-icon="shopping-cart">Gestione offerta</a>
+        <a href="#" id="offertaListBtn" data-role="button" data-icon="info">Storico offerte</a>
+        <span id="offertaListWrapper"><ul id="offertaList" data-role="listview" data-inset="true"></ul></span>
+
+
+        <div data-role="popup" id="clientBlocked" class="ui-content" data-overlay-theme="a">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"
+               class="ui-btn-left">Close</a>
+
+            <h3 style="text-align: center">Attenzione!</h3>
+
+            <p>
+                Il cliente risulta <span id='stato'></span>, contattare l'amministrazione.
+            </p>
+        </div>
+
+
+    </div>
+</div>
+<!--End of Client detail page-->
+
+<!-- Start of major sales history Page-->
+<div data-role="page" id="majorSalesHistory">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#clientDetail" data-icon="carat-l" data-rel="back">Indietro</a>
+        <h4>Maggiori acquisti <!-- Meti rag. Sociale Cliente--></h4>
+    </div>
+
+    <div data-role="content">
+
+        <div data-role="collapsible" data-collapsed="false">
+            <h3>Spese piu' importanti</h3>
+
+            <p>
+                Mostra i articoli su cui il cliente ha speso di pi&ugrave; dal inizio del <span id="lastYear"></span>
+                fino ad oggi.
+            </p>
+
+        </div>
+
+        <ul data-role="listview" id="mainSalesList" data-inset="true" data-filter="true" data-theme="b"
+            data-filter-theme="a" data-divider-theme="e">
+            <!-- Main list -->
+
+        </ul>
+
+        <button type="button" class="moreBtn">Carica altri risultati<span
+                class="ui-li-count ui-btn-corner-all countBubble">*</span></button>
+
+    </div>
+
+</div>
+<!-- End of major sales history Page-->
+
+
+<!-- Start of client sales history Page-->
+<div data-role="page" id="clientSalesHistory">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
+        <h4>Storico acquisti <!--Meti Rag. socialer qui --></h4>
+    </div>
+
+    <div data-role="content">
+
+        <div data-role="collapsible" data-collapsed="false">
+            <h3>Storico acquisti</h3>
+
+            <p style="font-size:small;">
+                Presenta tutti i acquisti dell' cliente nel ultimo anno in ordine cronologico
+            </p>
+
+        </div>
+
+        <ul id="history" data-role="listview" data-inset="true" data-filter="true" data-theme="b" data-filter-theme="a"
+            data-divider-theme="b">
+            <!-- Sales history detail list -->
+        </ul>
+
+        <button type="button" class="moreBtn">Carica altri risultati<span
+                class="ui-li-count ui-btn-corner-all countBubble">*</span></button>
+
+    </div>
+
+</div>
+
+<!-- start of listino page-->
+<div data-role="page" id="listino">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#clientDetail" data-rel="back" data-icon="carat-l">Indietro</a>
+        <h4>Listino <!-- Meti rag. sociale qui --></h4>
+    </div>
+
+    <div data-role="content">
+
+        <form id="itemSearchForm" data-ajax="false">
+            <input type="hidden" name="action" value="searchItem"/>
+            <input type="hidden" name="searchItem" value="true"/>
+
+            <fieldset data-role="controlgroup">
+
+                <label for="itemSearchOptions[]">Opzioni ricerca:</label>
+                <select name="itemSearchOptions[]" id="itemSearchOptions" data-native-menu="true" multiple>
+
+                    <!--<option value="">Campo di ricerca...</option>-->
+
+                    <option value="descrizione" selected>Descrizione articolo</option>
+
+                    <option value="codiceSider">Cod. articolo Sider.</option>
+
+                    <option value="codiceForn">Cod. articolo Forn.</option>
+
+                    <option value="fornitore">Fornitore</option>
+
+                </select>
+
+            </fieldset>
+
+            <input type="search" name="itemSearchString" id="itemSearchString" placeholder="Cerca articolo">
+
+            <div class=ui-grid-a>
+                <div class='ui-block-a side'>
+                    <button id="scan" data-icon="barcode" data-mini="true" data-iconpos="top">Barcode</button>
+                </div>
+                <div class='ui-block-b main'><input type="submit" name="cerca" value="Cerca" data-icon="search"
+                                                    data-mini="true" data-iconpos="top"></div>
+
+            </div>
+        </form>
+        <br>
+        <ul id="listaArticoli" data-role="listview" data-inset="true" data-theme="b" data-filter="false"
+            data-filter-theme="a" data-count-theme="b">
+
+            <!-- Item main list-->
+
+        </ul>
+
+        <button type="button" class="moreBtn">Carica altri risultati<span
+                class="ui-li-count ui-btn-corner-all countBubble">*</span></button>
+
+    </div>
+
+</div>
+<!-- End of listino Page-->
+
+<!-- Start of listino detail page-->
+<div data-role="page" id="itemDetail">
+
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#" data-rel="back" data-icon="carat-l">Indietro</a>
+        <!--clientDetail-->
+        <h5>Item detail</h5>
+    </div>
+
+    <div data-role="content">
+
+        <div data-role="fieldcontain">
+            <ul id="itemDetailList" data-role="listview" data-theme="d" data-inset="true">
+                <!--Item detail list-->
+                <li><p id="codiceArticolo" style="font-weight: bold;"></p>
+
+                    <p id="descArt" style="font-weight: bold;"></p>
+
+                    <p><span id="codForn1"></span> <span id="codForn2"></span></p>
+
+                    <p id="fornitoreArticolo"></p></li>
+                <li><p><strong>Disponibilita</strong></p>
+
+                    <p>Casoria: <span id="dispCa" style="font-weight: bold;"></span></p>
+
+                    <p hidden>Caserta: <span id="dispCe" style="font-weight: bold;"></span></p> <!-- not applicable 2/4/19-->
+
+                    <p>Pozzuoli: <span id="dispPo" style="font-weight: bold;"></span></p></li>
+                <li><p>Prezzo lordo: &#8364;<span id="prezzoLordo" style="font-weight: bold;"></span></p>
+
+                    <p>Sconti applicati: <span id="sconto1" style="font-weight: bold;"></span>% + <span id="sconto2"
+                                                                                                        style="font-weight: bold;"></span>%
+                    </p></li>
+                <li><p>Prezzo netto: <span id="Prezzo" style="color:crimson;font-weight: bold;"></span></p></li>
+                <li><p>Minimo agenti: <span id="PrezzoAgenti" style="color:crimson;font-weight: bold;"></span></p></li>
+                <li id="promotion"><p style="color:crimson;"><span id="scadenzaPromo"></span></p>
+
+                    <p style="color:crimson;"><span id="descPromo"></span></p></li>
+            </ul>
+        </div>
+
+        <a href="#popupOfferta" data-theme="a" data-role="button" data-icon="shopping-cart"
+           data-rel="popup" data-position-to="window" data-transition="pop">Aggiungi a offerta cliente</a>
+
+        <a href="#" id="itemSalesHistoryButton" data-role="button" data-icon="clock-o">Storico prezzi applicati </a>
+
+        <ul data-role="listview" data-theme="d" data-inset="true" id="itemsSalesHistory">
+                <!-- Fill this <ul> with data on click-->
+        </ul>
+
+
+    </div>
+
+    <div data-role="popup" id="popupOfferta" data-theme="a" class="ui-corner-all" data-dismissible="false">
+        <div data-role="header" data-theme="a">
+            <h1>Aggiungi articolo a ordine</h1>
+        </div>
+        <div role="main" class="ui-content">
+            <form>
+                <div style="padding:10px 20px;">
+                    <!--<h3 class="ui-title">Inserire quantità e prezzo</h3>-->
+                    <div data-role="fieldcontain">
+                        <label for="qtty">Quantità :</label>
+                        <input type="text" name="quantità" id="qtty" value="" placeholder="quantità" data-theme="a">
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="prz">Prezzo &#8364; :</label>
+                        <input type="text" name="prezzo" id="prz" value="" placeholder="prezzo" data-theme="a">
+                    </div>
+                    <!--<label for="nota">note aggiuntive</label>-->
+                    <input type="text" name="nota" id="nota" value="" placeholder="note aggiuntive" data-theme="a" maxlength="30">
+
+                    <button type="button" id="insertItemToOffertaBtn" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">OK</button>
+                    <a href="#itemDetail" data-role="button" data-rel="back">Annulla</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+<!-- End of listino detail page-->
+
+<!--Start of data import dialog page-->
+<div data-role="page" id="importazione">
+    <div data-role="header">
+        <h5>Importazione dati</h5>
+    </div>
+    <div data-role="content">
+        <p>Procedere con l'importazione dati dal server?</p>
+
+        <div id='importMessage'></div>
+        <fieldset class="ui-grid-a">
+            <div class="ui-block-a"><a href="#" data-rel='back' data-role="button" data-icon="delete" data-theme="c">Annulla</a>
+            </div>
+            <div class="ui-block-b">
+                <button id="dataImport" type="submit" data-theme="b" data-icon="check">Importa</button>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<!--End of data import dialog page-->
+
+<!--Start of logout confirmation dialog page-->
+<div data-role="page" id="logoutDialog">
+<div data-role="header">
+    <h5>Logout</h5>
+</div>
+<div data-role="content">
+    <p>Fare logout e chiudere la app?</p>
+
+    <div id='logoutMessage'></div>
+    <fieldset class="ui-grid-a">
+        <div class="ui-block-a"><a href="#" data-rel='back' data-role="button" data-icon="delete" data-theme="a">Annulla</a>
+        </div>
+        <div class="ui-block-b">
+            <button id="appExitbtn" type="submit" data-theme="a" data-icon="check">Esci</button>
+        </div>
+    </fieldset>
+</div>
+</div>
+<!--End of logout confirmation dialog page-->
+
+<!--Start of app info dialog page-->
+<div data-role="page" id="appInfoDialog">
+    <div data-role="header">
+        <h5>App Info</h5>
+    </div>
+    <div data-role="content">
+        <p>Versione app <span id="appInfo">#</span></p>
+        <p>Created by: Babis Boikos</p>
+    </div>
+</div>
+<!--End of logout confirmation dialog page-->
+
+<!--Scripts-->
+<!--Datebox plugin-->
+<script src="js/lib/jqm-datebox.core.min.js"></script>
+<script src="js/lib/jqm-datebox.mode.datebox.min.js"></script>
+<script src="js/lib/jquery.mobile.datebox.i18n.it.utf8.js"></script>
+
+<!-- Date manipulation libraries -->
+<script src="js/lib/date.js"></script>
+<script src="js/lib/moment.min.js"></script>
+
+<!--pdf generation library-->
+<script type="text/javascript" src="js/lib/jspdf.debug.js"></script>
+<script type="text/javascript" src="js/lib/jspdf.plugin.autotable.js"></script>
+
+<!--Jquery validation plugin-->
+<script type="text/javascript" src="js/lib/jquery.validate.js"></script>
+
+<!-- app js files-->
+<script src="js/app.js"></script>
+
+
+<script src="js/modules/user.js"></script>
+<script src="js/modules/client.js"></script>
+<script src="js/modules/listino.js"></script>
+<script src="js/modules/order.js"></script>
+<script src="js/modules/offerta.js"></script>
+<script src="js/modules/log.js"></script>
+<script src="js/modules/utils.js"></script>
+
+<script src="js/services/getdataService.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "_from": "cordova-sqlite-ext@^2.2.0",
+  "_id": "cordova-sqlite-ext@2.3.1",
+  "_inBundle": false,
+  "_integrity": "sha512-vsZR+kqg5Xll+AjZYQkk28sfbUFV5VV/xqQxzE1HTL98IEXtdnH5TzPe5PEjDfKLmHeh0SPs0dXWCX0JEnTPJw==",
+  "_location": "/cordova-sqlite-ext",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "cordova-sqlite-ext@^2.2.0",
+    "name": "cordova-sqlite-ext",
+    "escapedName": "cordova-sqlite-ext",
+    "rawSpec": "^2.2.0",
+    "saveSpec": null,
+    "fetchSpec": "^2.2.0"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-sqlite-ext/-/cordova-sqlite-ext-2.3.1.tgz",
+  "_shasum": "b06bea65c23d8db76747eca0c3781ba16cb73a8b",
+  "_spec": "cordova-sqlite-ext@^2.2.0",
+  "_where": "C:\\Users\\Babis Boikos\\dev\\Agenti",
+  "author": {
+    "name": "various"
+  },
+  "bugs": {
+    "url": "https://github.com/litehelpers/cordova-sqlite-ext/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-sqlite-ext",
+    "platforms": [
+      "android",
+      "ios",
+      "osx",
+      "windows"
+    ]
+  },
+  "dependencies": {
+    "cordova-sqlite-ext-deps": "1.1.1"
+  },
+  "deprecated": false,
+  "description": "Native interface to SQLite for PhoneGap/Cordova with extra features",
+  "devDependencies": {
+    "shelljs": "^0.7.4"
+  },
+  "homepage": "https://github.com/litehelpers/cordova-sqlite-ext",
+  "keywords": [
+    "sqlite",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios",
+    "cordova-osx",
+    "cordova-windows"
+  ],
+  "license": "MIT",
+  "name": "cordova-sqlite-ext",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litehelpers/cordova-sqlite-ext.git"
+  },
+  "scripts": {
+    "start": "node scripts/prepareSpec.js"
+  },
+  "version": "2.3.1"
+}
