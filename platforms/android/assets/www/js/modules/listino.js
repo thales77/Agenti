@@ -194,8 +194,8 @@ AGENTI.listino = (function () {
         $('#codForn2').text(codForn2);
         $('#fornitoreArticolo').text(fornitoreArticolo);
         $('#dispCa').text(dispCa);
-        $('#dispCe').text(dispCe);
-        $('#dispPo').text(dispPo);
+/*         $('#dispCe').text(dispCe);
+        $('#dispPo').text(dispPo); */
         $('#prezzoLordo').text(prezzoLordo);
         $('#sconto1').text(sconto1);
         $('#sconto2').text(sconto2);

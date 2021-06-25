@@ -287,3 +287,11 @@ em {
     font-weight: bold;
     padding-right: .25em;
 }
+
+.noDisplay {
+    display: none;
+}
+
+.hidden {
+    visibility:hidden;
+}
